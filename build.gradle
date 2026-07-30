@@ -1,0 +1,40 @@
+// 平台共同体 · 根构建文件
+// Java 27 + Spring Boot 4.1.0 + Gradle (Groovy DSL)
+// 开发规范：阿里巴巴 Java 开发手册（黄山版）
+
+group = "com.platformcommons"
+version = "0.1.0-SNAPSHOT"
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    if (path.startsWith(":backend:")) {
+        apply plugin: "java"
+
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(27)
+            }
+        }
+
+        // 阿里规范：统一编码 UTF-8
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = "UTF-8"
+            options.compilerArgs.addAll(["-parameters"])
+        }
+
+        // 全局依赖管理
+        dependencies {
+            implementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
+            testImplementation("org.springframework.boot:spring-boot-starter-test")
+        }
+
+        tasks.withType(Test).configureEach {
+            useJUnitPlatform()
+        }
+    }
+}

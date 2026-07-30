@@ -1,0 +1,26 @@
+rootProject.name = "platform-commons"
+
+include(
+    // 基础设施
+    ":backend:platform-common",
+    ":backend:platform-bootstrap",
+    // 核心业务
+    ":backend:platform-governance",
+    ":backend:platform-identity",
+    ":backend:platform-asset",
+    ":backend:platform-labor",
+    ":backend:platform-payment",
+    ":backend:platform-mutual",
+    ":backend:platform-matching",
+    ":backend:platform-dispatch",
+    ":backend:platform-rating",
+    // 治理与合规
+    ":backend:platform-finance",
+    ":backend:platform-ai-supervision",
+    ":backend:platform-tech-governance",
+    ":backend:platform-dispute",
+    ":backend:platform-early-warning",
+    ":backend:platform-federation",
+    ":backend:platform-emergency",
+    ":backend:platform-booth",
+)

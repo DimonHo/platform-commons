@@ -1,0 +1,10 @@
+// 平台共同体 · 支付与分账模块（第9章 43-49条）
+group = "com.platformcommons"
+version = "0.1.0-SNAPSHOT"
+
+dependencies {
+    implementation(project(":backend:platform-common"))
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+}
