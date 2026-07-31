@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -64,13 +65,10 @@ public final class SnowflakeUtils {
      * @throws IllegalArgumentException 前缀长度超过 4
      */
     public static String nextId(String prefix) {
-        if (prefix == null) {
-            prefix = "";
+        String p = Optional.ofNullable(prefix).orElse("");
+        if (p.length() > 4) {
+            throw new IllegalArgumentException("前缀长度不得超过 4 个字符: " + p);
         }
-        if (prefix.length() > 4) {
-            throw new IllegalArgumentException("前缀长度不得超过 4 个字符: " + prefix);
-        }
-        int prefixLen = prefix.length();
         String timestamp;
         int seq;
         synchronized (SnowflakeUtils.class) {
@@ -83,9 +81,7 @@ public final class SnowflakeUtils {
                 seq = 1;
             }
         }
-        int seqWidth = 10 - prefixLen;
-        String seqPart = seqWidth <= 0 ? "" : String.format("%0" + seqWidth + "d", seq);
-        return prefix + timestamp + IP_SUFFIX + seqPart;
+        return p + timestamp + IP_SUFFIX + String.format("%0" + (10 - p.length()) + "d", seq);
     }
 
     /**

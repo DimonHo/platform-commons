@@ -103,13 +103,9 @@ class SnowflakeUtilsTest {
         String prefixed = SnowflakeUtils.nextId("ORD");
         // 无前缀 ID: [0,17)=时间戳 [17,22)=IP [22,32)=序列号
         // 带前缀 ID: [0,3)=ORD [3,20)=时间戳 [20,25)=IP [25,32)=序列号(7位)
-        String tsPlain = plain.substring(0, 17);
-        String ipPlain = plain.substring(17, 22);
-        String tsPrefixed = prefixed.substring(3, 20);
-        String ipPrefixed = prefixed.substring(20, 25);
-        assertEquals(tsPlain, tsPrefixed, "带前缀时时间戳段应与无前缀一致");
-        assertEquals(ipPlain, ipPrefixed, "带前缀时 IP 尾段应与无前缀一致");
-        // 序列号段缩减为 10-3=7 位
+        // 允许毫秒翻转，截取前 14 位（秒级）比对
+        assertEquals(plain.substring(0, 14), prefixed.substring(3, 17), "时间戳秒级前缀应一致");
+        assertEquals(plain.substring(17, 22), prefixed.substring(20, 25), "IP 尾段应一致");
         assertEquals(7, prefixed.substring(25).length(), "前缀3位时序列号应为7位");
     }
 
