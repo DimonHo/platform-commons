@@ -4,6 +4,7 @@ import com.platformcommons.mutual.domain.EligibilityResult;
 import com.platformcommons.mutual.domain.MutualClaim;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public interface MutualFundService {
      * @return 已提交的理赔申请（状态为 PENDING）
      */
     MutualClaim submitClaim(String applicantId, String incidentType, String description,
-                            BigDecimal claimedAmount, java.util.List<String> evidenceUrls);
+                            BigDecimal claimedAmount, List<String> evidenceUrls);
 
     /**
      * 反欺诈检查：检测重复申请、金额异常、证据缺失等风险。

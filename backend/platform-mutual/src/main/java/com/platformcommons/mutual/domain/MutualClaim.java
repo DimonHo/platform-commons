@@ -1,5 +1,8 @@
 package com.platformcommons.mutual.domain;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -25,8 +28,8 @@ public record MutualClaim(
         String applicantId,
         String incidentType,
         String description,
-        java.math.BigDecimal claimedAmount,
-        java.util.List<String> evidenceUrls,
+        BigDecimal claimedAmount,
+        List<String> evidenceUrls,
         ClaimStatus status,
         Instant submittedAt,
         Instant reviewedAt,

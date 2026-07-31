@@ -1,6 +1,7 @@
 package com.platformcommons.payment.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,6 +54,6 @@ public record Transaction(
         if (grossAmount == null || grossAmount.signum() == 0) {
             return BigDecimal.ZERO;
         }
-        return workerShare.divide(grossAmount, 4, java.math.RoundingMode.HALF_UP);
+        return workerShare.divide(grossAmount, 4, RoundingMode.HALF_UP);
     }
 }

@@ -3,6 +3,7 @@ package com.platformcommons.common.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -133,7 +134,7 @@ public final class RecordUtils {
      */
     private static Map<String, Object> extractValues(Object record) {
         RecordComponent[] components = record.getClass().getRecordComponents();
-        Map<String, Object> values = new java.util.HashMap<>(components.length * 2);
+        Map<String, Object> values = new HashMap<>(components.length * 2);
         try {
             for (RecordComponent rc : components) {
                 values.put(rc.getName(), rc.getAccessor().invoke(record));

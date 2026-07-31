@@ -1,5 +1,7 @@
 package com.platformcommons.mutual.domain;
 
+import java.math.BigDecimal;
+
 /**
  * 资格认定结果。
  *
@@ -25,7 +27,7 @@ public record EligibilityResult(
         boolean h0Satisfied,
         boolean q0Satisfied,
         boolean d0Satisfied,
-        java.math.BigDecimal eligibleAmount,
+        BigDecimal eligibleAmount,
         String reason
 ) {
 }

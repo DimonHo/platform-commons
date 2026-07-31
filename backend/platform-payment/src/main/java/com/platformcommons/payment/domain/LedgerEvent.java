@@ -1,5 +1,7 @@
 package com.platformcommons.payment.domain;
 
+import java.math.BigDecimal;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -31,7 +33,7 @@ public sealed interface LedgerEvent permits LedgerEvent.ChargeCreated, LedgerEve
     record ChargeCreated(
             UUID eventId,
             UUID transactionId,
-            java.math.BigDecimal grossAmount,
+            BigDecimal grossAmount,
             Instant occurredAt
     ) implements LedgerEvent {
         @Override
@@ -48,7 +50,7 @@ public sealed interface LedgerEvent permits LedgerEvent.ChargeCreated, LedgerEve
     record SettlementCompleted(
             UUID eventId,
             UUID transactionId,
-            java.math.BigDecimal workerShare,
+            BigDecimal workerShare,
             Instant occurredAt
     ) implements LedgerEvent {
         @Override
@@ -65,7 +67,7 @@ public sealed interface LedgerEvent permits LedgerEvent.ChargeCreated, LedgerEve
     record RefundIssued(
             UUID eventId,
             UUID transactionId,
-            java.math.BigDecimal refundAmount,
+            BigDecimal refundAmount,
             Instant occurredAt
     ) implements LedgerEvent {
         @Override

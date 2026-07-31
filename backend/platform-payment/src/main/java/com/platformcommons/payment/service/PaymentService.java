@@ -4,6 +4,7 @@ import com.platformcommons.payment.domain.SettlementResult;
 import com.platformcommons.payment.domain.Transaction;
 
 import java.util.Optional;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -22,7 +23,7 @@ public interface PaymentService {
      * @param grossAmount 订单总价
      * @return 已创建的交易
      */
-    Transaction charge(String orderId, String workerId, String requesterId, java.math.BigDecimal grossAmount);
+    Transaction charge(String orderId, String workerId, String requesterId, BigDecimal grossAmount);
 
     /**
      * 按当前生效的分账规则进行结算，确保劳动者返还不低于反榨取底线。

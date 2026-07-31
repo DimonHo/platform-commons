@@ -1,5 +1,7 @@
 package com.platformcommons.payment.domain;
 
+import java.util.Objects;
+
 import java.math.BigDecimal;
 
 /**
@@ -54,8 +56,8 @@ public record SettlementRule(
      * @throws IllegalArgumentException 若劳动者返还比例低于反榨取底线
      */
     public SettlementRule {
-        java.util.Objects.requireNonNull(version, "version must not be null");
-        java.util.Objects.requireNonNull(minWorkerShareRate, "minWorkerShareRate must not be null");
+        Objects.requireNonNull(version, "version must not be null");
+        Objects.requireNonNull(minWorkerShareRate, "minWorkerShareRate must not be null");
         if (minWorkerShareRate.compareTo(ANTI_EXPLOITATION_FLOOR) < 0) {
             throw new IllegalArgumentException(
                     "minWorkerShareRate must be >= ANTI_EXPLOITATION_FLOOR (70%): " + minWorkerShareRate);

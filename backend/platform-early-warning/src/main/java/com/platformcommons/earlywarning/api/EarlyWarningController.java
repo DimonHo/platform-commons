@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +113,7 @@ public class EarlyWarningController {
     }
 
     private static AlertResponse toResponse(EarlyWarningAlert a) {
-        return RecordUtils.copy(a, AlertResponse.class, java.util.Map.of(
+        return RecordUtils.copy(a, AlertResponse.class, Map.of(
                 "redLineCode", a.redLine() == null ? null : a.redLine().code()
         ));
     }

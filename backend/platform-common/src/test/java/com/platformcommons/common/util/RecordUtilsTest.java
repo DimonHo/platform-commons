@@ -3,6 +3,7 @@ package com.platformcommons.common.util;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,7 +92,7 @@ class RecordUtilsTest {
     void copy_withOverridesNull() {
         var alert = new Alert("LOW", "CODE-1", "测试");
 
-        Map<String, Object> overrides = new java.util.HashMap<>();
+        Map<String, Object> overrides = new HashMap<>();
         overrides.put("code", null);
 
         AlertDto result = RecordUtils.copy(alert, AlertDto.class, overrides);
