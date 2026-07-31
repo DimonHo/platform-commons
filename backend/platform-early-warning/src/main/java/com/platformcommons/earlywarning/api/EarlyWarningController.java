@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +49,7 @@ public class EarlyWarningController {
         RedLine redLine = RedLine.valueOf(redLineCode);
         log.info("Detect redLine: code={}, metric={}", redLineCode, sourceMetric);
         List<EarlyWarningAlert> alerts = earlyWarningService.detectRedLine(redLine, sourceMetric);
-        return alerts.stream().map(EarlyWarningController::toResponse).toList();
+        return alerts.stream().map(a -> RecordUtils.copy(a, AlertResponse.class)).toList();
     }
 
     /**
@@ -68,7 +67,7 @@ public class EarlyWarningController {
                                @RequestParam String title,
                                @RequestParam(required = false) String description) {
         log.info("Raise alert: level={}, category={}, title={}", level, category, title);
-        return toResponse(earlyWarningService.raiseAlert(level, category, title, description));
+        return RecordUtils.copy(earlyWarningService.raiseAlert(level, category, title, description), AlertResponse.class);
     }
 
     /**
@@ -82,7 +81,7 @@ public class EarlyWarningController {
     public AlertResponse clear(@PathVariable UUID alertId,
                                @RequestParam String confirmerId) {
         log.info("Clear alert: id={}, confirmer={}", alertId, confirmerId);
-        return toResponse(earlyWarningService.clearAlert(alertId, confirmerId));
+        return RecordUtils.copy(earlyWarningService.clearAlert(alertId, confirmerId), AlertResponse.class);
     }
 
     /**
@@ -94,7 +93,7 @@ public class EarlyWarningController {
     @GetMapping("/alerts/{alertId}")
     public AlertResponse get(@PathVariable UUID alertId) {
         return earlyWarningService.findById(alertId)
-                .map(EarlyWarningController::toResponse)
+                .map(a -> RecordUtils.copy(a, AlertResponse.class))
                 .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
                         "预警不存在: " + alertId));
     }
@@ -107,13 +106,7 @@ public class EarlyWarningController {
     @GetMapping("/alerts/active")
     public List<AlertResponse> active() {
         return earlyWarningService.findActiveAlerts().stream()
-                .map(EarlyWarningController::toResponse)
+                .map(a -> RecordUtils.copy(a, AlertResponse.class))
                 .toList();
-    }
-
-    private static AlertResponse toResponse(EarlyWarningAlert a) {
-        return RecordUtils.copy(a, AlertResponse.class, Map.of(
-                "redLineCode", a.redLine() == null ? null : a.redLine().code()
-        ));
     }
 }

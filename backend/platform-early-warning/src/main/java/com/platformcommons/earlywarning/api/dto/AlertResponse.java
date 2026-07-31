@@ -2,6 +2,7 @@ package com.platformcommons.earlywarning.api.dto;
 
 import com.platformcommons.earlywarning.domain.AlertCategory;
 import com.platformcommons.earlywarning.domain.AlertLevel;
+import com.platformcommons.earlywarning.domain.RedLine;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * @param id                    预警 ID
  * @param level                 预警等级
  * @param category              预警类别
- * @param redLineCode           红线规则代码（可空）
+ * @param redLine               触发的红线规则（可空，非红线预警时为 null；序列化为业务码）
  * @param title                 标题
  * @param description           描述
  * @param autoMeasureTriggered  是否已自动触发应急措施
@@ -24,7 +25,7 @@ public record AlertResponse(
         UUID id,
         AlertLevel level,
         AlertCategory category,
-        String redLineCode,
+        RedLine redLine,
         String title,
         String description,
         boolean autoMeasureTriggered,

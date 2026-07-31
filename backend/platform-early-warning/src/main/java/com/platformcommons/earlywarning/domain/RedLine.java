@@ -1,10 +1,14 @@
 package com.platformcommons.earlywarning.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * 红线规则标识枚举。
  *
  * <p>映射宪章第16章 100条：列出所有五类红线，触发任一即自动启动应急措施。
- * 解除必须经监察委员会确认。
+ * 解除必须经监察委员会确认。</p>
+ *
+ * <p>JSON 序列化时自动输出业务码（如 {@code "R-CAP-01"}），而非枚举常量名。</p>
  */
 public enum RedLine {
 
@@ -33,6 +37,7 @@ public enum RedLine {
         this.category = category;
     }
 
+    @JsonValue
     public String code() {
         return code;
     }
