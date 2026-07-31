@@ -30,6 +30,11 @@ subprojects {
         // 全局依赖管理
         dependencies {
             implementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
+
+            // Lombok 全局可用（阿里规范允许，消除模板代码）
+            compileOnly("org.projectlombok:lombok:1.18.46")
+            annotationProcessor("org.projectlombok:lombok:1.18.46")
+
             testImplementation("org.springframework.boot:spring-boot-starter-test")
             // Gradle 8.14 内置的 junit-platform-launcher 版本与 JUnit Platform 6.x 不兼容，
             // 需显式对齐到 BOM 管理的版本

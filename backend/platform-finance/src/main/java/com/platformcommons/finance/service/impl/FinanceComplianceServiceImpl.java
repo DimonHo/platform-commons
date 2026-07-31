@@ -7,8 +7,6 @@ import com.platformcommons.finance.domain.RelatedPartyTransaction;
 import com.platformcommons.finance.repository.FinancingRecordRepository;
 import com.platformcommons.finance.repository.entity.FinancingRecordEntity;
 import com.platformcommons.finance.service.FinanceComplianceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 融资采购合规服务实现（第10-11章 第50-59条）
  */
 @Service
+@Slf4j
 public class FinanceComplianceServiceImpl implements FinanceComplianceService {
 
-    private static final Logger log = LoggerFactory.getLogger(FinanceComplianceServiceImpl.class);
 
     private final FinancingRecordRepository financingRecordRepository;
     private final List<ProcurementRecord> procurementRecords = new CopyOnWriteArrayList<>();

@@ -5,8 +5,6 @@ import com.platformcommons.finance.domain.FinancialDisclosure;
 import com.platformcommons.finance.domain.FinancingRecord;
 import com.platformcommons.finance.service.FinanceComplianceService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 融资采购关联交易 Controller（第10-11章 第50-59条）
@@ -25,9 +24,9 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/finance")
+@Slf4j
 public class FinanceController {
 
-    private static final Logger log = LoggerFactory.getLogger(FinanceController.class);
 
     private final FinanceComplianceService financeComplianceService;
 

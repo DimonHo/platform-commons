@@ -10,8 +10,6 @@ import com.platformcommons.identity.domain.MemberRole;
 import com.platformcommons.identity.repository.MemberRepository;
 import com.platformcommons.identity.repository.entity.MemberEntity;
 import com.platformcommons.identity.service.MemberService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link MemberService} 默认实现。
@@ -29,9 +28,9 @@ import java.util.stream.Collectors;
  * 日志统一使用 SLF4J，占位符拼接。</p>
  */
 @Service
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
-    private static final Logger log = LoggerFactory.getLogger(MemberServiceImpl.class);
 
     /** 劳动者初始劳动份额 */
     private static final int INITIAL_LABOR_SHARES = 0;

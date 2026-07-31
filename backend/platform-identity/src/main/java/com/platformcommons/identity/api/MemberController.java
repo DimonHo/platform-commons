@@ -4,8 +4,6 @@ import com.platformcommons.identity.api.dto.MemberRegisterRequest;
 import com.platformcommons.identity.api.dto.MemberResponse;
 import com.platformcommons.identity.service.MemberService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 成员对外接口。
@@ -24,9 +23,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/members")
+@Slf4j
 public class MemberController {
 
-    private static final Logger log = LoggerFactory.getLogger(MemberController.class);
 
     private final MemberService memberService;
 

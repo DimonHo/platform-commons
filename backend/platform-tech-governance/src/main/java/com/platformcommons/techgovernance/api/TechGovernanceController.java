@@ -7,8 +7,6 @@ import com.platformcommons.techgovernance.domain.TechAlert;
 import com.platformcommons.techgovernance.domain.VerificationStatus;
 import com.platformcommons.techgovernance.service.TechGovernanceService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +17,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 算法代码数据治理 Controller（第13章 第70-80条）
@@ -29,9 +28,9 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/tech-governance")
+@Slf4j
 public class TechGovernanceController {
 
-    private static final Logger log = LoggerFactory.getLogger(TechGovernanceController.class);
 
     private final TechGovernanceService techGovernanceService;
 

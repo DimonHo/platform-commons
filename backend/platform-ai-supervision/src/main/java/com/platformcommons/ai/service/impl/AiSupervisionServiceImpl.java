@@ -7,8 +7,6 @@ import com.platformcommons.ai.domain.ReviewStatus;
 import com.platformcommons.ai.repository.AiReviewRecordRepository;
 import com.platformcommons.ai.repository.entity.AiReviewRecordEntity;
 import com.platformcommons.ai.service.AiSupervisionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AI 公共监督审议服务实现（第12章 第60-69条）
@@ -25,9 +24,9 @@ import java.util.UUID;
  * 汇总各方意见形成审议结论。
  */
 @Service
+@Slf4j
 public class AiSupervisionServiceImpl implements AiSupervisionService {
 
-    private static final Logger log = LoggerFactory.getLogger(AiSupervisionServiceImpl.class);
 
     private final AiReviewRecordRepository reviewRecordRepository;
 

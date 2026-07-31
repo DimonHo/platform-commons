@@ -5,8 +5,6 @@ import com.platformcommons.ai.api.dto.ReviewResponse;
 import com.platformcommons.ai.domain.ReviewResult;
 import com.platformcommons.ai.service.AiSupervisionService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AI 公共监督审议 Controller（第12章 第60-69条）
@@ -24,9 +23,9 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping("/api/ai-supervision")
+@Slf4j
 public class AiSupervisionController {
 
-    private static final Logger log = LoggerFactory.getLogger(AiSupervisionController.class);
 
     private final AiSupervisionService aiSupervisionService;
 

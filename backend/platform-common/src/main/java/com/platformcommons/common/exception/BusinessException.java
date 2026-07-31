@@ -1,6 +1,7 @@
 package com.platformcommons.common.exception;
 
 import com.platformcommons.common.api.ResultCode;
+import lombok.Getter;
 
 /**
  * 业务异常基类。
@@ -8,6 +9,7 @@ import com.platformcommons.common.api.ResultCode;
  * <p>用于表达可预期的业务规则违反（如数据重复、状态非法），
  * 由 {@link GlobalExceptionHandler} 转为友好提示。</p>
  */
+@Getter
 public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -37,9 +39,5 @@ public class BusinessException extends RuntimeException {
     public BusinessException(ResultCode resultCode, Throwable cause) {
         super(resultCode.getMessage(), cause);
         this.code = resultCode.getCode();
-    }
-
-    public int getCode() {
-        return code;
     }
 }

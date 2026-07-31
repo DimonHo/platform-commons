@@ -15,13 +15,12 @@ import com.platformcommons.governance.repository.ProposalRepository;
 import com.platformcommons.governance.repository.VoteRepository;
 import com.platformcommons.governance.repository.entity.ProposalEntity;
 import com.platformcommons.governance.service.GovernanceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link GovernanceService} 默认实现。
@@ -30,9 +29,9 @@ import java.util.Optional;
  * 日志统一使用 SLF4J，占位符拼接。</p>
  */
 @Service
+@Slf4j
 public class GovernanceServiceImpl implements GovernanceService {
 
-    private static final Logger log = LoggerFactory.getLogger(GovernanceServiceImpl.class);
 
     /** 默认投票持续时长（小时） */
     private static final int DEFAULT_VOTING_DURATION_HOURS = 72;

@@ -7,8 +7,6 @@ import com.platformcommons.techgovernance.domain.VerificationStatus;
 import com.platformcommons.techgovernance.repository.DeploymentRecordRepository;
 import com.platformcommons.techgovernance.repository.entity.DeploymentRecordEntity;
 import com.platformcommons.techgovernance.service.TechGovernanceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 算法代码数据治理服务实现（第13章 第70-80条）
  */
 @Service
+@Slf4j
 public class TechGovernanceServiceImpl implements TechGovernanceService {
 
-    private static final Logger log = LoggerFactory.getLogger(TechGovernanceServiceImpl.class);
 
     private final DeploymentRecordRepository deploymentRecordRepository;
     private final List<AlgorithmSpec> algorithmSpecs = new CopyOnWriteArrayList<>();

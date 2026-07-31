@@ -6,8 +6,6 @@ import com.platformcommons.dispute.domain.Dispute;
 import com.platformcommons.dispute.domain.DisputeLevel;
 import com.platformcommons.dispute.service.DisputeService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 申诉争议 Controller（第15章 第93-96条）
@@ -25,9 +24,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/disputes")
+@Slf4j
 public class DisputeController {
 
-    private static final Logger log = LoggerFactory.getLogger(DisputeController.class);
 
     private final DisputeService disputeService;
 

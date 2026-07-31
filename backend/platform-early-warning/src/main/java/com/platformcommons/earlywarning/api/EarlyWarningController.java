@@ -8,8 +8,6 @@ import com.platformcommons.earlywarning.domain.AlertLevel;
 import com.platformcommons.earlywarning.domain.EarlyWarningAlert;
 import com.platformcommons.earlywarning.domain.RedLine;
 import com.platformcommons.earlywarning.service.EarlyWarningService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 防异化预警接口。
@@ -27,9 +26,9 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/early-warning")
+@Slf4j
 public class EarlyWarningController {
 
-    private static final Logger log = LoggerFactory.getLogger(EarlyWarningController.class);
 
     private final EarlyWarningService earlyWarningService;
 

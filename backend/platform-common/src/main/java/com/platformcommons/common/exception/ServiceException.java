@@ -1,6 +1,7 @@
 package com.platformcommons.common.exception;
 
 import com.platformcommons.common.api.ResultCode;
+import lombok.Getter;
 
 /**
  * 服务异常。
@@ -8,6 +9,7 @@ import com.platformcommons.common.api.ResultCode;
  * <p>用于 Service 层表达非预期故障（如依赖不可用、数据一致性被破坏），
  * 区别于 {@link BusinessException} 的可预期业务规则违反。</p>
  */
+@Getter
 public class ServiceException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -37,9 +39,5 @@ public class ServiceException extends RuntimeException {
     public ServiceException(ResultCode resultCode, Throwable cause) {
         super(resultCode.getMessage(), cause);
         this.code = resultCode.getCode();
-    }
-
-    public int getCode() {
-        return code;
     }
 }

@@ -1,6 +1,6 @@
 package com.platformcommons.earlywarning.service.impl;
 
-import com.platformcommons.common.BizException;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.earlywarning.domain.AlertCategory;
 import com.platformcommons.earlywarning.domain.AlertLevel;
 import com.platformcommons.earlywarning.domain.EarlyWarningAlert;
@@ -8,8 +8,6 @@ import com.platformcommons.earlywarning.domain.RedLine;
 import com.platformcommons.earlywarning.repository.AlertRepository;
 import com.platformcommons.earlywarning.repository.entity.AlertEntity;
 import com.platformcommons.earlywarning.service.EarlyWarningService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 防异化预警服务实现。
@@ -27,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>映射宪章第16章 100-101条：红线触发后自动启动应急措施；解除需监察委员会确认。
  */
 @Service
+@Slf4j
 public class EarlyWarningServiceImpl implements EarlyWarningService {
 
-    private static final Logger log = LoggerFactory.getLogger(EarlyWarningServiceImpl.class);
 
     /** 各红线的阈值定义。 */
     private static final Map<RedLine, String> THRESHOLDS = Map.of(
@@ -115,10 +114,10 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
 
         EarlyWarningAlert alert = alertStore.get(alertId);
         if (alert == null) {
-            throw new BizException("alert not found: " + alertId);
+            throw new BusinessException("alert not found: " + alertId);
         }
         if (alert.acknowledged()) {
-            throw new BizException("alert already cleared: " + alertId);
+            throw new BusinessException("alert already cleared: " + alertId);
         }
 
         Instant now = Instant.now();

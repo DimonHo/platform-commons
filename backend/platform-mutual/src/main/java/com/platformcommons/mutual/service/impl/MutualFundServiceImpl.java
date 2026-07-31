@@ -1,6 +1,6 @@
 package com.platformcommons.mutual.service.impl;
 
-import com.platformcommons.common.BizException;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.mutual.domain.ClaimStatus;
 import com.platformcommons.mutual.domain.EligibilityResult;
 import com.platformcommons.mutual.domain.LaborThreshold;
@@ -8,8 +8,6 @@ import com.platformcommons.mutual.domain.MutualClaim;
 import com.platformcommons.mutual.repository.MutualClaimRepository;
 import com.platformcommons.mutual.repository.entity.MutualClaimEntity;
 import com.platformcommons.mutual.service.MutualFundService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 互助保障基金服务实现。
@@ -27,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>阿里规范：{@code @Override} 不省略；包装类比较使用 {@code equals()} 或 {@code compareTo()==0}。
  */
 @Service
+@Slf4j
 public class MutualFundServiceImpl implements MutualFundService {
 
-    private static final Logger log = LoggerFactory.getLogger(MutualFundServiceImpl.class);
 
     /** 基础保障金额上限。 */
     private static final BigDecimal BASE_GUARANTEE_CAP = new BigDecimal("5000");
@@ -96,17 +95,17 @@ public class MutualFundServiceImpl implements MutualFundService {
         Objects.requireNonNull(incidentType, "incidentType must not be null");
         Objects.requireNonNull(claimedAmount, "claimedAmount must not be null");
         if (claimedAmount.signum() <= 0) {
-            throw new BizException("claimedAmount must be positive: " + claimedAmount);
+            throw new BusinessException("claimedAmount must be positive: " + claimedAmount);
         }
         if (claimedAmount.compareTo(CLAIM_AMOUNT_CEILING) > 0) {
-            throw new BizException("claimedAmount exceeds ceiling: " + claimedAmount);
+            throw new BusinessException("claimedAmount exceeds ceiling: " + claimedAmount);
         }
         if (evidenceUrls == null || evidenceUrls.isEmpty()) {
-            throw new BizException("evidenceUrls must not be empty");
+            throw new BusinessException("evidenceUrls must not be empty");
         }
 
         if (!antiFraudCheck(applicantId, claimedAmount)) {
-            throw new BizException("anti-fraud check failed for applicant: " + applicantId);
+            throw new BusinessException("anti-fraud check failed for applicant: " + applicantId);
         }
 
         UUID claimId = UUID.randomUUID();
@@ -143,10 +142,10 @@ public class MutualFundServiceImpl implements MutualFundService {
     public MutualClaim reviewClaim(UUID claimId, boolean approved, String reviewerId) {
         MutualClaim claim = claimStore.get(claimId);
         if (claim == null) {
-            throw new BizException("claim not found: " + claimId);
+            throw new BusinessException("claim not found: " + claimId);
         }
         if (!ClaimStatus.PENDING.equals(claim.status())) {
-            throw new BizException("claim is not in PENDING state: " + claim.status());
+            throw new BusinessException("claim is not in PENDING state: " + claim.status());
         }
 
         Instant now = Instant.now();

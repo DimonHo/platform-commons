@@ -6,8 +6,6 @@ import com.platformcommons.mutual.domain.EligibilityResult;
 import com.platformcommons.mutual.domain.MutualClaim;
 import com.platformcommons.mutual.service.MutualFundService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 互助保障基金接口。
@@ -26,9 +25,9 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/mutual")
+@Slf4j
 public class MutualFundController {
 
-    private static final Logger log = LoggerFactory.getLogger(MutualFundController.class);
 
     private final MutualFundService mutualFundService;
 

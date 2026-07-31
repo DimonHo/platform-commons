@@ -8,8 +8,6 @@ import com.platformcommons.payment.domain.SettlementResult;
 import com.platformcommons.payment.domain.Transaction;
 import com.platformcommons.payment.service.PaymentService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 支付与分账接口。
@@ -27,9 +26,9 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/payment")
+@Slf4j
 public class PaymentController {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 
     private final PaymentService paymentService;
 

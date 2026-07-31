@@ -3,8 +3,6 @@ package com.platformcommons.common.exception;
 import com.platformcommons.common.api.R;
 import com.platformcommons.common.api.ResultCode;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -17,6 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 全局异常处理器。
@@ -29,9 +28,9 @@ import java.util.stream.Collectors;
  * 不会产生二次包装。</p>
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * 业务异常：返回 HTTP 200，业务码标记失败。

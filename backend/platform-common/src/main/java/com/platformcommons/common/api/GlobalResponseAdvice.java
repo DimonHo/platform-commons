@@ -1,7 +1,5 @@
 package com.platformcommons.common.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 全局响应体自动包装。
@@ -32,9 +31,9 @@ import java.util.List;
  * 因此 {@code ResponseEntity<Proposal>} 的 Proposal 仍会被自动包装为 {@code R<Proposal>}。</p>
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalResponseAdvice.class);
 
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 

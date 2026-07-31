@@ -6,8 +6,6 @@ import com.platformcommons.dispute.domain.DisputeStatus;
 import com.platformcommons.dispute.repository.DisputeRepository;
 import com.platformcommons.dispute.repository.entity.DisputeEntity;
 import com.platformcommons.dispute.service.DisputeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +13,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 争议申诉服务实现（第15章 第93-96条）
@@ -27,9 +26,9 @@ import java.util.UUID;
  * </ol>
  */
 @Service
+@Slf4j
 public class DisputeServiceImpl implements DisputeService {
 
-    private static final Logger log = LoggerFactory.getLogger(DisputeServiceImpl.class);
 
     private final DisputeRepository disputeRepository;
 

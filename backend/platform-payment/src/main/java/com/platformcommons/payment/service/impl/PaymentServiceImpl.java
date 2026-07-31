@@ -1,6 +1,6 @@
 package com.platformcommons.payment.service.impl;
 
-import com.platformcommons.common.BizException;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.payment.domain.LedgerEvent;
 import com.platformcommons.payment.domain.SettlementResult;
 import com.platformcommons.payment.domain.SettlementRule;
@@ -9,8 +9,6 @@ import com.platformcommons.payment.domain.TransactionStatus;
 import com.platformcommons.payment.repository.LedgerEventRepository;
 import com.platformcommons.payment.repository.entity.LedgerEventEntity;
 import com.platformcommons.payment.service.PaymentService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 支付与分账服务实现。
@@ -29,9 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 线程安全集合使用 {@link ConcurrentHashMap}。
  */
 @Service
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     /** 百分比精度：4 位小数。 */
     private static final int SCALE = 4;
@@ -50,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
         Objects.requireNonNull(orderId, "orderId must not be null");
         Objects.requireNonNull(grossAmount, "grossAmount must not be null");
         if (grossAmount.signum() <= 0) {
-            throw new BizException("grossAmount must be positive: " + grossAmount);
+            throw new BusinessException("grossAmount must be positive: " + grossAmount);
         }
 
         UUID txId = UUID.randomUUID();
@@ -78,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
     public SettlementResult settle(UUID transactionId) {
         Transaction tx = requireTransaction(transactionId);
         if (!TransactionStatus.CHARGED.equals(tx.status()) && !TransactionStatus.PENDING.equals(tx.status())) {
-            throw new BizException("transaction is not in a settleable state: " + tx.status());
+            throw new BusinessException("transaction is not in a settleable state: " + tx.status());
         }
 
         SettlementRule rule = SettlementRule.DEFAULT;
@@ -116,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Transaction refund(UUID transactionId) {
         Transaction tx = requireTransaction(transactionId);
         if (TransactionStatus.REFUNDED.equals(tx.status())) {
-            throw new BizException("transaction already refunded: " + transactionId);
+            throw new BusinessException("transaction already refunded: " + transactionId);
         }
 
         Instant now = Instant.now();
@@ -141,7 +140,7 @@ public class PaymentServiceImpl implements PaymentService {
     private Transaction requireTransaction(UUID transactionId) {
         Transaction tx = transactionStore.get(transactionId);
         if (tx == null) {
-            throw new BizException("transaction not found: " + transactionId);
+            throw new BusinessException("transaction not found: " + transactionId);
         }
         return tx;
     }
