@@ -19,14 +19,16 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 互助保障基金服务实现。
  *
  * <p>阿里规范：{@code @Override} 不省略；包装类比较使用 {@code equals()} 或 {@code compareTo()==0}。
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class MutualFundServiceImpl implements MutualFundService {
 
 
@@ -53,9 +55,6 @@ public class MutualFundServiceImpl implements MutualFundService {
     /** 理赔申请内存存储（演示用）。 */
     private final Map<UUID, MutualClaim> claimStore = new ConcurrentHashMap<>();
 
-    public MutualFundServiceImpl(MutualClaimRepository claimRepository) {
-        this.claimRepository = claimRepository;
-    }
 
     @Override
     public EligibilityResult assessEligibility(String applicantId, String jobCategory,

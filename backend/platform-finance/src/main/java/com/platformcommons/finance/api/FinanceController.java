@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 融资采购关联交易 Controller（第10-11章 第50-59条）
@@ -22,17 +23,15 @@ import lombok.extern.slf4j.Slf4j;
  * <p>方法返回裸对象，由 {@code GlobalResponseAdvice} 自动包装。
  * 原本返回 String 的方法改为返回 {@code Map}，避免 String 被 Spring MVC 特殊处理。</p>
  */
-@RestController
-@RequestMapping("/api/finance")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/finance")
 public class FinanceController {
 
 
     private final FinanceComplianceService financeComplianceService;
 
-    public FinanceController(FinanceComplianceService financeComplianceService) {
-        this.financeComplianceService = financeComplianceService;
-    }
 
     /**
      * 提交融资审查

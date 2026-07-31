@@ -16,12 +16,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 融资采购合规服务实现（第10-11章 第50-59条）
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class FinanceComplianceServiceImpl implements FinanceComplianceService {
 
 
@@ -30,9 +32,6 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     private final List<RelatedPartyTransaction> relatedPartyTransactions = new CopyOnWriteArrayList<>();
     private final List<FinancialDisclosure> financialDisclosures = new CopyOnWriteArrayList<>();
 
-    public FinanceComplianceServiceImpl(FinancingRecordRepository financingRecordRepository) {
-        this.financingRecordRepository = financingRecordRepository;
-    }
 
     @Override
     @Transactional

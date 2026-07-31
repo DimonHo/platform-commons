@@ -15,23 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 成员对外接口。
  *
  * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装为 {@code R<T>}。</p>
  */
-@RestController
-@RequestMapping("/api/members")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/members")
 public class MemberController {
 
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     /**
      * 注册成员。

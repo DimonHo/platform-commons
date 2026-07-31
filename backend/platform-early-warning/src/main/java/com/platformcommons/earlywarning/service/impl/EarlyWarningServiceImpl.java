@@ -19,14 +19,16 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 防异化预警服务实现。
  *
  * <p>映射宪章第16章 100-101条：红线触发后自动启动应急措施；解除需监察委员会确认。
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class EarlyWarningServiceImpl implements EarlyWarningService {
 
 
@@ -44,9 +46,6 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
     /** 预警内存存储（演示用）。 */
     private final Map<UUID, EarlyWarningAlert> alertStore = new ConcurrentHashMap<>();
 
-    public EarlyWarningServiceImpl(AlertRepository alertRepository) {
-        this.alertRepository = alertRepository;
-    }
 
     @Override
     public List<EarlyWarningAlert> detectRedLine(RedLine redLine, String sourceMetric) {

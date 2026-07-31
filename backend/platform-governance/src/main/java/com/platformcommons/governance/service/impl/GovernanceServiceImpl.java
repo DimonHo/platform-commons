@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * {@link GovernanceService} 默认实现。
@@ -28,8 +29,9 @@ import lombok.extern.slf4j.Slf4j;
  * <p>负责提案创建、投票开启、投票记录与结果统计。
  * 日志统一使用 SLF4J，占位符拼接。</p>
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class GovernanceServiceImpl implements GovernanceService {
 
 
@@ -41,10 +43,6 @@ public class GovernanceServiceImpl implements GovernanceService {
     private final ProposalRepository proposalRepository;
     private final VoteRepository voteRepository;
 
-    public GovernanceServiceImpl(ProposalRepository proposalRepository, VoteRepository voteRepository) {
-        this.proposalRepository = proposalRepository;
-        this.voteRepository = voteRepository;
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

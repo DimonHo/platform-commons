@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 支付与分账服务实现。
@@ -27,8 +28,9 @@ import lombok.extern.slf4j.Slf4j;
  * <p>阿里规范：{@code @Override} 不省略；包装类比较使用 {@code equals()}；
  * 线程安全集合使用 {@link ConcurrentHashMap}。
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
 
@@ -40,9 +42,6 @@ public class PaymentServiceImpl implements PaymentService {
     /** 交易内存存储（演示用，生产环境应替换为 JPA 持久化）。 */
     private final Map<UUID, Transaction> transactionStore = new ConcurrentHashMap<>();
 
-    public PaymentServiceImpl(LedgerEventRepository ledgerEventRepository) {
-        this.ledgerEventRepository = ledgerEventRepository;
-    }
 
     @Override
     public Transaction charge(String orderId, String workerId, String requesterId, BigDecimal grossAmount) {

@@ -17,23 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 申诉争议 Controller（第15章 第93-96条）
  *
  * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/disputes")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/disputes")
 public class DisputeController {
 
 
     private final DisputeService disputeService;
 
-    public DisputeController(DisputeService disputeService) {
-        this.disputeService = disputeService;
-    }
 
     /**
      * 提交争议申诉

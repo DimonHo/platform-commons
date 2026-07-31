@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 算法代码数据治理 Controller（第13章 第70-80条）
@@ -26,17 +27,15 @@ import lombok.extern.slf4j.Slf4j;
  * 原本返回 String 的方法改为返回 {@code Map}（等价的简单 POJO 亦可），
  * 避免 String 返回被 Spring MVC 的 StringHttpMessageConverter 特殊处理。</p>
  */
-@RestController
-@RequestMapping("/api/tech-governance")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/tech-governance")
 public class TechGovernanceController {
 
 
     private final TechGovernanceService techGovernanceService;
 
-    public TechGovernanceController(TechGovernanceService techGovernanceService) {
-        this.techGovernanceService = techGovernanceService;
-    }
 
     /**
      * 核验部署

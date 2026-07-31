@@ -16,23 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * AI 公共监督审议 Controller（第12章 第60-69条）
  *
  * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/ai-supervision")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/ai-supervision")
 public class AiSupervisionController {
 
 
     private final AiSupervisionService aiSupervisionService;
 
-    public AiSupervisionController(AiSupervisionService aiSupervisionService) {
-        this.aiSupervisionService = aiSupervisionService;
-    }
 
     /**
      * 发起并执行审议

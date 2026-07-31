@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 争议申诉服务实现（第15章 第93-96条）
@@ -25,16 +26,14 @@ import lombok.extern.slf4j.Slf4j;
  *   <li>外部调解/仲裁（最终级）</li>
  * </ol>
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class DisputeServiceImpl implements DisputeService {
 
 
     private final DisputeRepository disputeRepository;
 
-    public DisputeServiceImpl(DisputeRepository disputeRepository) {
-        this.disputeRepository = disputeRepository;
-    }
 
     @Override
     @Transactional

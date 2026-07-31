@@ -17,14 +17,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 匹配引擎服务实现。
  *
  * <p>阿里规范：策略通过工厂方法获取；反榨取约束作为匹配的前置过滤条件。
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class MatchingEngineServiceImpl implements MatchingEngineService {
 
 
@@ -41,9 +43,6 @@ public class MatchingEngineServiceImpl implements MatchingEngineService {
     /** 劳动者候选内存存储（演示用）。 */
     private final Map<String, WorkerLocationEntity> workerStore = new ConcurrentHashMap<>();
 
-    public MatchingEngineServiceImpl(WorkerLocationRepository workerLocationRepository) {
-        this.workerLocationRepository = workerLocationRepository;
-    }
 
     @Override
     public MatchResult match(String taskId, String strategyName) {

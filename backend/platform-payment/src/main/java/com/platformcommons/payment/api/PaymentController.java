@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 支付与分账接口。
@@ -25,17 +26,15 @@ import lombok.extern.slf4j.Slf4j;
  * <p>阿里规范：Controller 层只负责参数校验与调度，不写业务逻辑。
  * 方法返回裸领域对象，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/payment")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/payment")
 public class PaymentController {
 
 
     private final PaymentService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
 
     /**
      * 创建收款交易。

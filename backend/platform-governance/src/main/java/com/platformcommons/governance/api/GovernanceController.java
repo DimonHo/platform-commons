@@ -14,23 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 治理对外接口。
  *
  * <p>方法返回裸领域对象，由 {@code GlobalResponseAdvice} 自动包装为 {@code R<T>}。</p>
  */
-@RestController
-@RequestMapping("/api/governance/proposals")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/governance/proposals")
 public class GovernanceController {
 
 
     private final GovernanceService governanceService;
 
-    public GovernanceController(GovernanceService governanceService) {
-        this.governanceService = governanceService;
-    }
 
     /**
      * 创建提案。

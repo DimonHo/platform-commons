@@ -15,23 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 匹配引擎接口。
  *
  * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/matching")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/matching")
 public class MatchingController {
 
 
     private final MatchingEngineService matchingEngineService;
 
-    public MatchingController(MatchingEngineService matchingEngineService) {
-        this.matchingEngineService = matchingEngineService;
-    }
 
     /**
      * 执行匹配。

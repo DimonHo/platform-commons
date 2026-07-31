@@ -18,23 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 互助保障基金接口。
  *
  * <p>方法返回裸领域对象，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/mutual")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/mutual")
 public class MutualFundController {
 
 
     private final MutualFundService mutualFundService;
 
-    public MutualFundController(MutualFundService mutualFundService) {
-        this.mutualFundService = mutualFundService;
-    }
 
     /**
      * 资格认定。

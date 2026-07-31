@@ -20,23 +20,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 防异化预警接口。
  *
  * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
-@RestController
-@RequestMapping("/api/early-warning")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/early-warning")
 public class EarlyWarningController {
 
 
     private final EarlyWarningService earlyWarningService;
 
-    public EarlyWarningController(EarlyWarningService earlyWarningService) {
-        this.earlyWarningService = earlyWarningService;
-    }
 
     /**
      * 检测红线。

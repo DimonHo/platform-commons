@@ -17,12 +17,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 算法代码数据治理服务实现（第13章 第70-80条）
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class TechGovernanceServiceImpl implements TechGovernanceService {
 
 
@@ -30,9 +32,6 @@ public class TechGovernanceServiceImpl implements TechGovernanceService {
     private final List<AlgorithmSpec> algorithmSpecs = new CopyOnWriteArrayList<>();
     private final List<TechAlert> alerts = new CopyOnWriteArrayList<>();
 
-    public TechGovernanceServiceImpl(DeploymentRecordRepository deploymentRecordRepository) {
-        this.deploymentRecordRepository = deploymentRecordRepository;
-    }
 
     @Override
     @Transactional

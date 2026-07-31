@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * AI 公共监督审议服务实现（第12章 第60-69条）
@@ -23,16 +24,14 @@ import lombok.extern.slf4j.Slf4j;
  * 多角色交叉审议编排：依次调用七类审议角色，
  * 汇总各方意见形成审议结论。
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class AiSupervisionServiceImpl implements AiSupervisionService {
 
 
     private final AiReviewRecordRepository reviewRecordRepository;
 
-    public AiSupervisionServiceImpl(AiReviewRecordRepository reviewRecordRepository) {
-        this.reviewRecordRepository = reviewRecordRepository;
-    }
 
     @Override
     @Transactional

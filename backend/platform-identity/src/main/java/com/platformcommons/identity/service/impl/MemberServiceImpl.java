@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 /**
  * {@link MemberService} 默认实现。
@@ -27,8 +28,9 @@ import lombok.extern.slf4j.Slf4j;
  * <p>负责成员注册、查询、状态变更等核心业务逻辑。
  * 日志统一使用 SLF4J，占位符拼接。</p>
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
 
@@ -37,9 +39,6 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberServiceImpl(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
