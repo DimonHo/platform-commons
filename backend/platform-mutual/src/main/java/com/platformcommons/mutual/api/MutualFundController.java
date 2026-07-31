@@ -1,5 +1,6 @@
 package com.platformcommons.mutual.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.mutual.api.dto.EligibilityResponse;
 import com.platformcommons.mutual.api.dto.SubmitClaimRequest;
 import com.platformcommons.mutual.domain.EligibilityResult;
@@ -55,7 +56,7 @@ public class MutualFundController {
         log.info("Eligibility request: applicant={}, job={}", applicantId, jobCategory);
         EligibilityResult r = mutualFundService.assessEligibility(
                 applicantId, jobCategory, monthlyHours, qualityScore, contributionScore);
-        return toResponse(r);
+        return RecordUtils.copy(r, EligibilityResponse.class);
     }
 
     /**
@@ -102,10 +103,4 @@ public class MutualFundController {
                         "理赔不存在: " + claimId));
     }
 
-    private static EligibilityResponse toResponse(EligibilityResult r) {
-        return new EligibilityResponse(
-                r.applicantId(), r.baseGuaranteed(), r.enhancedEligible(),
-                r.h0Satisfied(), r.q0Satisfied(), r.d0Satisfied(),
-                r.eligibleAmount(), r.reason());
-    }
 }

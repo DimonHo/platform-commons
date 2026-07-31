@@ -1,5 +1,6 @@
 package com.platformcommons.dispute.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.dispute.api.dto.DisputeResponse;
 import com.platformcommons.dispute.api.dto.FileDisputeRequest;
 import com.platformcommons.dispute.domain.Dispute;
@@ -42,7 +43,7 @@ public class DisputeController {
         log.info("收到争议申诉: filedBy={}, subject={}", request.filedBy(), request.subject());
         String disputeId = disputeService.fileDispute(request.filedBy(), request.subject(), request.description());
         Dispute dispute = disputeService.getDispute(disputeId).orElseThrow();
-        return toResponse(dispute);
+        return RecordUtils.copy(dispute, DisputeResponse.class);
     }
 
     /**
@@ -51,7 +52,7 @@ public class DisputeController {
     @GetMapping("/{disputeId}")
     public DisputeResponse getDispute(@PathVariable String disputeId) {
         return disputeService.getDispute(disputeId)
-                .map(this::toResponse)
+                .map(d -> RecordUtils.copy(d, DisputeResponse.class))
                 .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
                         com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
                         "争议不存在: " + disputeId));
@@ -64,7 +65,7 @@ public class DisputeController {
     public DisputeResponse appeal(@PathVariable String disputeId) {
         log.info("收到上诉请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.appeal(disputeId);
-        return toResponse(dispute);
+        return RecordUtils.copy(dispute, DisputeResponse.class);
     }
 
     /**
@@ -74,7 +75,7 @@ public class DisputeController {
     public DisputeResponse resolve(@PathVariable String disputeId, @RequestBody String resolution) {
         log.info("收到裁决请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.resolveDispute(disputeId, resolution);
-        return toResponse(dispute);
+        return RecordUtils.copy(dispute, DisputeResponse.class);
     }
 
     /**
@@ -92,19 +93,6 @@ public class DisputeController {
         } else {
             disputes = disputeService.listAllDisputes();
         }
-        return disputes.stream().map(this::toResponse).toList();
-    }
-
-    private DisputeResponse toResponse(Dispute dispute) {
-        return new DisputeResponse(
-                dispute.disputeId(),
-                dispute.filedBy(),
-                dispute.subject(),
-                dispute.description(),
-                dispute.level(),
-                dispute.status(),
-                dispute.resolution(),
-                dispute.filedAt()
-        );
+        return disputes.stream().map(d -> RecordUtils.copy(d, DisputeResponse.class)).toList();
     }
 }

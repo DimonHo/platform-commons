@@ -3,6 +3,7 @@ package com.platformcommons.payment.api;
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.payment.api.dto.ChargeRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.payment.api.dto.SettlementResponse;
 import com.platformcommons.payment.domain.SettlementResult;
 import com.platformcommons.payment.domain.Transaction;
@@ -59,7 +60,7 @@ public class PaymentController {
     public SettlementResponse settle(@PathVariable UUID transactionId) {
         log.info("Settle request: txId={}", transactionId);
         SettlementResult result = paymentService.settle(transactionId);
-        return toResponse(result);
+        return RecordUtils.copy(result, SettlementResponse.class);
     }
 
     /**
@@ -87,10 +88,4 @@ public class PaymentController {
                         "交易不存在: " + transactionId));
     }
 
-    private static SettlementResponse toResponse(SettlementResult r) {
-        return new SettlementResponse(
-                r.transactionId(), r.grossAmount(), r.platformFee(), r.distributableSurplus(),
-                r.workerShare(), r.workerShareRatio(), r.ruleVersion(), r.compliant()
-        );
-    }
 }

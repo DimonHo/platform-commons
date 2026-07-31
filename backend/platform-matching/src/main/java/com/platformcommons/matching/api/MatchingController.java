@@ -1,6 +1,7 @@
 package com.platformcommons.matching.api;
 
 import com.platformcommons.matching.api.dto.MatchRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.matching.api.dto.MatchResponse;
 import com.platformcommons.matching.domain.MatchResult;
 import com.platformcommons.matching.service.MatchingEngineService;
@@ -42,7 +43,7 @@ public class MatchingController {
     public MatchResponse match(@Valid @RequestBody MatchRequest request) {
         log.info("Match request: taskId={}, strategy={}", request.taskId(), request.strategyName());
         MatchResult result = matchingEngineService.match(request.taskId(), request.strategyName());
-        return toResponse(result);
+        return RecordUtils.copy(result, MatchResponse.class);
     }
 
     /**
@@ -77,7 +78,4 @@ public class MatchingController {
         return matchingEngineService.listWorkers();
     }
 
-    private static MatchResponse toResponse(MatchResult r) {
-        return new MatchResponse(r.taskId(), r.matchedWorkers(), r.strategyName(), r.explanation());
-    }
 }

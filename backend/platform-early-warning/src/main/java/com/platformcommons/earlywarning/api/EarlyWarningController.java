@@ -2,6 +2,7 @@ package com.platformcommons.earlywarning.api;
 
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.earlywarning.api.dto.AlertResponse;
 import com.platformcommons.earlywarning.domain.AlertCategory;
 import com.platformcommons.earlywarning.domain.AlertLevel;
@@ -111,12 +112,8 @@ public class EarlyWarningController {
     }
 
     private static AlertResponse toResponse(EarlyWarningAlert a) {
-        return new AlertResponse(
-                a.id(), a.level(), a.category(),
-                a.redLine() == null ? null : a.redLine().code(),
-                a.title(), a.description(),
-                a.autoMeasureTriggered(), a.acknowledged(),
-                a.triggeredAt(), a.clearedAt()
-        );
+        return RecordUtils.copy(a, AlertResponse.class, java.util.Map.of(
+                "redLineCode", a.redLine() == null ? null : a.redLine().code()
+        ));
     }
 }

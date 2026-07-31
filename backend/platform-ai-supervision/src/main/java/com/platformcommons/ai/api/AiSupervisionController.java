@@ -1,6 +1,7 @@
 package com.platformcommons.ai.api;
 
 import com.platformcommons.ai.api.dto.ReviewRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.ai.api.dto.ReviewResponse;
 import com.platformcommons.ai.domain.ReviewResult;
 import com.platformcommons.ai.service.AiSupervisionService;
@@ -41,15 +42,7 @@ public class AiSupervisionController {
         log.info("收到审议请求: item={}", request.mandatoryItem());
         String reviewId = aiSupervisionService.initiateReview(request.mandatoryItem(), request.proposal());
         ReviewResult result = aiSupervisionService.conductReview(reviewId);
-        return new ReviewResponse(
-                result.reviewId(),
-                result.beneficiaries(),
-                result.costBearers(),
-                result.alternativeProposal(),
-                result.dissentingViews(),
-                result.consensusReached(),
-                result.summary()
-        );
+        return RecordUtils.copy(result, ReviewResponse.class);
     }
 
     /**
@@ -70,8 +63,7 @@ public class AiSupervisionController {
     @GetMapping("/reviews")
     public List<ReviewResponse> listReviews() {
         return aiSupervisionService.listAllReviews().stream()
-                .map(r -> new ReviewResponse(r.reviewId(), r.beneficiaries(), r.costBearers(),
-                        r.alternativeProposal(), r.dissentingViews(), r.consensusReached(), r.summary()))
+                .map(r -> RecordUtils.copy(r, ReviewResponse.class))
                 .toList();
     }
 
