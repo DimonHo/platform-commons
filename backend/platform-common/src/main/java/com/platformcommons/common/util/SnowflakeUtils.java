@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * <ul>
- *   <li><b>前缀</b>（N 位，可省略）：业务标识，如 ORD / PAY，N 范围 0~10</li>
+ *   <li><b>前缀</b>（N 位，0~4）：业务标识，如 ORD / PAY</li>
  *   <li><b>时间戳</b>（17 位）：{@code yyyyMMddHHmmssSSS}，精确到毫秒</li>
  *   <li><b>IP 尾段</b>（5 位）：本机 IPv4 去掉点号后取末 5 位，不足前补 0</li>
  *   <li><b>序列号</b>（10−N 位）：同一毫秒内从 1 自增，前缀每多 1 位容量减 10 倍</li>
@@ -59,17 +59,18 @@ public final class SnowflakeUtils {
      * <p>总长度始终 32 位：前缀 N 位 + 时间戳 17 位 + IP 尾段 5 位 + 序列号 (10−N) 位。
      * 前缀每多 1 位，序列号补零宽度减 1，时间戳与 IP 段完整保留。</p>
      *
-     * @param prefix 业务前缀（如 {@code "ORD"}、{@code "PAY"}），为 {@code null}/空则退化为纯雪花 ID
+     * @param prefix 业务前缀（1~4 字符，如 {@code "ORD"}、{@code "PAY"}），为 {@code null}/空则退化为纯雪花 ID
      * @return 形如 {@code ORD2026073112000000001270000001} 的 32 位字符串
+     * @throws IllegalArgumentException 前缀长度超过 4
      */
     public static String nextId(String prefix) {
         if (prefix == null) {
             prefix = "";
         }
-        int prefixLen = prefix.length();
-        if (prefixLen >= 32) {
-            return prefix.substring(0, 32);
+        if (prefix.length() > 4) {
+            throw new IllegalArgumentException("前缀长度不得超过 4 个字符: " + prefix);
         }
+        int prefixLen = prefix.length();
         String timestamp;
         int seq;
         synchronized (SnowflakeUtils.class) {

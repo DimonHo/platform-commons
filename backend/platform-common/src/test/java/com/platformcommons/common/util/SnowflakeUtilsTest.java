@@ -115,7 +115,7 @@ class SnowflakeUtilsTest {
 
     @Test
     void nextIdWithPrefix_variousPrefixLengthsAll32Chars() {
-        String[] prefixes = {"A", "AB", "ORD", "PAYMT", "PREFIX10AB"};
+        String[] prefixes = {"A", "AB", "ORD", "PAYM"};
         for (String prefix : prefixes) {
             String id = SnowflakeUtils.nextId(prefix);
             assertEquals(32, id.length(), "前缀[" + prefix + "] 长度=" + id.length());
@@ -138,11 +138,10 @@ class SnowflakeUtilsTest {
     }
 
     @Test
-    void nextIdWithPrefix_longPrefixTruncatedTo32() {
-        String longPrefix = "A".repeat(40);
-        String id = SnowflakeUtils.nextId(longPrefix);
-        assertEquals(32, id.length(), "超长前缀应截断至 32 位");
-        assertTrue(id.startsWith("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), "应截取前 32 位");
+    void nextIdWithPrefix_tooLongThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> SnowflakeUtils.nextId("TOOLONG"),
+                "前缀超过 4 字符应抛出 IllegalArgumentException");
     }
 
     @Test
