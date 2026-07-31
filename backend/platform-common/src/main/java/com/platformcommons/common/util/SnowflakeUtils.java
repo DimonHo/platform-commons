@@ -11,15 +11,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>格式（固定 32 位字符）：</p>
  * <pre>
- * | 时间戳                    | IP 尾段  | 序列号   |
- * | yyyyMMddHHmmssSSS (17)   | IP后5位  | 10位序列  |
- * | 共 17 + 5 + 10 = 32 位
+ * | 前缀(N) | 时间戳(17)           | IP尾段(5) | 序列号(10−N) |
+ * |---------|----------------------|-----------|-------------|
+ * | N + 17 + 5 + (10−N) = 32 位（无前缀时 N=0，序列号占满 10 位）
  * </pre>
  *
  * <ul>
+ *   <li><b>前缀</b>（N 位，可省略）：业务标识，如 ORD / PAY，N 范围 0~10</li>
  *   <li><b>时间戳</b>（17 位）：{@code yyyyMMddHHmmssSSS}，精确到毫秒</li>
  *   <li><b>IP 尾段</b>（5 位）：本机 IPv4 去掉点号后取末 5 位，不足前补 0</li>
- *   <li><b>序列号</b>（10 位）：同一毫秒内从 1 自增，最大 9999999999，溢出自旋等待下一毫秒</li>
+ *   <li><b>序列号</b>（10−N 位）：同一毫秒内从 1 自增，前缀每多 1 位容量减 10 倍</li>
  * </ul>
  *
  * <p>线程安全，单机每毫秒可生成 10,000,000,000 个 ID。</p>
@@ -49,6 +50,26 @@ public final class SnowflakeUtils {
      * @return 形如 {@code 20260731120000000001270000000001} 的 32 位字符串
      */
     public static String nextId() {
+        return nextId(null);
+    }
+
+    /**
+     * 生成带业务前缀的 32 位雪花 ID。
+     *
+     * <p>总长度始终 32 位：前缀 N 位 + 时间戳 17 位 + IP 尾段 5 位 + 序列号 (10−N) 位。
+     * 前缀每多 1 位，序列号补零宽度减 1，时间戳与 IP 段完整保留。</p>
+     *
+     * @param prefix 业务前缀（如 {@code "ORD"}、{@code "PAY"}），为 {@code null}/空则退化为纯雪花 ID
+     * @return 形如 {@code ORD2026073112000000001270000001} 的 32 位字符串
+     */
+    public static String nextId(String prefix) {
+        if (prefix == null) {
+            prefix = "";
+        }
+        int prefixLen = prefix.length();
+        if (prefixLen >= 32) {
+            return prefix.substring(0, 32);
+        }
         String timestamp;
         int seq;
         synchronized (SnowflakeUtils.class) {
@@ -56,32 +77,14 @@ public final class SnowflakeUtils {
             if (timestamp.equals(lastTimestamp)) {
                 seq = SEQUENCE.incrementAndGet();
             } else {
-                // 新毫秒：序列重置为 1
                 lastTimestamp = timestamp;
                 SEQUENCE.set(1);
                 seq = 1;
             }
         }
-        return timestamp + IP_SUFFIX + String.format("%010d", seq);
-    }
-
-    /**
-     * 生成带业务前缀的 32 位雪花 ID。
-     *
-     * <p>前缀置于 ID 开头，剩余位置用雪花数据填充，总长度始终 32 位。
-     * 前缀长度须小于 32，否则截取前 32 位。</p>
-     *
-     * @param prefix 业务前缀（如 {@code "ORD"}、{@code "PAY"}）
-     * @return 形如 {@code ORD2026073112000000001270000001} 的 32 位字符串
-     */
-    public static String nextId(String prefix) {
-        if (prefix == null || prefix.isEmpty()) {
-            return nextId();
-        }
-        if (prefix.length() >= 32) {
-            return prefix.substring(0, 32);
-        }
-        return prefix + nextId().substring(prefix.length());
+        int seqWidth = 10 - prefixLen;
+        String seqPart = seqWidth <= 0 ? "" : String.format("%0" + seqWidth + "d", seq);
+        return prefix + timestamp + IP_SUFFIX + seqPart;
     }
 
     /**

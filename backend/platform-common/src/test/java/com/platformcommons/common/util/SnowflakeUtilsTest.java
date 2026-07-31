@@ -98,6 +98,32 @@ class SnowflakeUtilsTest {
     }
 
     @Test
+    void nextIdWithPrefix_preservesTimestampAndIpSegments() {
+        String plain = SnowflakeUtils.nextId();
+        String prefixed = SnowflakeUtils.nextId("ORD");
+        // 无前缀 ID: [0,17)=时间戳 [17,22)=IP [22,32)=序列号
+        // 带前缀 ID: [0,3)=ORD [3,20)=时间戳 [20,25)=IP [25,32)=序列号(7位)
+        String tsPlain = plain.substring(0, 17);
+        String ipPlain = plain.substring(17, 22);
+        String tsPrefixed = prefixed.substring(3, 20);
+        String ipPrefixed = prefixed.substring(20, 25);
+        assertEquals(tsPlain, tsPrefixed, "带前缀时时间戳段应与无前缀一致");
+        assertEquals(ipPlain, ipPrefixed, "带前缀时 IP 尾段应与无前缀一致");
+        // 序列号段缩减为 10-3=7 位
+        assertEquals(7, prefixed.substring(25).length(), "前缀3位时序列号应为7位");
+    }
+
+    @Test
+    void nextIdWithPrefix_variousPrefixLengthsAll32Chars() {
+        String[] prefixes = {"A", "AB", "ORD", "PAYMT", "PREFIX10AB"};
+        for (String prefix : prefixes) {
+            String id = SnowflakeUtils.nextId(prefix);
+            assertEquals(32, id.length(), "前缀[" + prefix + "] 长度=" + id.length());
+            assertTrue(id.startsWith(prefix), "前缀[" + prefix + "] 应在开头");
+        }
+    }
+
+    @Test
     void nextIdWithPrefix_nullPrefixFallbackToPlain() {
         String id = SnowflakeUtils.nextId(null);
         assertEquals(32, id.length());
