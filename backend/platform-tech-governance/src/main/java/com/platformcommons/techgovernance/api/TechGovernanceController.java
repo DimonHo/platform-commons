@@ -3,7 +3,7 @@ package com.platformcommons.techgovernance.api;
 import com.platformcommons.techgovernance.api.dto.DeploymentVerifyRequest;
 import com.platformcommons.techgovernance.domain.AlgorithmSpec;
 import com.platformcommons.techgovernance.domain.DeploymentRecord;
-import com.platformcommons.common.util.SnowflakeIdGenerator;
+import com.platformcommons.common.util.SnowflakeUtils;
 import com.platformcommons.techgovernance.domain.TechAlert;
 import com.platformcommons.techgovernance.domain.VerificationStatus;
 import com.platformcommons.techgovernance.service.TechGovernanceService;
@@ -43,7 +43,7 @@ public class TechGovernanceController {
     @PostMapping("/deployments/verify")
     public Map<String, String> verifyDeployment(@Valid @RequestBody DeploymentVerifyRequest request) {
         log.info("收到部署核验请求: commitHash={}", request.commitHash());
-        String deploymentId = SnowflakeIdGenerator.nextId();
+        String deploymentId = SnowflakeUtils.nextId();
         DeploymentRecord record = new DeploymentRecord(
                 deploymentId,
                 request.commitHash(),

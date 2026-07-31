@@ -3,7 +3,7 @@ package com.platformcommons.dispute.service.impl;
 import com.platformcommons.dispute.domain.Dispute;
 import com.platformcommons.dispute.domain.DisputeLevel;
 import com.platformcommons.dispute.domain.DisputeStatus;
-import com.platformcommons.common.util.SnowflakeIdGenerator;
+import com.platformcommons.common.util.SnowflakeUtils;
 import com.platformcommons.dispute.repository.DisputeRepository;
 import com.platformcommons.dispute.repository.entity.DisputeEntity;
 import com.platformcommons.dispute.service.DisputeService;
@@ -38,7 +38,7 @@ public class DisputeServiceImpl implements DisputeService {
     @Override
     @Transactional
     public String fileDispute(String filedBy, String subject, String description) {
-        String disputeId = SnowflakeIdGenerator.nextId();
+        String disputeId = SnowflakeUtils.nextId();
         log.info("提交争议申诉: disputeId={}, filedBy={}, subject={}", disputeId, filedBy, subject);
 
         DisputeEntity entity = new DisputeEntity();

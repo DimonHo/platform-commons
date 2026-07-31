@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 雪花式 ID 生成器。
+ * 雪花式 ID 生成工具。
  *
  * <p>格式（固定 32 位字符）：</p>
  * <pre>
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>线程安全，单机每毫秒可生成 10,000,000,000 个 ID。</p>
  */
-public final class SnowflakeIdGenerator {
+public final class SnowflakeUtils {
 
     private static final DateTimeFormatter TIMESTAMP_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
@@ -40,7 +40,7 @@ public final class SnowflakeIdGenerator {
     /** 同毫秒内序列计数器。 */
     private static final AtomicInteger SEQUENCE = new AtomicInteger(0);
 
-    private SnowflakeIdGenerator() {
+    private SnowflakeUtils() {
     }
 
     /**
@@ -51,7 +51,7 @@ public final class SnowflakeIdGenerator {
     public static String nextId() {
         String timestamp;
         int seq;
-        synchronized (SnowflakeIdGenerator.class) {
+        synchronized (SnowflakeUtils.class) {
             timestamp = LocalDateTime.now().format(TIMESTAMP_FMT);
             if (timestamp.equals(lastTimestamp)) {
                 seq = SEQUENCE.incrementAndGet();
@@ -63,6 +63,25 @@ public final class SnowflakeIdGenerator {
             }
         }
         return timestamp + IP_SUFFIX + String.format("%010d", seq);
+    }
+
+    /**
+     * 生成带业务前缀的 32 位雪花 ID。
+     *
+     * <p>前缀置于 ID 开头，剩余位置用雪花数据填充，总长度始终 32 位。
+     * 前缀长度须小于 32，否则截取前 32 位。</p>
+     *
+     * @param prefix 业务前缀（如 {@code "ORD"}、{@code "PAY"}）
+     * @return 形如 {@code ORD2026073112000000001270000001} 的 32 位字符串
+     */
+    public static String nextId(String prefix) {
+        if (prefix == null || prefix.isEmpty()) {
+            return nextId();
+        }
+        if (prefix.length() >= 32) {
+            return prefix.substring(0, 32);
+        }
+        return prefix + nextId().substring(prefix.length());
     }
 
     /**

@@ -4,7 +4,7 @@ import com.platformcommons.ai.domain.AiReviewRole;
 import com.platformcommons.ai.domain.MandatoryReviewItem;
 import com.platformcommons.ai.domain.ReviewResult;
 import com.platformcommons.ai.domain.ReviewStatus;
-import com.platformcommons.common.util.SnowflakeIdGenerator;
+import com.platformcommons.common.util.SnowflakeUtils;
 import com.platformcommons.ai.repository.AiReviewRecordRepository;
 import com.platformcommons.ai.repository.entity.AiReviewRecordEntity;
 import com.platformcommons.ai.service.AiSupervisionService;
@@ -122,7 +122,7 @@ public class AiSupervisionServiceImpl implements AiSupervisionService {
     }
 
     private String generateReviewId() {
-        return SnowflakeIdGenerator.nextId();
+        return SnowflakeUtils.nextId();
     }
 
     /**
