@@ -7,7 +7,6 @@ import com.platformcommons.ai.service.AiSupervisionService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +19,8 @@ import java.util.Set;
 
 /**
  * AI 公共监督审议 Controller（第12章 第60-69条）
+ *
+ * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/ai-supervision")
@@ -37,11 +38,11 @@ public class AiSupervisionController {
      * 发起并执行审议
      */
     @PostMapping("/reviews")
-    public ResponseEntity<ReviewResponse> createReview(@Valid @RequestBody ReviewRequest request) {
+    public ReviewResponse createReview(@Valid @RequestBody ReviewRequest request) {
         log.info("收到审议请求: item={}", request.mandatoryItem());
         String reviewId = aiSupervisionService.initiateReview(request.mandatoryItem(), request.proposal());
         ReviewResult result = aiSupervisionService.conductReview(reviewId);
-        ReviewResponse response = new ReviewResponse(
+        return new ReviewResponse(
                 result.reviewId(),
                 result.beneficiaries(),
                 result.costBearers(),
@@ -50,37 +51,37 @@ public class AiSupervisionController {
                 result.consensusReached(),
                 result.summary()
         );
-        return ResponseEntity.ok(response);
     }
 
     /**
      * 查询审议详情
      */
     @GetMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewResponse> getReview(@PathVariable String reviewId) {
+    public ReviewResponse getReview(@PathVariable String reviewId) {
         return aiSupervisionService.getReviewStatus(reviewId)
-                .map(status -> ResponseEntity.ok(new ReviewResponse(reviewId, Set.of(), Set.of(), null, Set.of(), true, "状态: " + status.getDescription())))
-                .orElse(ResponseEntity.notFound().build());
+                .map(status -> new ReviewResponse(reviewId, Set.of(), Set.of(), null, Set.of(), true, "状态: " + status.getDescription()))
+                .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
+                        com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
+                        "审议不存在: " + reviewId));
     }
 
     /**
      * 查询所有审议记录
      */
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewResponse>> listReviews() {
-        List<ReviewResponse> responses = aiSupervisionService.listAllReviews().stream()
-                .map(r -> new ReviewResponse(r.reviewId(), r.beneficiaries(), r.costBearers(), r.alternativeProposal(), r.dissentingViews(), r.consensusReached(), r.summary()))
+    public List<ReviewResponse> listReviews() {
+        return aiSupervisionService.listAllReviews().stream()
+                .map(r -> new ReviewResponse(r.reviewId(), r.beneficiaries(), r.costBearers(),
+                        r.alternativeProposal(), r.dissentingViews(), r.consensusReached(), r.summary()))
                 .toList();
-        return ResponseEntity.ok(responses);
     }
 
     /**
      * 提交审议争议
      */
     @PostMapping("/reviews/{reviewId}/contest")
-    public ResponseEntity<Void> contestReview(@PathVariable String reviewId, @RequestBody String dissent) {
+    public void contestReview(@PathVariable String reviewId, @RequestBody String dissent) {
         log.info("收到争议提交: reviewId={}", reviewId);
         aiSupervisionService.contestReview(reviewId, dissent);
-        return ResponseEntity.ok().build();
     }
 }

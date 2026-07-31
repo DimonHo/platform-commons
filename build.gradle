@@ -1,6 +1,6 @@
 // 平台共同体 · 根构建文件
-// Java 27 + Spring Boot 4.1.0 + Gradle (Groovy DSL)
-// 开发规范：阿里巴巴 Java 开发手册（黄山版）
+// Java 25 (LTS) + Spring Boot 4.1.0 + Gradle (Groovy DSL)
+// 开发规范：阿里巴巴 Java 开发手册（黄山版），按 JDK 25 / Spring Boot 4.1 新特性做了现代化调整
 
 group = "com.platformcommons"
 version = "0.1.0-SNAPSHOT"
@@ -17,7 +17,7 @@ subprojects {
 
         java {
             toolchain {
-                languageVersion = JavaLanguageVersion.of(27)
+                languageVersion = JavaLanguageVersion.of(25)
             }
         }
 

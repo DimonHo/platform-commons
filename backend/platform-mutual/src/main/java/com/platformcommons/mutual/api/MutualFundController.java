@@ -1,6 +1,5 @@
 package com.platformcommons.mutual.api;
 
-import com.platformcommons.common.Result;
 import com.platformcommons.mutual.api.dto.EligibilityResponse;
 import com.platformcommons.mutual.api.dto.SubmitClaimRequest;
 import com.platformcommons.mutual.domain.EligibilityResult;
@@ -22,6 +21,8 @@ import java.util.UUID;
 
 /**
  * 互助保障基金接口。
+ *
+ * <p>方法返回裸领域对象，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/mutual")
@@ -46,7 +47,7 @@ public class MutualFundController {
      * @return 资格认定结果
      */
     @GetMapping("/eligibility")
-    public Result<EligibilityResponse> assess(
+    public EligibilityResponse assess(
             @RequestParam String applicantId,
             @RequestParam String jobCategory,
             @RequestParam BigDecimal monthlyHours,
@@ -55,7 +56,7 @@ public class MutualFundController {
         log.info("Eligibility request: applicant={}, job={}", applicantId, jobCategory);
         EligibilityResult r = mutualFundService.assessEligibility(
                 applicantId, jobCategory, monthlyHours, qualityScore, contributionScore);
-        return Result.success(toResponse(r));
+        return toResponse(r);
     }
 
     /**
@@ -65,48 +66,47 @@ public class MutualFundController {
      * @return 已提交的申请
      */
     @PostMapping("/claims")
-    public Result<MutualClaim> submit(@Valid @RequestBody SubmitClaimRequest request) {
+    public MutualClaim submit(@Valid @RequestBody SubmitClaimRequest request) {
         log.info("Submit claim: applicant={}, type={}", request.applicantId(), request.incidentType());
-        MutualClaim claim = mutualFundService.submitClaim(
+        return mutualFundService.submitClaim(
                 request.applicantId(), request.incidentType(), request.description(),
                 request.claimedAmount(), request.evidenceUrls());
-        return Result.success(claim);
     }
 
     /**
-     * 审核理赔。
+     * 复核理赔申请。
      *
-     * @param claimId    申请 ID
-     * @param approved   是否批准
-     * @param reviewerId 审核人 ID
-     * @return 审核后的申请
+     * @param claimId   理赔 ID
+     * @param reviewerId 复核人 ID
+     * @param approved   是否批准（true=批准，false=拒绝）
+     * @return 复核后的理赔
      */
     @PostMapping("/claims/{claimId}/review")
-    public Result<MutualClaim> review(@PathVariable UUID claimId,
-                                      @RequestParam boolean approved,
-                                      @RequestParam String reviewerId) {
-        log.info("Review claim: claimId={}, approved={}, reviewer={}", claimId, approved, reviewerId);
-        return Result.success(mutualFundService.reviewClaim(claimId, approved, reviewerId));
+    public MutualClaim review(@PathVariable UUID claimId,
+                              @RequestParam String reviewerId,
+                              @RequestParam boolean approved) {
+        log.info("Review claim: claimId={}, reviewer={}, approved={}", claimId, reviewerId, approved);
+        return mutualFundService.reviewClaim(claimId, approved, reviewerId);
     }
 
     /**
-     * 查询理赔申请。
+     * 查询理赔详情。
      *
-     * @param claimId 申请 ID
-     * @return 理赔申请
+     * @param claimId 理赔 ID
+     * @return 理赔详情
      */
     @GetMapping("/claims/{claimId}")
-    public Result<MutualClaim> get(@PathVariable UUID claimId) {
+    public MutualClaim get(@PathVariable UUID claimId) {
         return mutualFundService.findById(claimId)
-                .map(Result::success)
-                .orElseGet(() -> Result.failure("claim not found: " + claimId));
+                .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
+                        com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
+                        "理赔不存在: " + claimId));
     }
 
     private static EligibilityResponse toResponse(EligibilityResult r) {
         return new EligibilityResponse(
                 r.applicantId(), r.baseGuaranteed(), r.enhancedEligible(),
                 r.h0Satisfied(), r.q0Satisfied(), r.d0Satisfied(),
-                r.eligibleAmount(), r.reason()
-        );
+                r.eligibleAmount(), r.reason());
     }
 }

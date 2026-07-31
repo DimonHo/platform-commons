@@ -1,6 +1,5 @@
 package com.platformcommons.matching.api;
 
-import com.platformcommons.common.Result;
 import com.platformcommons.matching.api.dto.MatchRequest;
 import com.platformcommons.matching.api.dto.MatchResponse;
 import com.platformcommons.matching.domain.MatchResult;
@@ -15,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 匹配引擎接口。
+ *
+ * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/matching")
@@ -37,10 +40,10 @@ public class MatchingController {
      * @return 匹配结果
      */
     @PostMapping("/match")
-    public Result<MatchResponse> match(@Valid @RequestBody MatchRequest request) {
+    public MatchResponse match(@Valid @RequestBody MatchRequest request) {
         log.info("Match request: taskId={}, strategy={}", request.taskId(), request.strategyName());
         MatchResult result = matchingEngineService.match(request.taskId(), request.strategyName());
-        return Result.success(toResponse(result));
+        return toResponse(result);
     }
 
     /**
@@ -52,18 +55,17 @@ public class MatchingController {
      * @param activeOrders     活跃订单数
      * @param rating           评分
      * @param registrationDays 注册天数
-     * @return 操作结果
+     * @return 操作结果（void 会被包装为 {@code R<Void>}）
      */
     @PostMapping("/workers")
-    public Result<Void> register(@RequestParam String workerId,
-                                 @RequestParam double latitude,
-                                 @RequestParam double longitude,
-                                 @RequestParam(defaultValue = "0") int activeOrders,
-                                 @RequestParam(defaultValue = "5.0") double rating,
-                                 @RequestParam(defaultValue = "0") int registrationDays) {
+    public void register(@RequestParam String workerId,
+                         @RequestParam double latitude,
+                         @RequestParam double longitude,
+                         @RequestParam(defaultValue = "0") int activeOrders,
+                         @RequestParam(defaultValue = "5.0") double rating,
+                         @RequestParam(defaultValue = "0") int registrationDays) {
         log.info("Register worker: workerId={}, activeOrders={}", workerId, activeOrders);
         matchingEngineService.registerWorker(workerId, latitude, longitude, activeOrders, rating, registrationDays);
-        return Result.success();
     }
 
     /**
@@ -72,8 +74,8 @@ public class MatchingController {
      * @return 劳动者 ID 列表
      */
     @GetMapping("/workers")
-    public Result<java.util.List<String>> listWorkers() {
-        return Result.success(matchingEngineService.listWorkers());
+    public List<String> listWorkers() {
+        return matchingEngineService.listWorkers();
     }
 
     private static MatchResponse toResponse(MatchResult r) {

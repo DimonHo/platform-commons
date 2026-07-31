@@ -7,7 +7,6 @@ import com.platformcommons.finance.service.FinanceComplianceService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 融资采购关联交易 Controller（第10-11章 第50-59条）
+ *
+ * <p>方法返回裸对象，由 {@code GlobalResponseAdvice} 自动包装。
+ * 原本返回 String 的方法改为返回 {@code Map}，避免 String 被 Spring MVC 特殊处理。</p>
  */
 @RestController
 @RequestMapping("/api/finance")
@@ -36,7 +39,7 @@ public class FinanceController {
      * 提交融资审查
      */
     @PostMapping("/financing")
-    public ResponseEntity<String> submitFinancing(@Valid @RequestBody FinancingReviewRequest request) {
+    public Map<String, String> submitFinancing(@Valid @RequestBody FinancingReviewRequest request) {
         log.info("收到融资审查请求: amount={}, type={}", request.amount(), request.financingType());
         FinancingRecord record = new FinancingRecord(
                 null,
@@ -47,24 +50,24 @@ public class FinanceController {
                 Instant.now().toString()
         );
         String recordId = financeComplianceService.submitFinancingRecord(record);
-        return ResponseEntity.ok(recordId);
+        return Map.of("recordId", recordId);
     }
 
     /**
      * 查询所有融资记录
      */
     @GetMapping("/financing")
-    public ResponseEntity<List<FinancingRecord>> listFinancing() {
-        return ResponseEntity.ok(financeComplianceService.listFinancingRecords());
+    public List<FinancingRecord> listFinancing() {
+        return financeComplianceService.listFinancingRecords();
     }
 
     /**
      * 发布财务公开
      */
     @PostMapping("/disclosures")
-    public ResponseEntity<String> publishDisclosure(@RequestBody FinancialDisclosure disclosure) {
+    public Map<String, String> publishDisclosure(@RequestBody FinancialDisclosure disclosure) {
         log.info("收到财务公开发布: period={}", disclosure.period());
         String disclosureId = financeComplianceService.publishFinancialDisclosure(disclosure);
-        return ResponseEntity.ok(disclosureId);
+        return Map.of("disclosureId", disclosureId);
     }
 }

@@ -1,6 +1,7 @@
 package com.platformcommons.earlywarning.api;
 
-import com.platformcommons.common.Result;
+import com.platformcommons.common.api.ResultCode;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.earlywarning.api.dto.AlertResponse;
 import com.platformcommons.earlywarning.domain.AlertCategory;
 import com.platformcommons.earlywarning.domain.AlertLevel;
@@ -21,6 +22,8 @@ import java.util.UUID;
 
 /**
  * 防异化预警接口。
+ *
+ * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/early-warning")
@@ -42,12 +45,12 @@ public class EarlyWarningController {
      * @return 触发的预警列表（可能为空）
      */
     @PostMapping("/detect")
-    public Result<List<AlertResponse>> detect(@RequestParam String redLineCode,
-                                              @RequestParam String sourceMetric) {
+    public List<AlertResponse> detect(@RequestParam String redLineCode,
+                                      @RequestParam String sourceMetric) {
         RedLine redLine = RedLine.valueOf(redLineCode);
         log.info("Detect redLine: code={}, metric={}", redLineCode, sourceMetric);
         List<EarlyWarningAlert> alerts = earlyWarningService.detectRedLine(redLine, sourceMetric);
-        return Result.success(alerts.stream().map(EarlyWarningController::toResponse).toList());
+        return alerts.stream().map(EarlyWarningController::toResponse).toList();
     }
 
     /**
@@ -60,12 +63,12 @@ public class EarlyWarningController {
      * @return 创建的预警
      */
     @PostMapping("/alerts")
-    public Result<AlertResponse> raise(@RequestParam AlertLevel level,
-                                       @RequestParam AlertCategory category,
-                                       @RequestParam String title,
-                                       @RequestParam(required = false) String description) {
+    public AlertResponse raise(@RequestParam AlertLevel level,
+                               @RequestParam AlertCategory category,
+                               @RequestParam String title,
+                               @RequestParam(required = false) String description) {
         log.info("Raise alert: level={}, category={}, title={}", level, category, title);
-        return Result.success(toResponse(earlyWarningService.raiseAlert(level, category, title, description)));
+        return toResponse(earlyWarningService.raiseAlert(level, category, title, description));
     }
 
     /**
@@ -76,10 +79,10 @@ public class EarlyWarningController {
      * @return 已解除的预警
      */
     @PostMapping("/alerts/{alertId}/clear")
-    public Result<AlertResponse> clear(@PathVariable UUID alertId,
-                                       @RequestParam String confirmerId) {
+    public AlertResponse clear(@PathVariable UUID alertId,
+                               @RequestParam String confirmerId) {
         log.info("Clear alert: id={}, confirmer={}", alertId, confirmerId);
-        return Result.success(toResponse(earlyWarningService.clearAlert(alertId, confirmerId)));
+        return toResponse(earlyWarningService.clearAlert(alertId, confirmerId));
     }
 
     /**
@@ -89,11 +92,11 @@ public class EarlyWarningController {
      * @return 预警
      */
     @GetMapping("/alerts/{alertId}")
-    public Result<AlertResponse> get(@PathVariable UUID alertId) {
+    public AlertResponse get(@PathVariable UUID alertId) {
         return earlyWarningService.findById(alertId)
                 .map(EarlyWarningController::toResponse)
-                .map(Result::success)
-                .orElseGet(() -> Result.failure("alert not found: " + alertId));
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
+                        "预警不存在: " + alertId));
     }
 
     /**
@@ -102,11 +105,10 @@ public class EarlyWarningController {
      * @return 预警列表
      */
     @GetMapping("/alerts/active")
-    public Result<List<AlertResponse>> active() {
-        return Result.success(
-                earlyWarningService.findActiveAlerts().stream()
-                        .map(EarlyWarningController::toResponse)
-                        .toList());
+    public List<AlertResponse> active() {
+        return earlyWarningService.findActiveAlerts().stream()
+                .map(EarlyWarningController::toResponse)
+                .toList();
     }
 
     private static AlertResponse toResponse(EarlyWarningAlert a) {

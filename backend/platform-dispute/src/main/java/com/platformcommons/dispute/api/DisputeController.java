@@ -8,7 +8,6 @@ import com.platformcommons.dispute.service.DisputeService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +20,8 @@ import java.util.List;
 
 /**
  * 申诉争议 Controller（第15章 第93-96条）
+ *
+ * <p>方法返回裸 DTO，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/disputes")
@@ -38,49 +39,50 @@ public class DisputeController {
      * 提交争议申诉
      */
     @PostMapping
-    public ResponseEntity<DisputeResponse> fileDispute(@Valid @RequestBody FileDisputeRequest request) {
+    public DisputeResponse fileDispute(@Valid @RequestBody FileDisputeRequest request) {
         log.info("收到争议申诉: filedBy={}, subject={}", request.filedBy(), request.subject());
         String disputeId = disputeService.fileDispute(request.filedBy(), request.subject(), request.description());
         Dispute dispute = disputeService.getDispute(disputeId).orElseThrow();
-        return ResponseEntity.ok(toResponse(dispute));
+        return toResponse(dispute);
     }
 
     /**
      * 查询争议详情
      */
     @GetMapping("/{disputeId}")
-    public ResponseEntity<DisputeResponse> getDispute(@PathVariable String disputeId) {
+    public DisputeResponse getDispute(@PathVariable String disputeId) {
         return disputeService.getDispute(disputeId)
                 .map(this::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
+                        com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
+                        "争议不存在: " + disputeId));
     }
 
     /**
      * 上诉至上一级
      */
     @PostMapping("/{disputeId}/appeal")
-    public ResponseEntity<DisputeResponse> appeal(@PathVariable String disputeId) {
+    public DisputeResponse appeal(@PathVariable String disputeId) {
         log.info("收到上诉请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.appeal(disputeId);
-        return ResponseEntity.ok(toResponse(dispute));
+        return toResponse(dispute);
     }
 
     /**
      * 裁决争议
      */
     @PostMapping("/{disputeId}/resolve")
-    public ResponseEntity<DisputeResponse> resolve(@PathVariable String disputeId, @RequestBody String resolution) {
+    public DisputeResponse resolve(@PathVariable String disputeId, @RequestBody String resolution) {
         log.info("收到裁决请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.resolveDispute(disputeId, resolution);
-        return ResponseEntity.ok(toResponse(dispute));
+        return toResponse(dispute);
     }
 
     /**
      * 按层级查询争议
      */
     @GetMapping
-    public ResponseEntity<List<DisputeResponse>> listDisputes(
+    public List<DisputeResponse> listDisputes(
             @RequestParam(value = "level", required = false) DisputeLevel level,
             @RequestParam(value = "filedBy", required = false) String filedBy) {
         List<Dispute> disputes;
@@ -91,7 +93,7 @@ public class DisputeController {
         } else {
             disputes = disputeService.listAllDisputes();
         }
-        return ResponseEntity.ok(disputes.stream().map(this::toResponse).toList());
+        return disputes.stream().map(this::toResponse).toList();
     }
 
     private DisputeResponse toResponse(Dispute dispute) {

@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: platform-commons
+
+  # Java 25 虚拟线程（Project Loom 正式 GA）
+  # Spring Boot 4.1+ 通过此开关启用：Tomcat 每个请求运行在虚拟线程上，
+  # IO 密集型场景下可支撑极高并发，且无需 Reactive 编程模型。
+  threads:
+    virtual:
+      enabled: true
+
+  # 数据源（PostgreSQL）
+  datasource:
+    url: jdbc:postgresql://localhost:5432/platform_commons
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    # HikariCP 连接池：虚拟线程下可适当调大，但需注意数据库侧连接上限
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+  # 虚拟线程场景下，Tomcat 不再需要大量平台线程，max-threads 由虚拟线程承载
+  tomcat:
+    threads:
+      max: 200
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.platformcommons: INFO
+    org.springframework.web: INFO

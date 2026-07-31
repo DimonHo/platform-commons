@@ -1,5 +1,7 @@
 package com.platformcommons.common;
 
+import com.platformcommons.common.api.ResultCode;
+
 /**
  * 业务异常基类。
  *
@@ -10,7 +12,7 @@ public class BizException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /** 默认错误码。 */
-    public static final int DEFAULT_CODE = Result.CODE_FAILURE;
+    public static final int DEFAULT_CODE = ResultCode.BUSINESS_ERROR.getCode();
 
     private final int code;
 

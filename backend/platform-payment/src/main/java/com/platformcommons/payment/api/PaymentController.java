@@ -1,6 +1,7 @@
 package com.platformcommons.payment.api;
 
-import com.platformcommons.common.Result;
+import com.platformcommons.common.api.ResultCode;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.payment.api.dto.ChargeRequest;
 import com.platformcommons.payment.api.dto.SettlementResponse;
 import com.platformcommons.payment.domain.SettlementResult;
@@ -21,7 +22,8 @@ import java.util.UUID;
 /**
  * 支付与分账接口。
  *
- * <p>阿里规范：Controller 层只负责参数校验与结果包装，不写业务逻辑。
+ * <p>阿里规范：Controller 层只负责参数校验与调度，不写业务逻辑。
+ * 方法返回裸领域对象，由 {@code GlobalResponseAdvice} 自动包装。</p>
  */
 @RestController
 @RequestMapping("/api/payment")
@@ -42,11 +44,10 @@ public class PaymentController {
      * @return 交易
      */
     @PostMapping("/charge")
-    public Result<Transaction> charge(@Valid @RequestBody ChargeRequest request) {
+    public Transaction charge(@Valid @RequestBody ChargeRequest request) {
         log.info("Charge request: orderId={}", request.orderId());
-        Transaction tx = paymentService.charge(
+        return paymentService.charge(
                 request.orderId(), request.workerId(), request.requesterId(), request.grossAmount());
-        return Result.success(tx);
     }
 
     /**
@@ -56,10 +57,10 @@ public class PaymentController {
      * @return 结算结果
      */
     @PostMapping("/settle/{transactionId}")
-    public Result<SettlementResponse> settle(@PathVariable UUID transactionId) {
+    public SettlementResponse settle(@PathVariable UUID transactionId) {
         log.info("Settle request: txId={}", transactionId);
         SettlementResult result = paymentService.settle(transactionId);
-        return Result.success(toResponse(result));
+        return toResponse(result);
     }
 
     /**
@@ -69,10 +70,9 @@ public class PaymentController {
      * @return 退款后的交易
      */
     @PostMapping("/refund/{transactionId}")
-    public Result<Transaction> refund(@PathVariable UUID transactionId) {
+    public Transaction refund(@PathVariable UUID transactionId) {
         log.info("Refund request: txId={}", transactionId);
-        Transaction tx = paymentService.refund(transactionId);
-        return Result.success(tx);
+        return paymentService.refund(transactionId);
     }
 
     /**
@@ -82,10 +82,10 @@ public class PaymentController {
      * @return 交易
      */
     @GetMapping("/{transactionId}")
-    public Result<Transaction> get(@PathVariable UUID transactionId) {
+    public Transaction get(@PathVariable UUID transactionId) {
         return paymentService.findById(transactionId)
-                .map(Result::success)
-                .orElseGet(() -> Result.failure("transaction not found: " + transactionId));
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
+                        "交易不存在: " + transactionId));
     }
 
     private static SettlementResponse toResponse(SettlementResult r) {
