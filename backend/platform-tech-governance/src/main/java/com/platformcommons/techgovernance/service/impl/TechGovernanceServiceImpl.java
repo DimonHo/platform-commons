@@ -4,6 +4,7 @@ import com.platformcommons.techgovernance.domain.AlgorithmSpec;
 import com.platformcommons.techgovernance.domain.DeploymentRecord;
 import com.platformcommons.techgovernance.domain.TechAlert;
 import com.platformcommons.techgovernance.domain.VerificationStatus;
+import com.platformcommons.common.util.SnowflakeIdGenerator;
 import com.platformcommons.techgovernance.repository.DeploymentRecordRepository;
 import com.platformcommons.techgovernance.repository.entity.DeploymentRecordEntity;
 import com.platformcommons.techgovernance.service.TechGovernanceService;
@@ -14,7 +15,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +65,7 @@ public class TechGovernanceServiceImpl implements TechGovernanceService {
     @Override
     @Transactional
     public String registerAlgorithmSpec(AlgorithmSpec spec) {
-        String algorithmId = "ALG-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String algorithmId = SnowflakeIdGenerator.nextId();
         log.info("注册算法规格: algorithmId={}, name={}, version={}", algorithmId, spec.algorithmName(), spec.version());
         algorithmSpecs.add(spec);
         return algorithmId;
@@ -93,7 +93,7 @@ public class TechGovernanceServiceImpl implements TechGovernanceService {
 
     private void raiseAlert(String deploymentId, String alertType, String description, TechAlert.Severity severity) {
         TechAlert alert = new TechAlert(
-                "ALERT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(),
+                SnowflakeIdGenerator.nextId(),
                 alertType,
                 "[" + deploymentId + "] " + description,
                 Instant.now(),

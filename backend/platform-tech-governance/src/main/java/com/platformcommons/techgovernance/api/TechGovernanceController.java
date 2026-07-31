@@ -3,6 +3,7 @@ package com.platformcommons.techgovernance.api;
 import com.platformcommons.techgovernance.api.dto.DeploymentVerifyRequest;
 import com.platformcommons.techgovernance.domain.AlgorithmSpec;
 import com.platformcommons.techgovernance.domain.DeploymentRecord;
+import com.platformcommons.common.util.SnowflakeIdGenerator;
 import com.platformcommons.techgovernance.domain.TechAlert;
 import com.platformcommons.techgovernance.domain.VerificationStatus;
 import com.platformcommons.techgovernance.service.TechGovernanceService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +43,7 @@ public class TechGovernanceController {
     @PostMapping("/deployments/verify")
     public Map<String, String> verifyDeployment(@Valid @RequestBody DeploymentVerifyRequest request) {
         log.info("收到部署核验请求: commitHash={}", request.commitHash());
-        String deploymentId = "DEP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String deploymentId = SnowflakeIdGenerator.nextId();
         DeploymentRecord record = new DeploymentRecord(
                 deploymentId,
                 request.commitHash(),

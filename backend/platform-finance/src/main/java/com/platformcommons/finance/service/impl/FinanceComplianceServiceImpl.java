@@ -4,6 +4,7 @@ import com.platformcommons.finance.domain.FinancialDisclosure;
 import com.platformcommons.finance.domain.FinancingRecord;
 import com.platformcommons.finance.domain.ProcurementRecord;
 import com.platformcommons.finance.domain.RelatedPartyTransaction;
+import com.platformcommons.common.util.SnowflakeIdGenerator;
 import com.platformcommons.finance.repository.FinancingRecordRepository;
 import com.platformcommons.finance.repository.entity.FinancingRecordEntity;
 import com.platformcommons.finance.service.FinanceComplianceService;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String submitFinancingRecord(FinancingRecord record) {
-        String recordId = record.recordId() != null ? record.recordId() : "FIN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String recordId = record.recordId() != null ? record.recordId() : SnowflakeIdGenerator.nextId();
         log.info("提交融资记录: recordId={}, amount={}, type={}", recordId, record.amount(), record.financingType());
 
         // 合规审查：必须有偿付上限和无治理权声明
@@ -69,7 +69,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String submitProcurementRecord(ProcurementRecord record) {
-        String recordId = record.recordId() != null ? record.recordId() : "PROC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String recordId = record.recordId() != null ? record.recordId() : SnowflakeIdGenerator.nextId();
         log.info("提交采购记录: recordId={}, supplier={}, amount={}", recordId, record.supplier(), record.amount());
         ProcurementRecord saved = new ProcurementRecord(
                 recordId, record.supplier(), record.amount(), record.evaluation(), record.beneficiary(), record.disclosedAt()
@@ -81,7 +81,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public boolean reviewRelatedPartyTransaction(RelatedPartyTransaction transaction) {
-        String recordId = transaction.recordId() != null ? transaction.recordId() : "RPT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String recordId = transaction.recordId() != null ? transaction.recordId() : SnowflakeIdGenerator.nextId();
         log.info("审查关联交易: recordId={}, counterparty={}, relatedParty={}", recordId, transaction.counterparty(), transaction.relatedParty());
 
         // 关联交易必须披露关联关系，且金额超过阈值须审查
@@ -98,7 +98,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String publishFinancialDisclosure(FinancialDisclosure disclosure) {
-        String disclosureId = disclosure.disclosureId() != null ? disclosure.disclosureId() : "FD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String disclosureId = disclosure.disclosureId() != null ? disclosure.disclosureId() : SnowflakeIdGenerator.nextId();
         log.info("发布财务公开: disclosureId={}, period={}", disclosureId, disclosure.period());
         FinancialDisclosure saved = new FinancialDisclosure(
                 disclosureId, disclosure.period(), disclosure.totalRevenue(),

@@ -3,6 +3,7 @@ package com.platformcommons.dispute.service.impl;
 import com.platformcommons.dispute.domain.Dispute;
 import com.platformcommons.dispute.domain.DisputeLevel;
 import com.platformcommons.dispute.domain.DisputeStatus;
+import com.platformcommons.common.util.SnowflakeIdGenerator;
 import com.platformcommons.dispute.repository.DisputeRepository;
 import com.platformcommons.dispute.repository.entity.DisputeEntity;
 import com.platformcommons.dispute.service.DisputeService;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +38,7 @@ public class DisputeServiceImpl implements DisputeService {
     @Override
     @Transactional
     public String fileDispute(String filedBy, String subject, String description) {
-        String disputeId = "DSP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String disputeId = SnowflakeIdGenerator.nextId();
         log.info("提交争议申诉: disputeId={}, filedBy={}, subject={}", disputeId, filedBy, subject);
 
         DisputeEntity entity = new DisputeEntity();
