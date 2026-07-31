@@ -48,6 +48,15 @@ management:
     health:
       show-details: when-authorized
 
+# 全局响应包装排除路径：以下路径的响应原样返回，不包装为 R<T>
+platformcommons:
+  response:
+    exclude-paths:
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /actuator/**
+
 logging:
   level:
     com.platformcommons: INFO

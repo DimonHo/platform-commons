@@ -31,6 +31,9 @@ subprojects {
         dependencies {
             implementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
             testImplementation("org.springframework.boot:spring-boot-starter-test")
+            // Gradle 8.14 内置的 junit-platform-launcher 版本与 JUnit Platform 6.x 不兼容，
+            // 需显式对齐到 BOM 管理的版本
+            testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         }
 
         tasks.withType(Test).configureEach {
