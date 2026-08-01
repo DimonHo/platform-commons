@@ -4,6 +4,7 @@ import org.slf4j.MDC;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 /**
  * 链路追踪上下文工具。
@@ -16,8 +17,11 @@ import java.util.concurrent.Callable;
  * // 手动创建虚拟线程时
  * Thread.startVirtualThread(TraceContext.wrap(() -> doWork()));
  *
- * // CompletableFuture
+ * // CompletableFuture（无返回值）
  * CompletableFuture.runAsync(TraceContext.wrap(() -> doWork()));
+ *
+ * // CompletableFuture（有返回值）
+ * CompletableFuture.supplyAsync(TraceContext.wrap(() -> computeResult()));
  * }</pre>
  */
 public final class TraceContext {
@@ -90,6 +94,29 @@ public final class TraceContext {
             }
             try {
                 return task.call();
+            } finally {
+                restoreMdc(previous);
+            }
+        };
+    }
+
+    /**
+     * 包装 Supplier，使其在子线程中继承当前线程的 MDC 上下文。
+     * 用于 {@code CompletableFuture.supplyAsync()} 等需要返回值的异步场景。
+     *
+     * @param task 原始任务
+     * @param <T> 返回类型
+     * @return 包装后的 Supplier
+     */
+    public static <T> Supplier<T> wrap(Supplier<T> task) {
+        Map<String, String> snapshot = MDC.getCopyOfContextMap();
+        return () -> {
+            Map<String, String> previous = MDC.getCopyOfContextMap();
+            if (snapshot != null) {
+                MDC.setContextMap(snapshot);
+            }
+            try {
+                return task.get();
             } finally {
                 restoreMdc(previous);
             }

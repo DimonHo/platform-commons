@@ -43,6 +43,13 @@ subprojects {
 
         tasks.withType(Test).configureEach {
             useJUnitPlatform()
+            // 虚拟线程 pinning（线程钉住）检测——当虚拟线程在 synchronized 块内被阻塞时，
+            // JVM 会将其钉在载体平台线程上，导致虚拟线程退化为平台线程。
+            // 开启此选项后，pinning 事件会以 WARNING 级别输出到 jdk.VirtualThreadPinned 日志。
+            jvmArgs += [
+                "-Djdk.tracePinnedThreads=short",
+                "-Djdk.virtualThreadScheduler.parallelism=8"
+            ]
         }
     }
 }

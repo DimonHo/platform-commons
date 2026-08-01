@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -60,7 +61,7 @@ class TraceContextTest {
 
         ExecutorService pool = Executors.newVirtualThreadPerTaskExecutor();
         try {
-            String childTrace = pool.submit(TraceContext.wrap(() -> TraceContext.getTraceId())).get(2, TimeUnit.SECONDS);
+            String childTrace = pool.submit(TraceContext.wrap((Callable<String>) () -> TraceContext.getTraceId())).get(2, TimeUnit.SECONDS);
             assertEquals("call-trace", childTrace, "Callable 子线程应继承父线程 traceId");
         } finally {
             pool.shutdown();
@@ -91,7 +92,7 @@ class TraceContextTest {
         // 不设置任何 MDC
         ExecutorService pool = Executors.newVirtualThreadPerTaskExecutor();
         try {
-            String result = pool.submit(TraceContext.wrap(() -> "ok")).get(2, TimeUnit.SECONDS);
+            String result = pool.submit(TraceContext.wrap((Callable<String>) () -> "ok")).get(2, TimeUnit.SECONDS);
             assertEquals("ok", result);
         } finally {
             pool.shutdown();

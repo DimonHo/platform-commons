@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 雪花式 ID 生成工具。
@@ -42,6 +43,12 @@ public final class SnowflakeUtils {
     /** 同毫秒内序列计数器。 */
     private static final AtomicInteger SEQUENCE = new AtomicInteger(0);
 
+    /**
+     * 序列号生成锁——使用 ReentrantLock 替代 synchronized，
+     * 避免在虚拟线程环境下潜在的线程钉住（pinning）风险。
+     */
+    private static final ReentrantLock SEQUENCE_LOCK = new ReentrantLock();
+
     private SnowflakeUtils() {
     }
 
@@ -71,7 +78,8 @@ public final class SnowflakeUtils {
         }
         String timestamp;
         int seq;
-        synchronized (SnowflakeUtils.class) {
+        SEQUENCE_LOCK.lock();
+        try {
             timestamp = LocalDateTime.now().format(TIMESTAMP_FMT);
             if (timestamp.equals(lastTimestamp)) {
                 seq = SEQUENCE.incrementAndGet();
@@ -80,6 +88,8 @@ public final class SnowflakeUtils {
                 SEQUENCE.set(1);
                 seq = 1;
             }
+        } finally {
+            SEQUENCE_LOCK.unlock();
         }
         return p + timestamp + IP_SUFFIX + String.format("%0" + (10 - p.length()) + "d", seq);
     }
