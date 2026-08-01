@@ -10,6 +10,7 @@ import com.platformcommons.finance.repository.entity.FinancingRecordEntity;
 import com.platformcommons.finance.service.FinanceComplianceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,7 +86,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
         log.info("审查关联交易: recordId={}, counterparty={}, relatedParty={}", recordId, transaction.counterparty(), transaction.relatedParty());
 
         // 关联交易必须披露关联关系，且金额超过阈值须审查
-        boolean approved = transaction.relationship() != null && !transaction.relationship().isBlank();
+        boolean approved = StringUtils.hasText(transaction.relationship());
         RelatedPartyTransaction reviewed = new RelatedPartyTransaction(
                 recordId, transaction.counterparty(), transaction.relatedParty(),
                 transaction.transactionAmount(), transaction.relationship(), approved

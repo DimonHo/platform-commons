@@ -10,6 +10,7 @@ import com.platformcommons.techgovernance.repository.entity.DeploymentRecordEnti
 import com.platformcommons.techgovernance.service.TechGovernanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class TechGovernanceServiceImpl implements TechGovernanceService {
         entity.setDeployedBy(deployment.deployedBy());
 
         VerificationStatus status;
-        if (isBlank(deployment.commitHash()) || isBlank(deployment.buildArtifactHash())) {
+        if (!StringUtils.hasText(deployment.commitHash()) || !StringUtils.hasText(deployment.buildArtifactHash())) {
             status = VerificationStatus.UNVERIFIABLE;
             raiseAlert(deployment.deploymentId(), "UNVERIFIABLE", "提交哈希或构建哈希缺失", TechAlert.Severity.HIGH);
         } else if (!isValidHashFormat(deployment.commitHash())) {
@@ -101,10 +102,6 @@ public class TechGovernanceServiceImpl implements TechGovernanceService {
         );
         alerts.add(alert);
         log.warn("技术红线告警: {}", alert);
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
     }
 
     private boolean isValidHashFormat(String hash) {

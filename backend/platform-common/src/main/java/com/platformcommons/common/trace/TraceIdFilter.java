@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String traceId = request.getHeader(TRACE_ID_HEADER);
-        if (traceId == null || traceId.isBlank()) {
+        if (!StringUtils.hasText(traceId)) {
             traceId = SnowflakeUtils.nextId();
         }
         TraceContext.setTraceId(traceId);

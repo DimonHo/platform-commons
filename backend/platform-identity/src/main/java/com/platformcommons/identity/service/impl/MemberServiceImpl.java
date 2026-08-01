@@ -12,6 +12,7 @@ import com.platformcommons.identity.repository.entity.MemberEntity;
 import com.platformcommons.identity.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -134,7 +135,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private static Set<MemberRole> deserializeRoles(String raw) {
-        if (raw == null || raw.isBlank()) {
+        if (!StringUtils.hasText(raw)) {
             return Set.of();
         }
         return Arrays.stream(raw.split(","))

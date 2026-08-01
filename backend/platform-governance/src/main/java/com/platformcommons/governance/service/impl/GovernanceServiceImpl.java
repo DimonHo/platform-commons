@@ -17,6 +17,7 @@ import com.platformcommons.governance.repository.entity.ProposalEntity;
 import com.platformcommons.governance.service.GovernanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -163,7 +164,7 @@ public class GovernanceServiceImpl implements GovernanceService {
     }
 
     private static GovernanceChamber parseChamber(String name) {
-        if (name == null || name.isBlank()) {
+        if (!StringUtils.hasText(name)) {
             return null;
         }
         try {
