@@ -67,6 +67,16 @@ String name = (user != null) ? user.getName() : "匿名";
 String name = Optional.ofNullable(user).map(User::getName).orElse("匿名");
 ```
 
+> **⚠️ orElse vs orElseGet**：`orElse(defaultValue)` 的参数**急切求值**——无论是否为空都会执行。当默认值涉及方法调用（如 `SnowflakeUtils.nextId()`）时必须用 `orElseGet(Supplier)` 懒求值，否则白白消耗资源。
+>
+> ```java
+> // ❌ nextId() 每次都执行，即使 recordId 非空
+> var id = Optional.ofNullable(record.recordId()).orElse(SnowflakeUtils.nextId());
+>
+> // ✅ nextId() 仅在 recordId 为空时才执行
+> var id = Optional.ofNullable(record.recordId()).orElseGet(SnowflakeUtils::nextId);
+> ```
+
 ### 1.5 消除冗余防御校验
 
 信任同模块内的调用链，只在边界（Controller 入口、外部 API 返回）做校验，禁止层层重复判空。
