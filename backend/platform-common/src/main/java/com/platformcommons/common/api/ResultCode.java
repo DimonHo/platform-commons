@@ -10,8 +10,8 @@ import lombok.Getter;
  * 编码分段：{@code 0} 成功；{@code 1xxxx} 通用客户端错误；
  * {@code 5xxxx} 服务端错误；{@code 6xxxx} 业务错误。</p>
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum ResultCode {
 
     SUCCESS(0, "成功"),

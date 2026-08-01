@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 提案类型枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum ProposalType {
 
     POLICY_CHANGE("政策变更"),

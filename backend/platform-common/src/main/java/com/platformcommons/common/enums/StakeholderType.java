@@ -9,8 +9,8 @@ import lombok.Getter;
  * <p>对应宪章四类成员。{@link #getWeight()} 返回多院治理表决中的权重，
  * 劳动者权重高于其他类型，体现劳动优先原则。</p>
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum StakeholderType {
 
     WORKER("劳动者", 0.4),

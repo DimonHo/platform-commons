@@ -9,8 +9,8 @@ import lombok.Getter;
  * 多角色交叉审议，每个角色代表不同的公共利益视角，
  * 确保 AI 决策不偏向单一利益方。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum AiReviewRole {
 
     /** 公共利益代表 */

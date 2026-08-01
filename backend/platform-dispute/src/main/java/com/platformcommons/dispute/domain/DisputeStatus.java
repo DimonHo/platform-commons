@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 争议状态（第15章 第93-96条）
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum DisputeStatus {
 
     /** 已提交，待处理 */

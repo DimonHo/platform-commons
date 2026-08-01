@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 成员状态枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum MemberStatus {
 
     ACTIVE("活跃"),

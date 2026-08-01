@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 投票选择枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum VoteChoice {
 
     YES("赞成"),

@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
  * 异常处理器直接返回 {@code R<Void>}，ResponseAdvice 会自动跳过已包装的 R 类型，
  * 不会产生二次包装。</p>
  */
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 

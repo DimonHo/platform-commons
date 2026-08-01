@@ -9,8 +9,8 @@ import lombok.Getter;
  * 三级递进救济流程：先由业务团队复核，
  * 不满意可上诉至申诉委员会，仍不满意可引入外部调解/仲裁。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum DisputeLevel {
 
     /** 第一级：业务团队复核 */

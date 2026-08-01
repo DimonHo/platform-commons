@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 核验状态枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum VerificationStatus {
 
     PENDING("待核验"),

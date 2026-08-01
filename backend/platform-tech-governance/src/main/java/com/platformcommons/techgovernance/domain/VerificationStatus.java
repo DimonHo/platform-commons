@@ -8,8 +8,8 @@ import lombok.Getter;
  * <p>
  * 部署/算法规格核验的结论。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum VerificationStatus {
 
     /** 已核验：代码与规格一致 */

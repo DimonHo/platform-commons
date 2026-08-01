@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 服务类型枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum ServiceType {
 
     RIDE_HAILING("网约车"),

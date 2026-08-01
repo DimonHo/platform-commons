@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
  * <p><b>注意</b>：Controller 方法若返回 {@code ResponseEntity<T>}，Spring 会先拆包取 body 再进入本 Advice，
  * 因此 {@code ResponseEntity<Proposal>} 的 Proposal 仍会被自动包装为 {@code R<Proposal>}。</p>
  */
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
 
 

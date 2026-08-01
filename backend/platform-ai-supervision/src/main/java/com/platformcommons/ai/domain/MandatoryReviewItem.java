@@ -9,8 +9,8 @@ import lombok.Getter;
  * 以下事项必须经过 AI 多角色交叉审议方可执行，
  * 任何绕过审议的决策视为治理违规。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum MandatoryReviewItem {
 
     /** 定价算法变更 */

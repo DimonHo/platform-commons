@@ -12,8 +12,8 @@ import lombok.Getter;
  *
  * <p>JSON 序列化时自动输出业务码（如 {@code "R-CAP-01"}），而非枚举常量名。</p>
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum RedLine {
 
     /** 红线1：单一外部资本持股超过 20%。 */

@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 核验方式枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum VerificationType {
 
     PHONE("手机号核验"),

@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 提案状态枚举。
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum ProposalStatus {
 
     DRAFT("草稿"),

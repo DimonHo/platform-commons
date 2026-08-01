@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  * 审议状态（第12章 第67条）
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum ReviewStatus {
 
     /** 待审议 */
