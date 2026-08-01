@@ -58,7 +58,7 @@ POJO / Entity / DTO 一律用 Lombok 注解生成，禁止手写 getter、setter
 |------|------|
 | 普通 POJO | `@Data`（getter + setter + toString + equals + hashCode） |
 | 只读对象（无 setter） | `@Getter` |
-| JPA Entity | `@Entity @Getter @Setter`（不用 `@Data`，避免 hashCode 触发懒加载） |
+| JPA Entity | `@Data @EqualsAndHashCode(of = "id")`（限定唯一标识，避免 hashCode 触发懒加载） |
 | Builder 模式 | `@Builder` + `@Getter` |
 | 不可变对象 | `@Value`（全 final，无 setter） |
 
@@ -75,7 +75,10 @@ public class MemberEntity {
 }
 
 // ✅ 正确——Lombok 一行搞定
-@Getter @Setter
+@Entity
+@Data
+@EqualsAndHashCode(of = "id")
+@NoArgsConstructor
 public class MemberEntity {
     private Long id;
     private String name;
