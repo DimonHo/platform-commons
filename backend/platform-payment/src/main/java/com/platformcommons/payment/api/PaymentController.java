@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -29,12 +28,9 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/payment")
 public class PaymentController {
 
-
     private final PaymentService paymentService;
-
 
     /**
      * 创建收款交易。
@@ -42,7 +38,7 @@ public class PaymentController {
      * @param request 收款请求
      * @return 交易
      */
-    @PostMapping("/charge")
+    @PostMapping("/api/payment/charge")
     public Transaction charge(@Valid @RequestBody ChargeRequest request) {
         log.info("Charge request: orderId={}", request.orderId());
         return paymentService.charge(
@@ -55,7 +51,7 @@ public class PaymentController {
      * @param transactionId 交易 ID
      * @return 结算结果
      */
-    @PostMapping("/settle/{transactionId}")
+    @PostMapping("/api/payment/settle/{transactionId}")
     public SettlementResponse settle(@PathVariable UUID transactionId) {
         log.info("Settle request: txId={}", transactionId);
         SettlementResult result = paymentService.settle(transactionId);
@@ -68,7 +64,7 @@ public class PaymentController {
      * @param transactionId 交易 ID
      * @return 退款后的交易
      */
-    @PostMapping("/refund/{transactionId}")
+    @PostMapping("/api/payment/refund/{transactionId}")
     public Transaction refund(@PathVariable UUID transactionId) {
         log.info("Refund request: txId={}", transactionId);
         return paymentService.refund(transactionId);
@@ -80,11 +76,10 @@ public class PaymentController {
      * @param transactionId 交易 ID
      * @return 交易
      */
-    @GetMapping("/{transactionId}")
+    @GetMapping("/api/payment/{transactionId}")
     public Transaction get(@PathVariable UUID transactionId) {
         return paymentService.findById(transactionId)
                 .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
                         "交易不存在: " + transactionId));
     }
-
 }

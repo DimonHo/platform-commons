@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,17 +24,14 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
 public class MemberController {
 
-
     private final MemberService memberService;
-
 
     /**
      * 注册成员。
      */
-    @PostMapping
+    @PostMapping("/api/members")
     public MemberResponse register(@Valid @RequestBody MemberRegisterRequest request) {
         log.info("收到注册请求：name={}", request.name());
         return memberService.register(request);
@@ -44,7 +40,7 @@ public class MemberController {
     /**
      * 查询单个成员。
      */
-    @GetMapping("/{id}")
+    @GetMapping("/api/members/{id}")
     public MemberResponse getMember(@PathVariable Long id) {
         return memberService.getMemberResponseById(id);
     }
@@ -52,7 +48,7 @@ public class MemberController {
     /**
      * 查询全部成员。
      */
-    @GetMapping
+    @GetMapping("/api/members")
     public List<MemberResponse> listMembers() {
         return memberService.listMembers();
     }
@@ -60,7 +56,7 @@ public class MemberController {
     /**
      * 变更成员状态。
      */
-    @PutMapping("/{id}/status")
+    @PutMapping("/api/members/{id}/status")
     public MemberResponse changeStatus(@PathVariable Long id,
                                        @RequestParam String status) {
         log.info("收到状态变更请求：id={}, status={}", id, status);

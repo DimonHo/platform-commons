@@ -1,5 +1,7 @@
 package com.platformcommons.mutual.api;
 
+import com.platformcommons.common.api.ResultCode;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.mutual.api.dto.EligibilityResponse;
 import com.platformcommons.mutual.api.dto.SubmitClaimRequest;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,12 +29,9 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/mutual")
 public class MutualFundController {
 
-
     private final MutualFundService mutualFundService;
-
 
     /**
      * 资格认定。
@@ -45,7 +43,7 @@ public class MutualFundController {
      * @param contributionScore 贡献度
      * @return 资格认定结果
      */
-    @GetMapping("/eligibility")
+    @GetMapping("/api/mutual/eligibility")
     public EligibilityResponse assess(
             @RequestParam String applicantId,
             @RequestParam String jobCategory,
@@ -64,7 +62,7 @@ public class MutualFundController {
      * @param request 申请请求
      * @return 已提交的申请
      */
-    @PostMapping("/claims")
+    @PostMapping("/api/mutual/claims")
     public MutualClaim submit(@Valid @RequestBody SubmitClaimRequest request) {
         log.info("Submit claim: applicant={}, type={}", request.applicantId(), request.incidentType());
         return mutualFundService.submitClaim(
@@ -80,7 +78,7 @@ public class MutualFundController {
      * @param approved   是否批准（true=批准，false=拒绝）
      * @return 复核后的理赔
      */
-    @PostMapping("/claims/{claimId}/review")
+    @PostMapping("/api/mutual/claims/{claimId}/review")
     public MutualClaim review(@PathVariable UUID claimId,
                               @RequestParam String reviewerId,
                               @RequestParam boolean approved) {
@@ -94,12 +92,10 @@ public class MutualFundController {
      * @param claimId 理赔 ID
      * @return 理赔详情
      */
-    @GetMapping("/claims/{claimId}")
+    @GetMapping("/api/mutual/claims/{claimId}")
     public MutualClaim get(@PathVariable UUID claimId) {
         return mutualFundService.findById(claimId)
-                .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
-                        com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
                         "理赔不存在: " + claimId));
     }
-
 }

@@ -59,7 +59,7 @@ public class GovernanceServiceImpl implements GovernanceService {
         entity.setType(type.name());
         entity.setStatus(ProposalStatus.DRAFT.name());
         entity.setProposerId(request.proposerId());
-        entity.setTargetChamber(chamber == null ? null : chamber.name());
+        entity.setTargetChamber(Optional.ofNullable(chamber).map(GovernanceChamber::name).orElse(null));
         entity.setCreatedAt(LocalDateTime.now());
 
         ProposalEntity saved = proposalRepository.save(entity);
@@ -190,7 +190,7 @@ public class GovernanceServiceImpl implements GovernanceService {
                 ProposalType.valueOf(entity.getType()),
                 ProposalStatus.valueOf(entity.getStatus()),
                 entity.getProposerId(),
-                entity.getTargetChamber() == null ? null : GovernanceChamber.valueOf(entity.getTargetChamber()),
+                Optional.ofNullable(entity.getTargetChamber()).map(GovernanceChamber::valueOf).orElse(null),
                 entity.getVotingStartAt(),
                 entity.getVotingEndAt(),
                 entity.getCreatedAt()

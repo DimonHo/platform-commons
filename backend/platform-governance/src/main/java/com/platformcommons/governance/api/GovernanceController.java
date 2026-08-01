@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +23,14 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/governance/proposals")
 public class GovernanceController {
 
-
     private final GovernanceService governanceService;
-
 
     /**
      * 创建提案。
      */
-    @PostMapping
+    @PostMapping("/api/governance/proposals")
     public Proposal createProposal(@Valid @RequestBody CreateProposalRequest request) {
         log.info("收到创建提案请求：title={}", request.title());
         return governanceService.createProposal(request);
@@ -43,7 +39,7 @@ public class GovernanceController {
     /**
      * 查询提案详情。
      */
-    @GetMapping("/{id}")
+    @GetMapping("/api/governance/proposals/{id}")
     public Proposal getProposal(@PathVariable Long id) {
         return governanceService.getProposal(id);
     }
@@ -54,7 +50,7 @@ public class GovernanceController {
      * @param id            提案 ID
      * @param durationHours 投票时长（小时），不传则默认 72 小时
      */
-    @PostMapping("/{id}/voting")
+    @PostMapping("/api/governance/proposals/{id}/voting")
     public Proposal startVoting(@PathVariable Long id,
                                 @RequestParam(required = false, defaultValue = "0") int durationHours) {
         log.info("收到开启投票请求：proposalId={}, durationHours={}", id, durationHours);
@@ -64,7 +60,7 @@ public class GovernanceController {
     /**
      * 投票。
      */
-    @PostMapping("/{id}/votes")
+    @PostMapping("/api/governance/proposals/{id}/votes")
     public Proposal vote(@PathVariable Long id,
                          @Valid @RequestBody VoteRequest request) {
         log.info("收到投票请求：proposalId={}, voterId={}", id, request.voterId());
@@ -74,7 +70,7 @@ public class GovernanceController {
     /**
      * 统计投票结果。
      */
-    @GetMapping("/{id}/result")
+    @GetMapping("/api/governance/proposals/{id}/result")
     public VoteResultResponse tallyResult(@PathVariable Long id) {
         return governanceService.tallyResult(id);
     }

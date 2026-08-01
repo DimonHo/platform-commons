@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,12 +24,9 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/matching")
 public class MatchingController {
 
-
     private final MatchingEngineService matchingEngineService;
-
 
     /**
      * 执行匹配。
@@ -38,7 +34,7 @@ public class MatchingController {
      * @param request 匹配请求
      * @return 匹配结果
      */
-    @PostMapping("/match")
+    @PostMapping("/api/matching/match")
     public MatchResponse match(@Valid @RequestBody MatchRequest request) {
         log.info("Match request: taskId={}, strategy={}", request.taskId(), request.strategyName());
         MatchResult result = matchingEngineService.match(request.taskId(), request.strategyName());
@@ -56,7 +52,7 @@ public class MatchingController {
      * @param registrationDays 注册天数
      * @return 操作结果（void 会被包装为 {@code R<Void>}）
      */
-    @PostMapping("/workers")
+    @PostMapping("/api/matching/workers")
     public void register(@RequestParam String workerId,
                          @RequestParam double latitude,
                          @RequestParam double longitude,
@@ -72,9 +68,8 @@ public class MatchingController {
      *
      * @return 劳动者 ID 列表
      */
-    @GetMapping("/workers")
+    @GetMapping("/api/matching/workers")
     public List<String> listWorkers() {
         return matchingEngineService.listWorkers();
     }
-
 }

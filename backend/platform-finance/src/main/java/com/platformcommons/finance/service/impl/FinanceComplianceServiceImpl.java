@@ -37,7 +37,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String submitFinancingRecord(FinancingRecord record) {
-        String recordId = record.recordId() != null ? record.recordId() : SnowflakeUtils.nextId();
+        String recordId = Optional.ofNullable(record.recordId()).orElse(SnowflakeUtils.nextId());
         log.info("提交融资记录: recordId={}, amount={}, type={}", recordId, record.amount(), record.financingType());
 
         // 合规审查：必须有偿付上限和无治理权声明
@@ -70,7 +70,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String submitProcurementRecord(ProcurementRecord record) {
-        String recordId = record.recordId() != null ? record.recordId() : SnowflakeUtils.nextId();
+        String recordId = Optional.ofNullable(record.recordId()).orElse(SnowflakeUtils.nextId());
         log.info("提交采购记录: recordId={}, supplier={}, amount={}", recordId, record.supplier(), record.amount());
         ProcurementRecord saved = new ProcurementRecord(
                 recordId, record.supplier(), record.amount(), record.evaluation(), record.beneficiary(), record.disclosedAt()
@@ -82,7 +82,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public boolean reviewRelatedPartyTransaction(RelatedPartyTransaction transaction) {
-        String recordId = transaction.recordId() != null ? transaction.recordId() : SnowflakeUtils.nextId();
+        String recordId = Optional.ofNullable(transaction.recordId()).orElse(SnowflakeUtils.nextId());
         log.info("审查关联交易: recordId={}, counterparty={}, relatedParty={}", recordId, transaction.counterparty(), transaction.relatedParty());
 
         // 关联交易必须披露关联关系，且金额超过阈值须审查
@@ -99,7 +99,7 @@ public class FinanceComplianceServiceImpl implements FinanceComplianceService {
     @Override
     @Transactional
     public String publishFinancialDisclosure(FinancialDisclosure disclosure) {
-        String disclosureId = disclosure.disclosureId() != null ? disclosure.disclosureId() : SnowflakeUtils.nextId();
+        String disclosureId = Optional.ofNullable(disclosure.disclosureId()).orElse(SnowflakeUtils.nextId());
         log.info("发布财务公开: disclosureId={}, period={}", disclosureId, disclosure.period());
         FinancialDisclosure saved = new FinancialDisclosure(
                 disclosureId, disclosure.period(), disclosure.totalRevenue(),

@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -30,17 +29,14 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/tech-governance")
 public class TechGovernanceController {
 
-
     private final TechGovernanceService techGovernanceService;
-
 
     /**
      * 核验部署
      */
-    @PostMapping("/deployments/verify")
+    @PostMapping("/api/tech-governance/deployments/verify")
     public Map<String, String> verifyDeployment(@Valid @RequestBody DeploymentVerifyRequest request) {
         log.info("收到部署核验请求: commitHash={}", request.commitHash());
         String deploymentId = SnowflakeUtils.nextId();
@@ -59,7 +55,7 @@ public class TechGovernanceController {
     /**
      * 注册算法规格
      */
-    @PostMapping("/algorithms")
+    @PostMapping("/api/tech-governance/algorithms")
     public Map<String, String> registerAlgorithm(@RequestBody AlgorithmSpec spec) {
         log.info("收到算法规格注册: name={}, version={}", spec.algorithmName(), spec.version());
         String algorithmId = techGovernanceService.registerAlgorithmSpec(spec);
@@ -69,7 +65,7 @@ public class TechGovernanceController {
     /**
      * 查询所有算法规格
      */
-    @GetMapping("/algorithms")
+    @GetMapping("/api/tech-governance/algorithms")
     public List<AlgorithmSpec> listAlgorithms() {
         return techGovernanceService.listAllAlgorithmSpecs();
     }
@@ -77,7 +73,7 @@ public class TechGovernanceController {
     /**
      * 查询所有告警
      */
-    @GetMapping("/alerts")
+    @GetMapping("/api/tech-governance/alerts")
     public List<TechAlert> listAlerts() {
         return techGovernanceService.listAlerts();
     }

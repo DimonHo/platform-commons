@@ -171,7 +171,7 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
         e.setId(a.id());
         e.setLevel(a.level());
         e.setCategory(a.category());
-        e.setRedLineCode(a.redLine() == null ? null : a.redLine().code());
+        e.setRedLineCode(Optional.ofNullable(a.redLine()).map(RedLine::code).orElse(null));
         e.setTitle(a.title());
         e.setDescription(a.description());
         e.setSourceMetric(a.sourceMetric());

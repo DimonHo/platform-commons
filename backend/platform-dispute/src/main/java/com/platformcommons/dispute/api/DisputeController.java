@@ -1,5 +1,7 @@
 package com.platformcommons.dispute.api;
 
+import com.platformcommons.common.api.ResultCode;
+import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.dispute.api.dto.DisputeResponse;
 import com.platformcommons.dispute.api.dto.FileDisputeRequest;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,17 +28,14 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/disputes")
 public class DisputeController {
 
-
     private final DisputeService disputeService;
-
 
     /**
      * 提交争议申诉
      */
-    @PostMapping
+    @PostMapping("/api/disputes")
     public DisputeResponse fileDispute(@Valid @RequestBody FileDisputeRequest request) {
         log.info("收到争议申诉: filedBy={}, subject={}", request.filedBy(), request.subject());
         String disputeId = disputeService.fileDispute(request.filedBy(), request.subject(), request.description());
@@ -48,19 +46,18 @@ public class DisputeController {
     /**
      * 查询争议详情
      */
-    @GetMapping("/{disputeId}")
+    @GetMapping("/api/disputes/{disputeId}")
     public DisputeResponse getDispute(@PathVariable String disputeId) {
         return disputeService.getDispute(disputeId)
                 .map(d -> RecordUtils.copy(d, DisputeResponse.class))
-                .orElseThrow(() -> new com.platformcommons.common.exception.BusinessException(
-                        com.platformcommons.common.api.ResultCode.DATA_NOT_FOUND,
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND,
                         "争议不存在: " + disputeId));
     }
 
     /**
      * 上诉至上一级
      */
-    @PostMapping("/{disputeId}/appeal")
+    @PostMapping("/api/disputes/{disputeId}/appeal")
     public DisputeResponse appeal(@PathVariable String disputeId) {
         log.info("收到上诉请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.appeal(disputeId);
@@ -70,7 +67,7 @@ public class DisputeController {
     /**
      * 裁决争议
      */
-    @PostMapping("/{disputeId}/resolve")
+    @PostMapping("/api/disputes/{disputeId}/resolve")
     public DisputeResponse resolve(@PathVariable String disputeId, @RequestBody String resolution) {
         log.info("收到裁决请求: disputeId={}", disputeId);
         Dispute dispute = disputeService.resolveDispute(disputeId, resolution);
@@ -80,7 +77,7 @@ public class DisputeController {
     /**
      * 按层级查询争议
      */
-    @GetMapping
+    @GetMapping("/api/disputes")
     public List<DisputeResponse> listDisputes(
             @RequestParam(value = "level", required = false) DisputeLevel level,
             @RequestParam(value = "filedBy", required = false) String filedBy) {

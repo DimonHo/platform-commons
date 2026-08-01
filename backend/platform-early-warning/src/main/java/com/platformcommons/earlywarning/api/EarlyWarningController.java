@@ -12,7 +12,6 @@ import com.platformcommons.earlywarning.service.EarlyWarningService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,12 +28,9 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/early-warning")
 public class EarlyWarningController {
 
-
     private final EarlyWarningService earlyWarningService;
-
 
     /**
      * 检测红线。
@@ -43,7 +39,7 @@ public class EarlyWarningController {
      * @param sourceMetric 当前指标值
      * @return 触发的预警列表（可能为空）
      */
-    @PostMapping("/detect")
+    @PostMapping("/api/early-warning/detect")
     public List<AlertResponse> detect(@RequestParam String redLineCode,
                                       @RequestParam String sourceMetric) {
         RedLine redLine = RedLine.valueOf(redLineCode);
@@ -61,7 +57,7 @@ public class EarlyWarningController {
      * @param description 描述
      * @return 创建的预警
      */
-    @PostMapping("/alerts")
+    @PostMapping("/api/early-warning/alerts")
     public AlertResponse raise(@RequestParam AlertLevel level,
                                @RequestParam AlertCategory category,
                                @RequestParam String title,
@@ -77,7 +73,7 @@ public class EarlyWarningController {
      * @param confirmerId 确认人 ID
      * @return 已解除的预警
      */
-    @PostMapping("/alerts/{alertId}/clear")
+    @PostMapping("/api/early-warning/alerts/{alertId}/clear")
     public AlertResponse clear(@PathVariable UUID alertId,
                                @RequestParam String confirmerId) {
         log.info("Clear alert: id={}, confirmer={}", alertId, confirmerId);
@@ -90,7 +86,7 @@ public class EarlyWarningController {
      * @param alertId 预警 ID
      * @return 预警
      */
-    @GetMapping("/alerts/{alertId}")
+    @GetMapping("/api/early-warning/alerts/{alertId}")
     public AlertResponse get(@PathVariable UUID alertId) {
         return earlyWarningService.findById(alertId)
                 .map(a -> RecordUtils.copy(a, AlertResponse.class))
@@ -103,7 +99,7 @@ public class EarlyWarningController {
      *
      * @return 预警列表
      */
-    @GetMapping("/alerts/active")
+    @GetMapping("/api/early-warning/alerts/active")
     public List<AlertResponse> active() {
         return earlyWarningService.findActiveAlerts().stream()
                 .map(a -> RecordUtils.copy(a, AlertResponse.class))

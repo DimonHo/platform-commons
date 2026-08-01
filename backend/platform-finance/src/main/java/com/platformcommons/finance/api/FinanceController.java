@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -26,17 +25,14 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/finance")
 public class FinanceController {
 
-
     private final FinanceComplianceService financeComplianceService;
-
 
     /**
      * 提交融资审查
      */
-    @PostMapping("/financing")
+    @PostMapping("/api/finance/financing")
     public Map<String, String> submitFinancing(@Valid @RequestBody FinancingReviewRequest request) {
         log.info("收到融资审查请求: amount={}, type={}", request.amount(), request.financingType());
         FinancingRecord record = new FinancingRecord(
@@ -54,7 +50,7 @@ public class FinanceController {
     /**
      * 查询所有融资记录
      */
-    @GetMapping("/financing")
+    @GetMapping("/api/finance/financing")
     public List<FinancingRecord> listFinancing() {
         return financeComplianceService.listFinancingRecords();
     }
@@ -62,7 +58,7 @@ public class FinanceController {
     /**
      * 发布财务公开
      */
-    @PostMapping("/disclosures")
+    @PostMapping("/api/finance/disclosures")
     public Map<String, String> publishDisclosure(@RequestBody FinancialDisclosure disclosure) {
         log.info("收到财务公开发布: period={}", disclosure.period());
         String disclosureId = financeComplianceService.publishFinancialDisclosure(disclosure);

@@ -173,7 +173,7 @@ public class MutualFundServiceImpl implements MutualFundService {
         e.setIncidentType(c.incidentType());
         e.setDescription(c.description());
         e.setClaimedAmount(c.claimedAmount());
-        e.setEvidenceUrls(c.evidenceUrls() == null ? null : String.join(",", c.evidenceUrls()));
+        e.setEvidenceUrls(Optional.ofNullable(c.evidenceUrls()).map(urls -> String.join(",", urls)).orElse(null));
         e.setStatus(c.status().name());
         e.setSubmittedAt(c.submittedAt());
         e.setReviewedAt(c.reviewedAt());
