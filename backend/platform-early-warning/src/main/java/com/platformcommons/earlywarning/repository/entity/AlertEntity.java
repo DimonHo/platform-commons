@@ -10,24 +10,21 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
  * 预警持久化实体。
  */
+@Data
 @Entity
-@Table(name = "early_warning_alert")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "early_warning_alert")
 public class AlertEntity {
 
     @Id
@@ -72,20 +69,4 @@ public class AlertEntity {
 
     @Column(name = "cleared_at")
     private Instant clearedAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AlertEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

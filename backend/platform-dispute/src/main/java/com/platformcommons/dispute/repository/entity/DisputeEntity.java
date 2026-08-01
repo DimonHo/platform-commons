@@ -10,22 +10,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.Objects;
 
 /**
  * 争议记录实体
  */
+@Data
 @Entity
-@Table(name = "dispute_records")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "dispute_records")
 public class DisputeEntity {
 
     @Id
@@ -57,20 +53,4 @@ public class DisputeEntity {
 
     @Column(length = 32)
     private String filedAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DisputeEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

@@ -9,22 +9,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.Objects;
 
 /**
  * 部署记录实体
  */
+@Data
 @Entity
-@Table(name = "tech_deployment_records")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "tech_deployment_records")
 public class DeploymentRecordEntity {
 
     @Id
@@ -49,20 +45,4 @@ public class DeploymentRecordEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private VerificationStatus verificationStatus;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DeploymentRecordEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

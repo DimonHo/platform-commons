@@ -6,23 +6,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 /**
  * 融资记录实体
  */
+@Data
 @Entity
-@Table(name = "finance_financing_records")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "finance_financing_records")
 public class FinancingRecordEntity {
 
     @Id
@@ -46,20 +43,4 @@ public class FinancingRecordEntity {
 
     @Column(length = 32)
     private String disclosedAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof FinancingRecordEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

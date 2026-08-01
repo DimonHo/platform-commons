@@ -6,14 +6,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,12 +19,11 @@ import java.util.UUID;
  *
  * <p>阿里规范：实体必须重写 equals/hashCode/toString，基于业务主键 id。
  */
+@Data
 @Entity
-@Table(name = "mutual_claim")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@Table(name = "mutual_claim")
+@EqualsAndHashCode(of = "id")
 public class MutualClaimEntity {
 
     @Id
@@ -60,20 +57,4 @@ public class MutualClaimEntity {
 
     @Column(name = "reviewer_id", length = 64)
     private String reviewerId;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MutualClaimEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

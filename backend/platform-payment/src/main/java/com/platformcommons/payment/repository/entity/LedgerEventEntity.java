@@ -6,14 +6,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,12 +19,11 @@ import java.util.UUID;
  *
  * <p>阿里规范：POJO 类必须重写 equals/hashCode/toString；数据库表必须有主键。
  */
+@Data
 @Entity
-@Table(name = "payment_ledger_event")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "payment_ledger_event")
 public class LedgerEventEntity {
 
     @Id
@@ -56,21 +53,5 @@ public class LedgerEventEntity {
         this.eventType = eventType;
         this.amount = amount;
         this.occurredAt = occurredAt;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof LedgerEventEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

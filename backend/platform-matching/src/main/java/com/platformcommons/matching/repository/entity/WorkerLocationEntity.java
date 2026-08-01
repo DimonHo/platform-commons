@@ -4,23 +4,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.Instant;
-import java.util.Objects;
 
 /**
  * 劳动者位置持久化实体。
  */
+@Data
 @Entity
-@Table(name = "worker_location")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@Table(name = "worker_location")
+@EqualsAndHashCode(of = "workerId")
 public class WorkerLocationEntity {
 
     @Id
@@ -44,20 +41,4 @@ public class WorkerLocationEntity {
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof WorkerLocationEntity that)) {
-            return false;
-        }
-        return Objects.equals(workerId, that.workerId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(workerId);
-    }
 }

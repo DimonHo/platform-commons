@@ -7,13 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * 投票记录实体（JPA 持久化）。
@@ -22,14 +20,13 @@ import java.util.Objects;
  * 包装类型字段使用 {@code equals} 比较；表名使用下划线命名。
  * 唯一约束保证一名成员对同一提案仅可投票一次。</p>
  */
+@Data
 @Entity
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Table(name = "vote", uniqueConstraints = {
         @UniqueConstraint(name = "uk_proposal_voter", columnNames = {"proposal_id", "voter_id"})
 })
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
 public class VoteEntity {
 
     @Id
@@ -47,20 +44,4 @@ public class VoteEntity {
 
     @Column(name = "voted_at", nullable = false)
     private LocalDateTime votedAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof VoteEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

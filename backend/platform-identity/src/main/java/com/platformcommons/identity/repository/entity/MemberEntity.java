@@ -6,13 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * 成员实体（JPA 持久化）。
@@ -20,12 +18,11 @@ import java.util.Objects;
  * <p>阿里规范：POJO/Entity 必须重写 {@code toString()}；
  * 包装类型字段使用 {@code equals} 比较；表名使用下划线命名。</p>
  */
+@Data
 @Entity
-@Table(name = "member")
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
+@Table(name = "member")
+@EqualsAndHashCode(of = "id")
 public class MemberEntity {
 
     @Id
@@ -50,20 +47,4 @@ public class MemberEntity {
 
     @Column(name = "labor_shares")
     private Integer laborShares;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MemberEntity that)) {
-            return false;
-        }
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
