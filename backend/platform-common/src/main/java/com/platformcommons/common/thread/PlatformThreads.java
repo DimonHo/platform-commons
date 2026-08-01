@@ -52,6 +52,8 @@ public final class PlatformThreads {
     /** 全局共享 CPU 线程池（固定大小 = CPU 核心数） */
     private static final ExecutorService CPU_POOL = createCpuPool();
 
+    private static final int GRACEFUL_SHUTDOWN_SECONDS = 10;
+
     private PlatformThreads() {
     }
 
@@ -59,18 +61,22 @@ public final class PlatformThreads {
         ExecutorService pool = Executors.newFixedThreadPool(
                 CPU_CORES,
                 Thread.ofPlatform().name("platform-cpu-", 0).factory());
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        Runtime.getRuntime().addShutdownHook(gracefulShutdownHook(pool));
+        return pool;
+    }
+
+    private static Thread gracefulShutdownHook(ExecutorService pool) {
+        return Thread.ofPlatform().name("platform-cpu-shutdown").unstarted(() -> {
             pool.shutdown();
             try {
-                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (!pool.awaitTermination(GRACEFUL_SHUTDOWN_SECONDS, TimeUnit.SECONDS)) {
                     pool.shutdownNow();
                 }
             } catch (InterruptedException e) {
                 pool.shutdownNow();
                 Thread.currentThread().interrupt();
             }
-        }, "platform-cpu-shutdown"));
-        return pool;
+        });
     }
 
     /**
