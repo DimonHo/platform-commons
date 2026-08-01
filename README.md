@@ -20,7 +20,7 @@
 | Spring Boot | 4.1.0 |
 | PostgreSQL | 16 + PostGIS |
 | 构建工具 | Gradle (Groovy DSL) |
-| 开发规范 | 阿里巴巴 Java 开发手册（黄山版） |
+| 开发规范 | [CONVENTIONS.md](CONVENTIONS.md)（基于阿里黄山版） |
 | 开源许可证 | AGPL-3.0 |
 
 ## 六项永久锁
@@ -75,6 +75,18 @@ source env.sh
 # 运行测试
 ./gradlew test
 ```
+
+## 开发规范
+
+提交代码前请阅读 [**CONVENTIONS.md**](CONVENTIONS.md)，核心要点：
+
+- Controller 类上禁写 `@RequestMapping` 路径，每个方法写 API 全路径
+- 方法体内禁止全包名，必须 import 短类名
+- 注解按行宽从短到长排列
+- `@RequiredArgsConstructor` + `final` 替代手写构造器
+- null 兜底用 `Optional.ofNullable(x).orElse(d)`
+- 字符串判空统一 `StringUtils.hasText()`
+- Controller 返回裸对象，不手写 `R.success()`（由 `GlobalResponseAdvice` 自动包装）
 
 ## 许可证
 

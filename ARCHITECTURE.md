@@ -2,7 +2,7 @@
 
 > 基于宪章 v0.2（21 章 124 条）设计的技术实现架构
 > 技术栈：Java 27 + Spring Boot 4.1.0 + PostgreSQL + Redis
-> 开发规范：阿里巴巴 Java 开发手册（黄山版）
+> 开发规范：[CONVENTIONS.md](CONVENTIONS.md)（基于阿里巴巴黄山版）
 
 ## 一、模块设计（映射宪章条款）
 
