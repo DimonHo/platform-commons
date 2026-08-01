@@ -1,7 +1,12 @@
 package com.platformcommons.governance.repository.entity;
 
+import com.platformcommons.governance.domain.GovernanceChamber;
+import com.platformcommons.governance.domain.ProposalStatus;
+import com.platformcommons.governance.domain.ProposalType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,16 +41,19 @@ public class ProposalEntity {
     private String description;
 
     @Column(nullable = false, length = 32)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private ProposalType type;
 
     @Column(nullable = false, length = 16)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProposalStatus status;
 
     @Column(name = "proposer_id", nullable = false)
     private Long proposerId;
 
     @Column(name = "target_chamber", length = 32)
-    private String targetChamber;
+    @Enumerated(EnumType.STRING)
+    private GovernanceChamber targetChamber;
 
     @Column(name = "voting_start_at")
     private LocalDateTime votingStartAt;

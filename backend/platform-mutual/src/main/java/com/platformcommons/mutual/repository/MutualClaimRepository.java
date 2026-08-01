@@ -1,5 +1,6 @@
 package com.platformcommons.mutual.repository;
 
+import com.platformcommons.mutual.domain.ClaimStatus;
 import com.platformcommons.mutual.repository.entity.MutualClaimEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -25,5 +26,5 @@ public interface MutualClaimRepository extends JpaRepository<MutualClaimEntity, 
      * @param applicantId 申请人 ID
      * @return 数量
      */
-    long countByApplicantIdAndStatusIn(String applicantId, List<String> statuses);
+    long countByApplicantIdAndStatusIn(String applicantId, List<ClaimStatus> statuses);
 }

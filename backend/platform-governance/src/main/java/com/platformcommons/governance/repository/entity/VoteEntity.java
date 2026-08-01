@@ -1,7 +1,10 @@
 package com.platformcommons.governance.repository.entity;
 
+import com.platformcommons.governance.domain.VoteChoice;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +43,8 @@ public class VoteEntity {
     private Long voterId;
 
     @Column(nullable = false, length = 16)
-    private String choice;
+    @Enumerated(EnumType.STRING)
+    private VoteChoice choice;
 
     @Column(name = "voted_at", nullable = false)
     private LocalDateTime votedAt;

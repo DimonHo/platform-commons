@@ -1,5 +1,6 @@
 package com.platformcommons.governance.repository;
 
+import com.platformcommons.governance.domain.VoteChoice;
 import com.platformcommons.governance.repository.entity.VoteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -26,5 +27,5 @@ public interface VoteRepository extends JpaRepository<VoteEntity, Long> {
      * @param choice     投票选择
      * @return 票数
      */
-    long countByProposalIdAndChoice(Long proposalId, String choice);
+    long countByProposalIdAndChoice(Long proposalId, VoteChoice choice);
 }

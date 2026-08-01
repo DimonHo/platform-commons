@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
         entity.setName(request.name());
         entity.setPhone(request.phone());
         entity.setRoles(serializeRoles(roles));
-        entity.setStatus(MemberStatus.ACTIVE.name());
+        entity.setStatus(MemberStatus.ACTIVE);
         entity.setRegisteredAt(LocalDateTime.now());
         entity.setLaborShares(hasWorker(roles) ? INITIAL_LABOR_SHARES : null);
 
@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService {
         log.info("变更成员状态：id={}, targetStatus={}", id, status);
         MemberStatus target = parseStatus(status);
         MemberEntity entity = requireMember(id);
-        entity.setStatus(target.name());
+        entity.setStatus(target);
         MemberEntity saved = memberRepository.save(entity);
         log.info("状态变更完成：id={}, status={}", id, target);
         return toResponse(saved);
@@ -159,7 +159,7 @@ public class MemberServiceImpl implements MemberService {
                 entity.getPhone(),
                 deserializeRoles(entity.getRoles()),
                 entity.getRegisteredAt(),
-                MemberStatus.valueOf(entity.getStatus()),
+                entity.getStatus(),
                 entity.getLaborShares()
         );
     }
@@ -171,7 +171,7 @@ public class MemberServiceImpl implements MemberService {
                 maskPhone(entity.getPhone()),
                 deserializeRoles(entity.getRoles()),
                 entity.getRegisteredAt(),
-                entity.getStatus(),
+                entity.getStatus().name(),
                 entity.getLaborShares()
         );
     }

@@ -56,10 +56,10 @@ public class GovernanceServiceImpl implements GovernanceService {
         ProposalEntity entity = new ProposalEntity();
         entity.setTitle(request.title());
         entity.setDescription(request.description());
-        entity.setType(type.name());
-        entity.setStatus(ProposalStatus.DRAFT.name());
+        entity.setType(type);
+        entity.setStatus(ProposalStatus.DRAFT);
         entity.setProposerId(request.proposerId());
-        entity.setTargetChamber(Optional.ofNullable(chamber).map(GovernanceChamber::name).orElse(null));
+        entity.setTargetChamber(chamber);
         entity.setCreatedAt(LocalDateTime.now());
 
         ProposalEntity saved = proposalRepository.save(entity);
@@ -77,13 +77,13 @@ public class GovernanceServiceImpl implements GovernanceService {
         }
 
         ProposalEntity entity = requireProposal(proposalId);
-        if (!ProposalStatus.DRAFT.name().equals(entity.getStatus())) {
+        if (entity.getStatus() != ProposalStatus.DRAFT) {
             throw new BusinessException(ResultCode.STATUS_NOT_ALLOWED,
                     "仅草稿状态提案可开启投票，当前状态: " + entity.getStatus());
         }
 
         LocalDateTime now = LocalDateTime.now();
-        entity.setStatus(ProposalStatus.OPEN.name());
+        entity.setStatus(ProposalStatus.OPEN);
         entity.setVotingStartAt(now);
         entity.setVotingEndAt(now.plusHours(effectiveDuration));
         ProposalEntity saved = proposalRepository.save(entity);
@@ -97,7 +97,7 @@ public class GovernanceServiceImpl implements GovernanceService {
         log.info("投票：proposalId={}, voterId={}, choice={}", proposalId, request.voterId(), request.choice());
 
         ProposalEntity entity = requireProposal(proposalId);
-        if (!ProposalStatus.OPEN.name().equals(entity.getStatus())) {
+        if (entity.getStatus() != ProposalStatus.OPEN) {
             throw new BusinessException(ResultCode.STATUS_NOT_ALLOWED,
                     "提案非投票中状态，当前状态: " + entity.getStatus());
         }
@@ -113,7 +113,7 @@ public class GovernanceServiceImpl implements GovernanceService {
         VoteEntity vote = new VoteEntity();
         vote.setProposalId(proposalId);
         vote.setVoterId(request.voterId());
-        vote.setChoice(choice.name());
+        vote.setChoice(choice);
         vote.setVotedAt(LocalDateTime.now());
         voteRepository.save(vote);
 
@@ -126,15 +126,15 @@ public class GovernanceServiceImpl implements GovernanceService {
     public VoteResultResponse tallyResult(Long proposalId) {
         ProposalEntity entity = requireProposal(proposalId);
 
-        long yes = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.YES.name());
-        long no = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.NO.name());
-        long abstain = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.ABSTAIN.name());
+        long yes = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.YES);
+        long no = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.NO);
+        long abstain = voteRepository.countByProposalIdAndChoice(proposalId, VoteChoice.ABSTAIN);
 
         log.info("统计结果：proposalId={}, yes={}, no={}, abstain={}", proposalId, yes, no, abstain);
         return new VoteResultResponse(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getStatus(),
+                entity.getStatus().name(),
                 yes,
                 no,
                 abstain,
@@ -187,10 +187,10 @@ public class GovernanceServiceImpl implements GovernanceService {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                ProposalType.valueOf(entity.getType()),
-                ProposalStatus.valueOf(entity.getStatus()),
+                entity.getType(),
+                entity.getStatus(),
                 entity.getProposerId(),
-                Optional.ofNullable(entity.getTargetChamber()).map(GovernanceChamber::valueOf).orElse(null),
+                entity.getTargetChamber(),
                 entity.getVotingStartAt(),
                 entity.getVotingEndAt(),
                 entity.getCreatedAt()

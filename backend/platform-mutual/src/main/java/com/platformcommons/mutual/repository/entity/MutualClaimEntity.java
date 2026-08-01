@@ -1,9 +1,12 @@
 package com.platformcommons.mutual.repository.entity;
 
+import com.platformcommons.mutual.domain.ClaimStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Data;
@@ -47,7 +50,8 @@ public class MutualClaimEntity {
     private String evidenceUrls;
 
     @Column(name = "status", nullable = false, length = 16)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ClaimStatus status;
 
     @Column(name = "submitted_at", nullable = false)
     private Instant submittedAt;

@@ -47,8 +47,8 @@ public class MutualFundServiceImpl implements MutualFundService {
     );
 
     /** 待处理状态列表（反欺诈用）。 */
-    private static final List<String> ACTIVE_STATUSES = List.of(
-            ClaimStatus.PENDING.name(), ClaimStatus.INVESTIGATING.name());
+    private static final List<ClaimStatus> ACTIVE_STATUSES = List.of(
+            ClaimStatus.PENDING, ClaimStatus.INVESTIGATING);
 
     private final MutualClaimRepository claimRepository;
 
@@ -174,7 +174,7 @@ public class MutualFundServiceImpl implements MutualFundService {
         e.setDescription(c.description());
         e.setClaimedAmount(c.claimedAmount());
         e.setEvidenceUrls(Optional.ofNullable(c.evidenceUrls()).map(urls -> String.join(",", urls)).orElse(null));
-        e.setStatus(c.status().name());
+        e.setStatus(c.status());
         e.setSubmittedAt(c.submittedAt());
         e.setReviewedAt(c.reviewedAt());
         e.setReviewerId(c.reviewerId());
