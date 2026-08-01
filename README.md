@@ -87,6 +87,7 @@ source env.sh
 - null 兜底用 `Optional.ofNullable(x).orElse(d)`
 - 字符串判空统一 `StringUtils.hasText()`
 - Controller 返回裸对象，不手写 `R.success()`（由 `GlobalResponseAdvice` 自动包装）
+- 异步任务统一走 `VirtualThreads`，禁止裸创建线程；全局已启用虚拟线程
 
 ## 许可证
 

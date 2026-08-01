@@ -185,7 +185,56 @@ Controller 层禁止写业务逻辑，只负责：接收参数 → 调 Service �
 
 ---
 
-## 四、分层架构
+## 四、异步与虚拟线程
+
+### 4.1 全局已启用虚拟线程
+
+项目已在 Spring Boot 层面全局启用虚拟线程（`spring.threads.virtual.enabled=true`）。
+
+- Controller 请求处理、`@Async`、`Stream.parallelStream()` 等框架调度场景**自动使用虚拟线程**
+- 新人**无需手动创建线程池**处理 IO 密集型任务
+
+### 4.2 手动异步 → 统一走 VirtualThreads
+
+需要手动发起异步任务时，**必须使用 `VirtualThreads` 工具类**，禁止裸用 `Thread.startVirtualThread` / `Executors.newVirtualThreadPerTaskExecutor`。
+
+该工具类内部自动传播 MDC 链路追踪上下文（`TraceContext.wrap`），调用方无需手动处理。
+
+```java
+// 1. fire-and-forget（无返回值）
+VirtualThreads.runAsync(() -> sendNotification(userId));
+
+// 2. 需要返回值
+CompletableFuture<String> future = VirtualThreads.supplyAsync(() -> queryExternalApi());
+
+// 3. 批量并发（ExecutorService 必须 try-with-resources 关闭）
+try (ExecutorService pool = VirtualThreads.newExecutor("batch-import")) {
+    for (var item : items) {
+        pool.submit(() -> processItem(item));
+    }
+}
+```
+
+### 4.3 使用红线
+
+| 🚫 禁止 | ✅ 正确 |
+|---------|---------|
+| `new Thread()` 创建平台线程 | `VirtualThreads.runAsync()` |
+| 裸用 `Thread.startVirtualThread` | `VirtualThreads.runAsync()` |
+| 裸用 `Executors.newVirtualThreadPerTaskExecutor` | `VirtualThreads.newExecutor(name)` |
+| `synchronized` 包裹 IO 阻塞代码 | 用 `ReentrantLock` 替代 |
+| `ThreadLocal` + 虚拟线程（内存膨胀） | 避免，或用 scoped values |
+| 池化虚拟线程 | 一个任务一个虚拟线程，用完即弃 |
+
+> **CPU 密集型任务**（加解密、压缩、大计算）仍用平台线程池（`ForkJoinPool` / 固定大小线程池），不要用虚拟线程。
+
+### 4.4 @Async 自动传播 traceId
+
+`MdcTaskDecorator` 已注册为 Spring Bean，`@Async` 方法会自动继承调用方的 `traceId`，无需手动传递。
+
+---
+
+## 五、分层架构
 
 严格遵循阿里规范应用分层：
 
@@ -206,7 +255,7 @@ Repository（repository/） → 数据访问、Entity 映射
 
 ---
 
-## 五、日志
+## 六、日志
 
 - 统一使用 Lombok `@Slf4j`
 - 占位符用 `{}`，禁止字符串拼接
@@ -214,7 +263,7 @@ Repository（repository/） → 数据访问、Entity 映射
 
 ---
 
-## 六、基础设施约定
+## 七、基础设施约定
 
 | 约定 | 说明 |
 |------|------|
