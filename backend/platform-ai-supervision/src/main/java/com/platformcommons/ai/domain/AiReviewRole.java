@@ -1,5 +1,6 @@
 package com.platformcommons.ai.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  * 多角色交叉审议，每个角色代表不同的公共利益视角，
  * 确保 AI 决策不偏向单一利益方。
  */
+@AllArgsConstructor
 @Getter
 public enum AiReviewRole {
 
@@ -34,7 +36,4 @@ public enum AiReviewRole {
 
     private final String description;
 
-    AiReviewRole(String description) {
-        this.description = description;
-    }
 }

@@ -1,10 +1,12 @@
 package com.platformcommons.governance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 提案状态枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum ProposalStatus {
 
@@ -17,7 +19,4 @@ public enum ProposalStatus {
 
     private final String description;
 
-    ProposalStatus(String description) {
-        this.description = description;
-    }
 }

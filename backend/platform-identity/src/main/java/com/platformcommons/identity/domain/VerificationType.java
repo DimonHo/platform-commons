@@ -1,10 +1,12 @@
 package com.platformcommons.identity.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 核验方式枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum VerificationType {
 
@@ -15,7 +17,4 @@ public enum VerificationType {
 
     private final String description;
 
-    VerificationType(String description) {
-        this.description = description;
-    }
 }

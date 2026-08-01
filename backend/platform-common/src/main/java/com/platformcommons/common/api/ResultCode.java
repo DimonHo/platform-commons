@@ -1,5 +1,6 @@
 package com.platformcommons.common.api;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  * 编码分段：{@code 0} 成功；{@code 1xxxx} 通用客户端错误；
  * {@code 5xxxx} 服务端错误；{@code 6xxxx} 业务错误。</p>
  */
+@AllArgsConstructor
 @Getter
 public enum ResultCode {
 
@@ -37,8 +39,4 @@ public enum ResultCode {
     private final int code;
     private final String message;
 
-    ResultCode(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
 }

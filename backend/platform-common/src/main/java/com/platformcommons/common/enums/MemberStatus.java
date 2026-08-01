@@ -1,10 +1,12 @@
 package com.platformcommons.common.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 成员状态枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum MemberStatus {
 
@@ -14,7 +16,4 @@ public enum MemberStatus {
 
     private final String description;
 
-    MemberStatus(String description) {
-        this.description = description;
-    }
 }

@@ -1,6 +1,8 @@
 package com.platformcommons.earlywarning.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * 红线规则标识枚举。
@@ -10,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  *
  * <p>JSON 序列化时自动输出业务码（如 {@code "R-CAP-01"}），而非枚举常量名。</p>
  */
+@AllArgsConstructor
+@Getter
 public enum RedLine {
 
     /** 红线1：单一外部资本持股超过 20%。 */
@@ -27,26 +31,8 @@ public enum RedLine {
     /** 红线5：紧急状态超过 14 天法定上限。 */
     EMERGENCY_OVER_LIMIT("R-EMG-01", "紧急状态超过14天法定上限", AlertCategory.ORGANIZATION_AND_LABOR);
 
+    @JsonValue
     private final String code;
     private final String description;
     private final AlertCategory category;
-
-    RedLine(String code, String description, AlertCategory category) {
-        this.code = code;
-        this.description = description;
-        this.category = category;
-    }
-
-    @JsonValue
-    public String code() {
-        return code;
-    }
-
-    public String description() {
-        return description;
-    }
-
-    public AlertCategory category() {
-        return category;
-    }
 }

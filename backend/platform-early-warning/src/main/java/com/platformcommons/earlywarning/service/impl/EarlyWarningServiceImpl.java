@@ -53,7 +53,7 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
         Objects.requireNonNull(sourceMetric, "sourceMetric must not be null");
 
         if (!isBreached(redLine, sourceMetric)) {
-            log.info("RedLine {} not breached: metric={}", redLine.code(), sourceMetric);
+            log.info("RedLine {} not breached: metric={}", redLine.getCode(), sourceMetric);
             return List.of();
         }
 
@@ -62,9 +62,9 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
         EarlyWarningAlert alert = new EarlyWarningAlert(
                 UUID.randomUUID(),
                 AlertLevel.RED,
-                redLine.category(),
+                redLine.getCategory(),
                 redLine,
-                "红线触发：" + redLine.description(),
+                "红线触发：" + redLine.getDescription(),
                 "指标 " + sourceMetric + " 超过阈值 " + THRESHOLDS.get(redLine),
                 sourceMetric,
                 THRESHOLDS.get(redLine),
@@ -79,7 +79,7 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
         triggered.add(alert);
 
         log.warn("RedLine breached: code={}, metric={}, autoMeasureTriggered=true",
-                redLine.code(), sourceMetric);
+                redLine.getCode(), sourceMetric);
         return triggered;
     }
 
@@ -161,7 +161,7 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
                 case ALGORITHM_NOT_AUDITABLE, GOVERNANCE_CAPTURED -> false;
             };
         } catch (NumberFormatException e) {
-            log.warn("Cannot parse sourceMetric for redLine {}: '{}'", redLine.code(), sourceMetric);
+            log.warn("Cannot parse sourceMetric for redLine {}: '{}'", redLine.getCode(), sourceMetric);
             return false;
         }
     }
@@ -171,7 +171,7 @@ public class EarlyWarningServiceImpl implements EarlyWarningService {
         e.setId(a.id());
         e.setLevel(a.level());
         e.setCategory(a.category());
-        e.setRedLineCode(Optional.ofNullable(a.redLine()).map(RedLine::code).orElse(null));
+        e.setRedLineCode(Optional.ofNullable(a.redLine()).map(RedLine::getCode).orElse(null));
         e.setTitle(a.title());
         e.setDescription(a.description());
         e.setSourceMetric(a.sourceMetric());

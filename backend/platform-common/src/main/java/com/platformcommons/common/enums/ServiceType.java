@@ -1,10 +1,12 @@
 package com.platformcommons.common.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 服务类型枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum ServiceType {
 
@@ -15,7 +17,4 @@ public enum ServiceType {
 
     private final String displayName;
 
-    ServiceType(String displayName) {
-        this.displayName = displayName;
-    }
 }

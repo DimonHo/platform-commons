@@ -1,10 +1,12 @@
 package com.platformcommons.governance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 投票选择枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum VoteChoice {
 
@@ -14,7 +16,4 @@ public enum VoteChoice {
 
     private final String displayName;
 
-    VoteChoice(String displayName) {
-        this.displayName = displayName;
-    }
 }

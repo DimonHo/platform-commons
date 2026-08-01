@@ -1,5 +1,6 @@
 package com.platformcommons.dispute.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  * 三级递进救济流程：先由业务团队复核，
  * 不满意可上诉至申诉委员会，仍不满意可引入外部调解/仲裁。
  */
+@AllArgsConstructor
 @Getter
 public enum DisputeLevel {
 
@@ -22,7 +24,4 @@ public enum DisputeLevel {
 
     private final String description;
 
-    DisputeLevel(String description) {
-        this.description = description;
-    }
 }

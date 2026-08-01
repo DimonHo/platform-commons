@@ -1,5 +1,6 @@
 package com.platformcommons.techgovernance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Getter;
  * <p>
  * 部署/算法规格核验的结论。
  */
+@AllArgsConstructor
 @Getter
 public enum VerificationStatus {
 
@@ -21,7 +23,4 @@ public enum VerificationStatus {
 
     private final String description;
 
-    VerificationStatus(String description) {
-        this.description = description;
-    }
 }

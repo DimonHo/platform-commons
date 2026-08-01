@@ -1,10 +1,12 @@
 package com.platformcommons.ai.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 审议状态（第12章 第67条）
  */
+@AllArgsConstructor
 @Getter
 public enum ReviewStatus {
 
@@ -22,7 +24,4 @@ public enum ReviewStatus {
 
     private final String description;
 
-    ReviewStatus(String description) {
-        this.description = description;
-    }
 }

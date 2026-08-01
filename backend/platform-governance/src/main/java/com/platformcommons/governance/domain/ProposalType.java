@@ -1,10 +1,12 @@
 package com.platformcommons.governance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 提案类型枚举。
  */
+@AllArgsConstructor
 @Getter
 public enum ProposalType {
 
@@ -16,7 +18,4 @@ public enum ProposalType {
 
     private final String displayName;
 
-    ProposalType(String displayName) {
-        this.displayName = displayName;
-    }
 }

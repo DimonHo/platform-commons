@@ -1,10 +1,12 @@
 package com.platformcommons.dispute.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 争议状态（第15章 第93-96条）
  */
+@AllArgsConstructor
 @Getter
 public enum DisputeStatus {
 
@@ -28,7 +30,4 @@ public enum DisputeStatus {
 
     private final String description;
 
-    DisputeStatus(String description) {
-        this.description = description;
-    }
 }

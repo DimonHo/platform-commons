@@ -1,6 +1,7 @@
 package com.platformcommons.identity.domain;
 
 import com.platformcommons.common.enums.StakeholderType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  * <p>与 {@link StakeholderType} 一一对应，用于身份模块内部表达成员承担的角色。
  * 一个成员可同时持有多个角色。</p>
  */
+@AllArgsConstructor
 @Getter
 public enum MemberRole {
 
@@ -20,8 +22,4 @@ public enum MemberRole {
     private final String description;
     private final StakeholderType stakeholderType;
 
-    MemberRole(String description, StakeholderType stakeholderType) {
-        this.description = description;
-        this.stakeholderType = stakeholderType;
-    }
 }

@@ -1,5 +1,6 @@
 package com.platformcommons.ai.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  * 以下事项必须经过 AI 多角色交叉审议方可执行，
  * 任何绕过审议的决策视为治理违规。
  */
+@AllArgsConstructor
 @Getter
 public enum MandatoryReviewItem {
 
@@ -43,7 +45,4 @@ public enum MandatoryReviewItem {
 
     private final String description;
 
-    MandatoryReviewItem(String description) {
-        this.description = description;
-    }
 }

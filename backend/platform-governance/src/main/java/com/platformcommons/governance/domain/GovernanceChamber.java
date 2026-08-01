@@ -1,5 +1,6 @@
 package com.platformcommons.governance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  * <p>对应宪章四院治理结构：劳动者议院、消费者议院、商户议院、公共议院。
  * 重大提案需多院分别表决。</p>
  */
+@AllArgsConstructor
 @Getter
 public enum GovernanceChamber {
 
@@ -18,7 +20,4 @@ public enum GovernanceChamber {
 
     private final String displayName;
 
-    GovernanceChamber(String displayName) {
-        this.displayName = displayName;
-    }
 }

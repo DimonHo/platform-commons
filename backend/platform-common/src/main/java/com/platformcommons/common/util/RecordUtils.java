@@ -72,7 +72,7 @@ public final class RecordUtils {
      * <p>用于大多数字段 1:1、个别字段需要转换的场景：</p>
      * <pre>{@code
      * RecordUtils.copy(alert, AlertResponse.class,
-     *     Map.of("redLineCode", alert.redLine() == null ? null : alert.redLine().code()));
+     *     Map.of("redLineCode", alert.redLine() == null ? null : alert.redLine().getCode()));
      * }</pre>
      *
      * @param source      源 record 实例
