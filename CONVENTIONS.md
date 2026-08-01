@@ -226,7 +226,27 @@ try (ExecutorService pool = VirtualThreads.newExecutor("batch-import")) {
 | `ThreadLocal` + 虚拟线程（内存膨胀） | 避免，或用 scoped values |
 | 池化虚拟线程 | 一个任务一个虚拟线程，用完即弃 |
 
-> **CPU 密集型任务**（加解密、压缩、大计算）仍用平台线程池（`ForkJoinPool` / 固定大小线程池），不要用虚拟线程。
+### 4.3 CPU 密集型 → PlatformThreads
+
+加解密、压缩、序列化、大计算等 **CPU 密集型任务**用 `PlatformThreads`，不要用虚拟线程。
+
+全局唯一共享固定大小线程池（核心数 = `Runtime.availableProcessors()`），内置 MDC 传播 + JVM shutdown hook 自动优雅停机。
+
+```java
+// 1. 无返回值
+PlatformThreads.runAsync(() -> compressImage(bytes));
+
+// 2. 有返回值
+CompletableFuture<byte[]> future = PlatformThreads.supplyAsync(() -> encrypt(data));
+
+// 3. 批量并发
+List<CompletableFuture<Result>> futures = tasks.stream()
+        .map(t -> PlatformThreads.supplyAsync(() -> process(t)))
+        .toList();
+futures.forEach(CompletableFuture::join);
+```
+
+> **选择指南**：IO 密集型 → `VirtualThreads`；CPU 密集型 → `PlatformThreads`。
 
 ### 4.4 @Async 自动传播 traceId
 
