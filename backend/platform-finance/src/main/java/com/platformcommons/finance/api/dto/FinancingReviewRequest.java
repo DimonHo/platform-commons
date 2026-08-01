@@ -27,5 +27,4 @@ public record FinancingReviewRequest(
         BigDecimal repaymentCap,
 
         boolean noGovernance
-) implements Serializable {
-}
+) implements Serializable {}

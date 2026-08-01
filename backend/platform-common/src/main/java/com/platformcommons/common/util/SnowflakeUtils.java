@@ -1,5 +1,7 @@
 package com.platformcommons.common.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * <p>线程安全，单机每毫秒可生成 10,000,000,000 个 ID。</p>
  */
+@Slf4j
 public final class SnowflakeUtils {
 
     private static final DateTimeFormatter TIMESTAMP_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
@@ -105,6 +108,7 @@ public final class SnowflakeUtils {
         } catch (UnknownHostException e) {
             raw = "127.0.0.1";
         }
+        log.info("ServerIp: {}", raw);
         String digits = raw.replace(".", "");
         if (digits.length() <= 5) {
             return String.format("%5s", digits).replace(' ', '0');
