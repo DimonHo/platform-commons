@@ -50,6 +50,43 @@ public class PaymentController {
     }
 }
 
+### 1.3b 禁止手写 getter/setter/toString，统一用 Lombok
+
+POJO / Entity / DTO 一律用 Lombok 注解生成，禁止手写 getter、setter、toString。
+
+| 场景 | 注解 |
+|------|------|
+| 普通 POJO | `@Data`（getter + setter + toString + equals + hashCode） |
+| 只读对象（无 setter） | `@Getter` |
+| JPA Entity | `@Entity @Getter @Setter`（不用 `@Data`，避免 hashCode 触发懒加载） |
+| Builder 模式 | `@Builder` + `@Getter` |
+| 不可变对象 | `@Value`（全 final，无 setter） |
+
+```java
+// ❌ 禁止——手写 getter/setter
+public class MemberEntity {
+    private Long id;
+    private String name;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    // toString() ...
+}
+
+// ✅ 正确——Lombok 一行搞定
+@Getter @Setter
+public class MemberEntity {
+    private Long id;
+    private String name;
+}
+```
+
+> 原则：**尽可能减少代码行数**，样板代码交给 Lombok。
+
+### 1.3c 构造器注入：@RequiredArgsConstructor + final（正确写法）
+
+```java
 // ✅ 正确
 @RequiredArgsConstructor
 public class PaymentController {
