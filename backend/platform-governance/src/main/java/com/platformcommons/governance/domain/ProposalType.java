@@ -1,8 +1,11 @@
 package com.platformcommons.governance.domain;
 
+import lombok.Getter;
+
 /**
  * 提案类型枚举。
  */
+@Getter
 public enum ProposalType {
 
     POLICY_CHANGE("政策变更"),
@@ -15,9 +18,5 @@ public enum ProposalType {
 
     ProposalType(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 }

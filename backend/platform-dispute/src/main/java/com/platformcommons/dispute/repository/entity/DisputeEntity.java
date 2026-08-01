@@ -10,6 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -18,6 +22,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "dispute_records")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class DisputeEntity {
 
     @Id
@@ -49,90 +57,6 @@ public class DisputeEntity {
 
     @Column(length = 32)
     private String filedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDisputeId() {
-        return disputeId;
-    }
-
-    public void setDisputeId(String disputeId) {
-        this.disputeId = disputeId;
-    }
-
-    public String getFiledBy() {
-        return filedBy;
-    }
-
-    public void setFiledBy(String filedBy) {
-        this.filedBy = filedBy;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public DisputeLevel getLevel() {
-        return level;
-    }
-
-    public void setLevel(DisputeLevel level) {
-        this.level = level;
-    }
-
-    public DisputeStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DisputeStatus status) {
-        this.status = status;
-    }
-
-    public String getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
-    }
-
-    public String getFiledAt() {
-        return filedAt;
-    }
-
-    public void setFiledAt(String filedAt) {
-        this.filedAt = filedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "DisputeEntity{"
-                + "id=" + id
-                + ", disputeId='" + disputeId + '\''
-                + ", filedBy='" + filedBy + '\''
-                + ", subject='" + subject + '\''
-                + ", level=" + level
-                + ", status=" + status
-                + '}';
-    }
 
     @Override
     public boolean equals(Object o) {

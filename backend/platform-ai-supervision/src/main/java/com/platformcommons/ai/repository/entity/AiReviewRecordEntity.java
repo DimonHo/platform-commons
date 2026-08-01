@@ -10,6 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -18,6 +22,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "ai_review_records")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class AiReviewRecordEntity {
 
     @Id
@@ -43,73 +51,6 @@ public class AiReviewRecordEntity {
 
     @Column(columnDefinition = "TEXT")
     private String dissent;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(String reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public MandatoryReviewItem getMandatoryItem() {
-        return mandatoryItem;
-    }
-
-    public void setMandatoryItem(MandatoryReviewItem mandatoryItem) {
-        this.mandatoryItem = mandatoryItem;
-    }
-
-    public String getProposal() {
-        return proposal;
-    }
-
-    public void setProposal(String proposal) {
-        this.proposal = proposal;
-    }
-
-    public ReviewStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReviewStatus status) {
-        this.status = status;
-    }
-
-    public Boolean getConsensusReached() {
-        return consensusReached;
-    }
-
-    public void setConsensusReached(Boolean consensusReached) {
-        this.consensusReached = consensusReached;
-    }
-
-    public String getDissent() {
-        return dissent;
-    }
-
-    public void setDissent(String dissent) {
-        this.dissent = dissent;
-    }
-
-    @Override
-    public String toString() {
-        return "AiReviewRecordEntity{"
-                + "id=" + id
-                + ", reviewId='" + reviewId + '\''
-                + ", mandatoryItem=" + mandatoryItem
-                + ", status=" + status
-                + ", consensusReached=" + consensusReached
-                + '}';
-    }
 
     @Override
     public boolean equals(Object o) {

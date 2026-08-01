@@ -1,8 +1,11 @@
 package com.platformcommons.governance.domain;
 
+import lombok.Getter;
+
 /**
  * 提案状态枚举。
  */
+@Getter
 public enum ProposalStatus {
 
     DRAFT("草稿"),
@@ -16,9 +19,5 @@ public enum ProposalStatus {
 
     ProposalStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

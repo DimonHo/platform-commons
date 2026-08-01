@@ -6,6 +6,10 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -19,6 +23,10 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "mutual_claim")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class MutualClaimEntity {
 
     @Id
@@ -53,89 +61,6 @@ public class MutualClaimEntity {
     @Column(name = "reviewer_id", length = 64)
     private String reviewerId;
 
-    public MutualClaimEntity() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getApplicantId() {
-        return applicantId;
-    }
-
-    public void setApplicantId(String applicantId) {
-        this.applicantId = applicantId;
-    }
-
-    public String getIncidentType() {
-        return incidentType;
-    }
-
-    public void setIncidentType(String incidentType) {
-        this.incidentType = incidentType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getClaimedAmount() {
-        return claimedAmount;
-    }
-
-    public void setClaimedAmount(BigDecimal claimedAmount) {
-        this.claimedAmount = claimedAmount;
-    }
-
-    public String getEvidenceUrls() {
-        return evidenceUrls;
-    }
-
-    public void setEvidenceUrls(String evidenceUrls) {
-        this.evidenceUrls = evidenceUrls;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Instant getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(Instant submittedAt) {
-        this.submittedAt = submittedAt;
-    }
-
-    public Instant getReviewedAt() {
-        return reviewedAt;
-    }
-
-    public void setReviewedAt(Instant reviewedAt) {
-        this.reviewedAt = reviewedAt;
-    }
-
-    public String getReviewerId() {
-        return reviewerId;
-    }
-
-    public void setReviewerId(String reviewerId) {
-        this.reviewerId = reviewerId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -150,15 +75,5 @@ public class MutualClaimEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "MutualClaimEntity{id=" + id
-                + ", applicantId='" + applicantId + '\''
-                + ", incidentType='" + incidentType + '\''
-                + ", claimedAmount=" + claimedAmount
-                + ", status='" + status + '\''
-                + ", submittedAt=" + submittedAt + '}';
     }
 }

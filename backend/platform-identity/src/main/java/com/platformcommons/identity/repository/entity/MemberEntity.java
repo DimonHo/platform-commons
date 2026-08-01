@@ -6,6 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,6 +22,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "member")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class MemberEntity {
 
     @Id
@@ -43,65 +51,6 @@ public class MemberEntity {
     @Column(name = "labor_shares")
     private Integer laborShares;
 
-    public MemberEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getRegisteredAt() {
-        return registeredAt;
-    }
-
-    public void setRegisteredAt(LocalDateTime registeredAt) {
-        this.registeredAt = registeredAt;
-    }
-
-    public Integer getLaborShares() {
-        return laborShares;
-    }
-
-    public void setLaborShares(Integer laborShares) {
-        this.laborShares = laborShares;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -116,18 +65,5 @@ public class MemberEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "MemberEntity{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", phone='" + phone + '\''
-                + ", roles='" + roles + '\''
-                + ", status='" + status + '\''
-                + ", registeredAt=" + registeredAt
-                + ", laborShares=" + laborShares
-                + '}';
     }
 }

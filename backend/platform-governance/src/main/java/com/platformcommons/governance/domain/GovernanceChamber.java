@@ -1,11 +1,14 @@
 package com.platformcommons.governance.domain;
 
+import lombok.Getter;
+
 /**
  * 治理议院枚举。
  *
  * <p>对应宪章四院治理结构：劳动者议院、消费者议院、商户议院、公共议院。
  * 重大提案需多院分别表决。</p>
  */
+@Getter
 public enum GovernanceChamber {
 
     WORKER_CHAMBER("劳动者议院"),
@@ -17,9 +20,5 @@ public enum GovernanceChamber {
 
     GovernanceChamber(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 }

@@ -1,11 +1,14 @@
 package com.platformcommons.common.enums;
 
+import lombok.Getter;
+
 /**
  * 利益相关方枚举。
  *
  * <p>对应宪章四类成员。{@link #getWeight()} 返回多院治理表决中的权重，
  * 劳动者权重高于其他类型，体现劳动优先原则。</p>
  */
+@Getter
 public enum StakeholderType {
 
     WORKER("劳动者"),
@@ -39,16 +42,5 @@ public enum StakeholderType {
             case MERCHANT -> WEIGHT_MERCHANT;
             case PUBLIC_MEMBER -> WEIGHT_PUBLIC;
         };
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * 返回治理表决权重（0.0 ~ 1.0）。
-     */
-    public double getWeight() {
-        return weight;
     }
 }

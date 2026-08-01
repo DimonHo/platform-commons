@@ -6,6 +6,10 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -19,6 +23,10 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "payment_ledger_event")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class LedgerEventEntity {
 
     @Id
@@ -41,63 +49,12 @@ public class LedgerEventEntity {
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
 
-    public LedgerEventEntity() {
-    }
-
     public LedgerEventEntity(UUID eventId, UUID transactionId, String eventType,
                              BigDecimal amount, Instant occurredAt) {
         this.eventId = eventId;
         this.transactionId = transactionId;
         this.eventType = eventType;
         this.amount = amount;
-        this.occurredAt = occurredAt;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
-    }
-
-    public UUID getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(UUID transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Instant getOccurredAt() {
-        return occurredAt;
-    }
-
-    public void setOccurredAt(Instant occurredAt) {
         this.occurredAt = occurredAt;
     }
 
@@ -115,15 +72,5 @@ public class LedgerEventEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "LedgerEventEntity{id=" + id
-                + ", eventId=" + eventId
-                + ", transactionId=" + transactionId
-                + ", eventType='" + eventType + '\''
-                + ", amount=" + amount
-                + ", occurredAt=" + occurredAt + '}';
     }
 }

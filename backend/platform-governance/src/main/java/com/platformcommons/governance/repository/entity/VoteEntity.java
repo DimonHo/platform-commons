@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -22,6 +26,10 @@ import java.util.Objects;
 @Table(name = "vote", uniqueConstraints = {
         @UniqueConstraint(name = "uk_proposal_voter", columnNames = {"proposal_id", "voter_id"})
 })
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class VoteEntity {
 
     @Id
@@ -40,49 +48,6 @@ public class VoteEntity {
     @Column(name = "voted_at", nullable = false)
     private LocalDateTime votedAt;
 
-    public VoteEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getProposalId() {
-        return proposalId;
-    }
-
-    public void setProposalId(Long proposalId) {
-        this.proposalId = proposalId;
-    }
-
-    public Long getVoterId() {
-        return voterId;
-    }
-
-    public void setVoterId(Long voterId) {
-        this.voterId = voterId;
-    }
-
-    public String getChoice() {
-        return choice;
-    }
-
-    public void setChoice(String choice) {
-        this.choice = choice;
-    }
-
-    public LocalDateTime getVotedAt() {
-        return votedAt;
-    }
-
-    public void setVotedAt(LocalDateTime votedAt) {
-        this.votedAt = votedAt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -97,16 +62,5 @@ public class VoteEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "VoteEntity{"
-                + "id=" + id
-                + ", proposalId=" + proposalId
-                + ", voterId=" + voterId
-                + ", choice='" + choice + '\''
-                + ", votedAt=" + votedAt
-                + '}';
     }
 }

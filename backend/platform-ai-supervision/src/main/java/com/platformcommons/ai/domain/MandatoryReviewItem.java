@@ -1,11 +1,14 @@
 package com.platformcommons.ai.domain;
 
+import lombok.Getter;
+
 /**
  * 强制审议事项清单（第62条）
  * <p>
  * 以下事项必须经过 AI 多角色交叉审议方可执行，
  * 任何绕过审议的决策视为治理违规。
  */
+@Getter
 public enum MandatoryReviewItem {
 
     /** 定价算法变更 */
@@ -42,9 +45,5 @@ public enum MandatoryReviewItem {
 
     MandatoryReviewItem(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

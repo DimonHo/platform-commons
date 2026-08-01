@@ -1,8 +1,11 @@
 package com.platformcommons.dispute.domain;
 
+import lombok.Getter;
+
 /**
  * 争议状态（第15章 第93-96条）
  */
+@Getter
 public enum DisputeStatus {
 
     /** 已提交，待处理 */
@@ -27,9 +30,5 @@ public enum DisputeStatus {
 
     DisputeStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

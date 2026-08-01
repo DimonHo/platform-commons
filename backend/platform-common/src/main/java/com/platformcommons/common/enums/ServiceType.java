@@ -1,8 +1,11 @@
 package com.platformcommons.common.enums;
 
+import lombok.Getter;
+
 /**
  * 服务类型枚举。
  */
+@Getter
 public enum ServiceType {
 
     RIDE_HAILING("网约车"),
@@ -14,9 +17,5 @@ public enum ServiceType {
 
     ServiceType(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 }

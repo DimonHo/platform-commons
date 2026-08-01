@@ -1,8 +1,11 @@
 package com.platformcommons.common.enums;
 
+import lombok.Getter;
+
 /**
  * 成员状态枚举。
  */
+@Getter
 public enum MemberStatus {
 
     ACTIVE("活跃"),
@@ -13,9 +16,5 @@ public enum MemberStatus {
 
     MemberStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

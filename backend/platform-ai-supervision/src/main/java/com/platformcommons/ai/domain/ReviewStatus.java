@@ -1,8 +1,11 @@
 package com.platformcommons.ai.domain;
 
+import lombok.Getter;
+
 /**
  * 审议状态（第12章 第67条）
  */
+@Getter
 public enum ReviewStatus {
 
     /** 待审议 */
@@ -21,9 +24,5 @@ public enum ReviewStatus {
 
     ReviewStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

@@ -6,6 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -15,6 +19,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "finance_financing_records")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class FinancingRecordEntity {
 
     @Id
@@ -38,74 +46,6 @@ public class FinancingRecordEntity {
 
     @Column(length = 32)
     private String disclosedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(String recordId) {
-        this.recordId = recordId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getFinancingType() {
-        return financingType;
-    }
-
-    public void setFinancingType(String financingType) {
-        this.financingType = financingType;
-    }
-
-    public BigDecimal getRepaymentCap() {
-        return repaymentCap;
-    }
-
-    public void setRepaymentCap(BigDecimal repaymentCap) {
-        this.repaymentCap = repaymentCap;
-    }
-
-    public Boolean getNoGovernance() {
-        return noGovernance;
-    }
-
-    public void setNoGovernance(Boolean noGovernance) {
-        this.noGovernance = noGovernance;
-    }
-
-    public String getDisclosedAt() {
-        return disclosedAt;
-    }
-
-    public void setDisclosedAt(String disclosedAt) {
-        this.disclosedAt = disclosedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "FinancingRecordEntity{"
-                + "id=" + id
-                + ", recordId='" + recordId + '\''
-                + ", amount=" + amount
-                + ", financingType='" + financingType + '\''
-                + ", repaymentCap=" + repaymentCap
-                + ", noGovernance=" + noGovernance
-                + '}';
-    }
 
     @Override
     public boolean equals(Object o) {

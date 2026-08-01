@@ -1,8 +1,11 @@
 package com.platformcommons.identity.domain;
 
+import lombok.Getter;
+
 /**
  * 核验方式枚举。
  */
+@Getter
 public enum VerificationType {
 
     PHONE("手机号核验"),
@@ -14,9 +17,5 @@ public enum VerificationType {
 
     VerificationType(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

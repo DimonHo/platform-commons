@@ -1,10 +1,13 @@
 package com.platformcommons.techgovernance.domain;
 
+import lombok.Getter;
+
 /**
  * 核验状态（第13章 第71条）
  * <p>
  * 部署/算法规格核验的结论。
  */
+@Getter
 public enum VerificationStatus {
 
     /** 已核验：代码与规格一致 */
@@ -20,9 +23,5 @@ public enum VerificationStatus {
 
     VerificationStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

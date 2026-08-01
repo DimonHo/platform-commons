@@ -1,8 +1,11 @@
 package com.platformcommons.identity.domain;
 
+import lombok.Getter;
+
 /**
  * 核验状态枚举。
  */
+@Getter
 public enum VerificationStatus {
 
     PENDING("待核验"),
@@ -13,9 +16,5 @@ public enum VerificationStatus {
 
     VerificationStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

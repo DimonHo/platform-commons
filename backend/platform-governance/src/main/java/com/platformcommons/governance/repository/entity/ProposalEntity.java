@@ -6,6 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,6 +22,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "proposal")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class ProposalEntity {
 
     @Id
@@ -51,89 +59,6 @@ public class ProposalEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    public ProposalEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Long getProposerId() {
-        return proposerId;
-    }
-
-    public void setProposerId(Long proposerId) {
-        this.proposerId = proposerId;
-    }
-
-    public String getTargetChamber() {
-        return targetChamber;
-    }
-
-    public void setTargetChamber(String targetChamber) {
-        this.targetChamber = targetChamber;
-    }
-
-    public LocalDateTime getVotingStartAt() {
-        return votingStartAt;
-    }
-
-    public void setVotingStartAt(LocalDateTime votingStartAt) {
-        this.votingStartAt = votingStartAt;
-    }
-
-    public LocalDateTime getVotingEndAt() {
-        return votingEndAt;
-    }
-
-    public void setVotingEndAt(LocalDateTime votingEndAt) {
-        this.votingEndAt = votingEndAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -148,20 +73,5 @@ public class ProposalEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "ProposalEntity{"
-                + "id=" + id
-                + ", title='" + title + '\''
-                + ", type='" + type + '\''
-                + ", status='" + status + '\''
-                + ", proposerId=" + proposerId
-                + ", targetChamber='" + targetChamber + '\''
-                + ", votingStartAt=" + votingStartAt
-                + ", votingEndAt=" + votingEndAt
-                + ", createdAt=" + createdAt
-                + '}';
     }
 }

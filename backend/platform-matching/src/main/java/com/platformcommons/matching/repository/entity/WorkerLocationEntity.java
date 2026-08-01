@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -13,6 +17,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "worker_location")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class WorkerLocationEntity {
 
     @Id
@@ -37,65 +45,6 @@ public class WorkerLocationEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public WorkerLocationEntity() {
-    }
-
-    public String getWorkerId() {
-        return workerId;
-    }
-
-    public void setWorkerId(String workerId) {
-        this.workerId = workerId;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public int getActiveOrders() {
-        return activeOrders;
-    }
-
-    public void setActiveOrders(int activeOrders) {
-        this.activeOrders = activeOrders;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public int getRegistrationDays() {
-        return registrationDays;
-    }
-
-    public void setRegistrationDays(int registrationDays) {
-        this.registrationDays = registrationDays;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -110,16 +59,5 @@ public class WorkerLocationEntity {
     @Override
     public int hashCode() {
         return Objects.hash(workerId);
-    }
-
-    @Override
-    public String toString() {
-        return "WorkerLocationEntity{workerId='" + workerId
-                + "', lat=" + latitude
-                + ", lng=" + longitude
-                + ", activeOrders=" + activeOrders
-                + ", rating=" + rating
-                + ", registrationDays=" + registrationDays
-                + ", updatedAt=" + updatedAt + '}';
     }
 }
