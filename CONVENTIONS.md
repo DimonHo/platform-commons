@@ -323,6 +323,23 @@ Repository（repository/） → 数据访问、Entity 映射
 - `domain/` → 领域模型（优先 record / sealed）
 - `repository/` → JPA Entity + Repository
 
+### 5.1 Entity 枚举字段直接用枚举类型
+
+Entity 中的枚举字段**禁止用 String 存储**（手动 `.name()` / `valueOf` 转换），必须直接声明为枚举类型 + `@Enumerated(EnumType.STRING)`。
+
+```java
+// ❌ 禁止——String 存枚举，手动转换
+private String status;
+entity.setStatus(ProposalStatus.OPEN.name());
+ProposalStatus.valueOf(entity.getStatus());
+
+// ✅ 正确——直接用枚举类型
+@Enumerated(EnumType.STRING)
+private ProposalStatus status;
+entity.setStatus(ProposalStatus.OPEN);
+entity.getStatus() == ProposalStatus.OPEN
+```
+
 ---
 
 ## 六、日志
