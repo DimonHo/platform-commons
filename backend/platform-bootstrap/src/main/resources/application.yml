@@ -56,11 +56,20 @@ platformcommons:
       - /swagger-ui/**
       - /swagger-ui.html
       - /actuator/**
+  # API 日志过滤器配置
+  api-log:
+    # 排除路径（Ant 模式），这些请求不记录日志
+    exclude-paths:
+      - /actuator/**
+      - /v3/api-docs/**
+      - /swagger-ui/**
+    # 单次请求/响应体日志最大字符数，超出截断
+    max-body-length: 2000
 
 logging:
   level:
     com.platformcommons: INFO
     org.springframework.web: INFO
   pattern:
-    # 日志格式中加入 traceId，便于全链路追踪
-    level: "%5p [%X{traceId:-}]"
+    # MDC 字段：traceId / clientIp / method / uri / elapsed
+    level: "%5p [%X{traceId:-}] %X{clientIp:-} %X{method:-} %X{uri:-} %X{elapsed:-}"
