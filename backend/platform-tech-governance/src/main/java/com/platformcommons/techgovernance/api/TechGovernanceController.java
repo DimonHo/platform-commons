@@ -1,5 +1,7 @@
 package com.platformcommons.techgovernance.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.techgovernance.api.dto.DeploymentVerifyRequest;
 import com.platformcommons.techgovernance.domain.AlgorithmSpec;
 import com.platformcommons.techgovernance.domain.DeploymentRecord;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "技术治理", description = "算法代码数据治理（第13章 第70-80条）")
 public class TechGovernanceController {
 
     private final TechGovernanceService techGovernanceService;

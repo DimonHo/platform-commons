@@ -39,6 +39,17 @@ server:
     threads:
       max: 200
 
+springdoc:
+  # OpenAPI 文档分组（按模块 Tag 自动分组）
+  swagger-ui:
+    path: /swagger-ui.html
+    # 按标签字母排序
+    tags-sorter: alpha
+    # 按路径排序
+    operations-sorter: method
+    # 默认展开所有标签
+    doc-expansion: none
+
 management:
   endpoints:
     web:

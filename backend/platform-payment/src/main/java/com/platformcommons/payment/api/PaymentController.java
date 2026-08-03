@@ -1,5 +1,7 @@
 package com.platformcommons.payment.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.payment.api.dto.ChargeRequest;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "支付分账", description = "支付、分账、退款（第9章 第43-49条）")
 public class PaymentController {
 
     private final PaymentService paymentService;

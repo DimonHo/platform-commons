@@ -1,5 +1,7 @@
 package com.platformcommons.mutual.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.common.util.RecordUtils;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "互助基金", description = "劳动意外互助基金申请与审核（第14章 第81-92条）")
 public class MutualFundController {
 
     private final MutualFundService mutualFundService;

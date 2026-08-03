@@ -1,5 +1,7 @@
 package com.platformcommons.identity.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.identity.api.dto.MemberRegisterRequest;
 import com.platformcommons.identity.api.dto.MemberResponse;
 import com.platformcommons.identity.service.MemberService;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "成员身份", description = "成员注册、查询、状态管理（第1章 第1-5条）")
 public class MemberController {
 
     private final MemberService memberService;

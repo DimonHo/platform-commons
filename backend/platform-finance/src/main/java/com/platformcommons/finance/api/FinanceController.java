@@ -1,5 +1,7 @@
 package com.platformcommons.finance.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.finance.api.dto.FinancingReviewRequest;
 import com.platformcommons.finance.domain.FinancialDisclosure;
 import com.platformcommons.finance.domain.FinancingRecord;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "财务融资", description = "融资采购关联交易（第10-11章 第50-59条）")
 public class FinanceController {
 
     private final FinanceComplianceService financeComplianceService;

@@ -1,5 +1,7 @@
 package com.platformcommons.governance.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.governance.api.dto.CreateProposalRequest;
 import com.platformcommons.governance.api.dto.VoteRequest;
 import com.platformcommons.governance.api.dto.VoteResultResponse;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "治理", description = "提案发起、投票、表决结果（第4-5章 第16-26条）")
 public class GovernanceController {
 
     private final GovernanceService governanceService;

@@ -1,5 +1,7 @@
 package com.platformcommons.earlywarning.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.common.util.RecordUtils;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "防异化预警", description = "劳动异化预警与红线监控")
 public class EarlyWarningController {
 
     private final EarlyWarningService earlyWarningService;

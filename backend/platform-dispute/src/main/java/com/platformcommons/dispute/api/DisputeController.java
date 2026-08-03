@@ -1,5 +1,7 @@
 package com.platformcommons.dispute.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.common.util.RecordUtils;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "申诉争议", description = "申诉与争议处理（第15章 第93-96条）")
 public class DisputeController {
 
     private final DisputeService disputeService;

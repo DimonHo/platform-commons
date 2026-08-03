@@ -1,5 +1,7 @@
 package com.platformcommons.ai.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.ai.api.dto.ReviewRequest;
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
@@ -27,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "AI监督", description = "AI 公共监督审议（第12章 第60-69条）")
 public class AiSupervisionController {
 
     private final AiSupervisionService aiSupervisionService;

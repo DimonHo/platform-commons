@@ -1,5 +1,7 @@
 package com.platformcommons.matching.api;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.platformcommons.matching.api.dto.MatchRequest;
 import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.matching.api.dto.MatchResponse;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "匹配引擎", description = "劳动者与需求方的智能匹配")
 public class MatchingController {
 
     private final MatchingEngineService matchingEngineService;
