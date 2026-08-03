@@ -68,7 +68,8 @@ public class ApiLogFilter extends OncePerRequestFilter {
 
         MDC.put(MDC_CLIENT_IP, resolveClientIp(request));
         MDC.put(MDC_METHOD, request.getMethod());
-        MDC.put(MDC_URI, request.getRequestURI());
+        MDC.put(MDC_URI, request.getRequestURI()
+                + (StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : ""));
 
         long start = System.currentTimeMillis();
         try {
@@ -76,18 +77,17 @@ public class ApiLogFilter extends OncePerRequestFilter {
         } finally {
             long elapsed = System.currentTimeMillis() - start;
             MDC.put(MDC_ELAPSED, elapsed + "ms");
-            logApi(wrappedRequest, wrappedResponse, elapsed);
+            logApi(wrappedRequest, wrappedResponse);
             clearMdc();
             wrappedResponse.copyBodyToResponse();
         }
     }
 
-    private void logApi(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response, long elapsed) {
-        String query = StringUtils.hasText(request.getQueryString()) ? "?" + request.getQueryString() : "";
+    private void logApi(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response) {
         String reqBody = isMultipart(request) ? "[multipart]" : truncate(toUtf8(request.getContentAsByteArray()));
         String respBody = truncate(toUtf8(response.getContentAsByteArray()));
-        log.info("API [{}] {}{} → {}ms status={} | req={} | resp={}",
-                request.getMethod(), request.getRequestURI(), query, elapsed, response.getStatus(), reqBody, respBody);
+        log.info("API status={} | req={} | resp={}",
+                response.getStatus(), reqBody, respBody);
     }
 
     private boolean isMultipart(HttpServletRequest request) {
