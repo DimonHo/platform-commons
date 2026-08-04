@@ -1,7 +1,7 @@
 # 平台共同体 · 技术架构设计 v2.0
 
 > 基于宪章 v0.2（21 章 124 条）设计的技术实现架构
-> 技术栈：Java 27 + Spring Boot 4.1.0 + PostgreSQL + Redis
+> 技术栈：Java 25 + Spring Boot 4.1.0 + PostgreSQL + Redis
 > 开发规范：[CONVENTIONS.md](CONVENTIONS.md)（基于阿里巴巴黄山版）
 >
 > **v2.0 变更**：整合多身份体系、钱包与支付网关、统一支付渠道（微信/支付宝/银行）、提现、业务订单流转、消息通知、抢单广播，引入 DDD 领域模型设计。
@@ -42,7 +42,7 @@
 
 | 层面 | 选择 | 理由 |
 |------|------|------|
-| 语言 | Java 27 (EA) | 宪章要求最新版本；record/sealed/pattern matching |
+| 语言 | Java 25 (Zulu) | record/sealed/pattern matching；最新 LTS |
 | 框架 | Spring Boot 4.1.0 | 最新稳定版 |
 | 构建 | Gradle 8.x (Groovy DSL) | 多模块管理 |
 | 数据库 | PostgreSQL 16 + PostGIS | 空间索引、事务完整性 |
