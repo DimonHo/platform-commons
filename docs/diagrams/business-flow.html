@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公地引擎 · 核心业务流程图</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; min-height: 100vh; padding: 2rem; color: white; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot { width: 12px; height: 12px; background: #fb7185; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container { background: rgba(15, 23, 42, 0.5); border-radius: 1rem; border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 1200px; display: block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .card { background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem; border: 1px solid #1e293b; padding: 1.25rem; }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; } .card-dot.emerald { background: #34d399; } .card-dot.violet { background: #a78bfa; } .card-dot.amber { background: #fbbf24; } .card-dot.rose { background: #fb7185; } .card-dot.orange { background: #fb923c; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>公地引擎 · 核心业务流程图</h1>
+      </div>
+      <p class="subtitle">5 条核心业务链路 · 从成员注册到争议救济的全生命周期</p>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1300 1450">
+        <defs>
+          <marker id="fa" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+          <pattern id="grid3" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid3)" />
+
+        <!-- ===================== Flow 1: 成员生命周期 ===================== -->
+        <rect x="20" y="10" width="1260" height="250" rx="12" fill="rgba(6, 78, 59, 0.05)" stroke="#34d399" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="35" y="28" fill="#34d399" font-size="10" font-weight="600">① 成员生命周期 (Identity → 全域)</text>
+
+        <!-- Start -->
+        <rect x="40" y="50" width="100" height="50" rx="25" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="2"/>
+        <text x="90" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">用户注册</text>
+        <text x="90" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">POST /api/members</text>
+
+        <line x1="140" y1="75" x2="178" y2="75" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Validate -->
+        <rect x="180" y="50" width="120" height="50" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="240" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">身份验证</text>
+        <text x="240" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">phone UQ 校验</text>
+        <text x="240" y="96" fill="#94a3b8" font-size="7" text-anchor="middle">VerificationType</text>
+
+        <line x1="300" y1="75" x2="338" y2="75" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Assign Role -->
+        <rect x="340" y="50" width="120" height="50" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="400" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">分配角色</text>
+        <text x="400" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">WORKER / CONSUMER</text>
+        <text x="400" y="96" fill="#94a3b8" font-size="7" text-anchor="middle">/ MERCHANT / PUBLIC</text>
+
+        <line x1="460" y1="75" x2="498" y2="75" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Persist -->
+        <rect x="500" y="50" width="130" height="50" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="565" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">写入 member 表</text>
+        <text x="565" y="86" fill="#a78bfa" font-size="7" text-anchor="middle">⚡ 分片: id % 64</text>
+        <text x="565" y="96" fill="#94a3b8" font-size="7" text-anchor="middle">SnowflakeId</text>
+
+        <line x1="630" y1="75" x2="668" y2="75" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Active -->
+        <rect x="670" y="50" width="100" height="50" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="720" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">状态=ACTIVE</text>
+        <text x="720" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">可参与全部业务</text>
+
+        <!-- Branches from ACTIVE -->
+        <line x1="770" y1="75" x2="820" y2="75" stroke="#34d399" stroke-width="1.5"/>
+        <line x1="820" y1="55" x2="820" y2="170" stroke="#34d399" stroke-width="1.5"/>
+
+        <!-- Branch 1: Governance -->
+        <line x1="820" y1="55" x2="858" y2="55" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="860" y="40" width="110" height="40" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="915" y="58" fill="white" font-size="8" font-weight="600" text-anchor="middle">参与治理</text>
+        <text x="915" y="72" fill="#94a3b8" font-size="7" text-anchor="middle">提案/投票/竞选</text>
+
+        <!-- Branch 2: Payment -->
+        <line x1="820" y1="115" x2="858" y2="115" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="860" y="100" width="110" height="40" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="915" y="118" fill="white" font-size="8" font-weight="600" text-anchor="middle">劳动收益</text>
+        <text x="915" y="132" fill="#94a3b8" font-size="7" text-anchor="middle">结算/分账/返还</text>
+
+        <!-- Branch 3: Mutual -->
+        <line x1="820" y1="170" x2="858" y2="170" stroke="#fb7185" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="860" y="155" width="110" height="40" rx="6" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="915" y="173" fill="white" font-size="8" font-weight="600" text-anchor="middle">互助保障</text>
+        <text x="915" y="187" fill="#94a3b8" font-size="7" text-anchor="middle">资格/理赔</text>
+
+        <!-- Terminal states -->
+        <rect x="1020" y="50" width="100" height="50" rx="25" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="2"/>
+        <text x="1070" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">SUSPENDED</text>
+        <text x="1070" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">违规暂停</text>
+
+        <rect x="1160" y="50" width="100" height="50" rx="25" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="2"/>
+        <text x="1210" y="72" fill="white" font-size="9" font-weight="600" text-anchor="middle">WITHDRAWN</text>
+        <text x="1210" y="86" fill="#94a3b8" font-size="7" text-anchor="middle">退出平台</text>
+
+        <line x1="720" y1="100" x2="720" y2="140" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fa)"/>
+        <text x="730" y="125" fill="#fb923c" font-size="7">违规</text>
+        <line x1="1070" y1="100" x2="1070" y2="130" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="1070" y1="130" x2="1210" y2="130" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="1210" y1="130" x2="1210" y2="100" stroke="#fb7185" stroke-width="1.5" marker-end="url(#fa)"/>
+        <text x="1140" y="125" fill="#fb7185" font-size="7">申请退出</text>
+
+        <!-- Data flow annotations -->
+        <text x="565" y="120" fill="#a78bfa" font-size="7" font-weight="600" text-anchor="middle">db_identity.member_${id%64}</text>
+
+        <!-- ===================== Flow 2: 提案投票流程 ===================== -->
+        <rect x="20" y="280" width="1260" height="270" rx="12" fill="rgba(120, 53, 15, 0.05)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="35" y="298" fill="#fbbf24" font-size="10" font-weight="600">② 提案投票流程 (Governance + AI Supervision)</text>
+
+        <!-- Proposer creates -->
+        <rect x="40" y="320" width="110" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="95" y="342" fill="white" font-size="9" font-weight="600" text-anchor="middle">创建提案</text>
+        <text x="95" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">DRAFT</text>
+
+        <line x1="150" y1="345" x2="188" y2="345" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- AI Review check (diamond) -->
+        <polygon points="250,345 310,320 370,345 310,370" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="310" y="342" fill="white" font-size="8" font-weight="600" text-anchor="middle">强制审议?</text>
+        <text x="310" y="356" fill="#22d3ee" font-size="7" text-anchor="middle">MandatoryReviewItem</text>
+
+        <!-- YES path: AI review -->
+        <text x="375" y="335" fill="#22d3ee" font-size="7">是</text>
+        <line x1="370" y1="345" x2="418" y2="345" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="420" y="320" width="130" height="50" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="485" y="342" fill="white" font-size="9" font-weight="600" text-anchor="middle">AI 多角色交叉审议</text>
+        <text x="485" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">经济/法律/劳动/反俘获</text>
+
+        <line x1="550" y1="345" x2="588" y2="345" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <polygon points="620,345 650,325 680,345 650,365" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="650" y="348" fill="white" font-size="7" text-anchor="middle">共识?</text>
+
+        <!-- NO path: skip AI -->
+        <text x="295" y="385" fill="#fbbf24" font-size="7">否</text>
+        <path d="M 250 370 L 250 400 L 700 400 L 700 365" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fa)"/>
+
+        <!-- Open for voting -->
+        <line x1="680" y1="345" x2="728" y2="345" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="730" y="320" width="110" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="785" y="342" fill="white" font-size="9" font-weight="600" text-anchor="middle">开放投票</text>
+        <text x="785" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">status=OPEN</text>
+
+        <line x1="840" y1="345" x2="878" y2="345" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Voting -->
+        <rect x="880" y="320" width="120" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="940" y="342" fill="white" font-size="9" font-weight="600" text-anchor="middle">四院分别投票</text>
+        <text x="940" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">YES/NO/ABSTAIN</text>
+        <text x="940" y="366" fill="#a78bfa" font-size="7" text-anchor="middle">⚡ vote 分表写入</text>
+
+        <line x1="1000" y1="345" x2="1038" y2="345" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Tally -->
+        <polygon points="1090,345 1130,320 1170,345 1130,370" fill="rgba(120, 53, 15, 0.4)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="1130" y="342" fill="white" font-size="8" font-weight="600" text-anchor="middle">达到</text>
+        <text x="1130" y="356" fill="#94a3b8" font-size="7" text-anchor="middle">法定人数?</text>
+
+        <!-- Passed -->
+        <text x="1180" y="325" fill="#34d399" font-size="7">通过</text>
+        <line x1="1170" y1="335" x2="1208" y2="320" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="1210" y="300" width="60" height="40" rx="20" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="2"/>
+        <text x="1240" y="325" fill="white" font-size="8" font-weight="600" text-anchor="middle">PASSED</text>
+
+        <!-- Rejected -->
+        <text x="1180" y="370" fill="#fb7185" font-size="7">否决</text>
+        <line x1="1170" y1="355" x2="1208" y2="370" stroke="#fb7185" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="1210" y="360" width="60" height="40" rx="20" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="2"/>
+        <text x="1240" y="385" fill="white" font-size="8" font-weight="600" text-anchor="middle">REJECTED</text>
+
+        <!-- Vote storage annotation -->
+        <rect x="880" y="400" width="280" height="40" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="1020" y="418" fill="#a78bfa" font-size="7" text-anchor="middle">⚡ db_governance.vote_${proposal_id % 128}</text>
+        <text x="1020" y="432" fill="#94a3b8" font-size="7" text-anchor="middle">绑定表: proposal & vote 同库 · uk(proposal_id, voter_id) 一人一票</text>
+
+        <!-- Outbox annotation -->
+        <rect x="420" y="400" width="380" height="40" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="610" y="418" fill="#fb923c" font-size="7" text-anchor="middle">PASSED → Outbox 事件 → 通知支付域/匹配域执行政策变更</text>
+        <text x="610" y="432" fill="#94a3b8" font-size="7" text-anchor="middle">跨域最终一致性 (Saga 补偿)</text>
+
+        <!-- ===================== Flow 3: 支付结算流程 ===================== -->
+        <rect x="20" y="570" width="1260" height="240" rx="12" fill="rgba(76, 29, 149, 0.05)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="35" y="588" fill="#a78bfa" font-size="10" font-weight="600">③ 支付结算流程 (Payment · 事件溯源 + 复式记账)</text>
+
+        <!-- Order complete -->
+        <rect x="40" y="610" width="100" height="50" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="90" y="632" fill="white" font-size="9" font-weight="600" text-anchor="middle">订单完成</text>
+        <text x="90" y="646" fill="#94a3b8" font-size="7" text-anchor="middle">触发结算</text>
+
+        <line x1="140" y1="635" x2="178" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Calculate settlement -->
+        <rect x="180" y="610" width="130" height="50" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="245" y="628" fill="white" font-size="9" font-weight="600" text-anchor="middle">计算分账</text>
+        <text x="245" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">SettlementRule</text>
+        <text x="245" y="654" fill="#94a3b8" font-size="7" text-anchor="middle">服务费 + 返还比例</text>
+
+        <line x1="310" y1="635" x2="348" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Anti-exploitation check -->
+        <polygon points="400,635 360,615 320,635 360,655" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="360" y="632" fill="white" font-size="7" font-weight="600" text-anchor="middle">反榨取</text>
+        <text x="360" y="646" fill="#fb923c" font-size="7" text-anchor="middle">校验</text>
+
+        <line x1="400" y1="635" x2="438" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Event 1: CHARGE -->
+        <rect x="440" y="610" width="100" height="50" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="490" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">CHARGE</text>
+        <text x="490" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">收款事件</text>
+        <text x="490" y="654" fill="#a78bfa" font-size="7" text-anchor="middle">⚡ 分片写入</text>
+
+        <line x1="540" y1="635" x2="578" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Event 2: SETTLE -->
+        <rect x="580" y="610" width="100" height="50" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="630" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">SETTLE</text>
+        <text x="630" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">分账事件</text>
+        <text x="630" y="654" fill="#a78bfa" font-size="7" text-anchor="middle">→ 劳动者</text>
+
+        <line x1="680" y1="635" x2="718" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Event 3: FEE -->
+        <rect x="720" y="610" width="100" height="50" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="770" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">FEE</text>
+        <text x="770" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">平台服务费</text>
+        <text x="770" y="654" fill="#a78bfa" font-size="7" text-anchor="middle">→ 平台基金</text>
+
+        <line x1="820" y1="635" x2="858" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Event 4: REFUND (conditional) -->
+        <rect x="860" y="610" width="100" height="50" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="910" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">REFUND</text>
+        <text x="910" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">返还事件</text>
+        <text x="910" y="654" fill="#94a3b8" font-size="7" text-anchor="middle">(条件触发)</text>
+
+        <line x1="960" y1="635" x2="998" y2="635" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Outbox -->
+        <rect x="1000" y="610" width="120" height="50" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="1060" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">Outbox 事件表</text>
+        <text x="1060" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">同一事务保证</text>
+        <text x="1060" y="654" fill="#fb923c" font-size="7" text-anchor="middle">→ RocketMQ</text>
+
+        <line x1="1120" y1="635" x2="1158" y2="635" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fa)"/>
+
+        <!-- Notify -->
+        <rect x="1160" y="610" width="110" height="50" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="1215" y="628" fill="white" font-size="8" font-weight="600" text-anchor="middle">异步通知</text>
+        <text x="1215" y="642" fill="#94a3b8" font-size="7" text-anchor="middle">→ 互助域</text>
+        <text x="1215" y="654" fill="#94a3b8" font-size="7" text-anchor="middle">→ 财务域</text>
+
+        <!-- Annotation -->
+        <rect x="440" y="685" width="560" height="40" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="720" y="703" fill="#a78bfa" font-size="7" text-anchor="middle">⚡ db_payment.payment_ledger_event_${hash(transaction_id) % 256}</text>
+        <text x="720" y="717" fill="#94a3b8" font-size="7" text-anchor="middle">事件溯源: 不可变追加 · 按 transaction_id 路由 · 同一交易的完整事件链在同一分片</text>
+
+        <rect x="180" y="685" width="240" height="40" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="300" y="703" fill="#fb923c" font-size="7" text-anchor="middle">反榨取: 劳动时长 / 净收入比 / 算法歧视</text>
+        <text x="300" y="717" fill="#94a3b8" font-size="7" text-anchor="middle">AntiExploitationConfig 阈值校验</text>
+
+        <!-- ===================== Flow 4: 匹配调度流程 ===================== -->
+        <rect x="20" y="830" width="1260" height="200" rx="12" fill="rgba(251, 146, 60, 0.05)" stroke="#fb923c" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="35" y="848" fill="#fb923c" font-size="10" font-weight="600">④ 匹配调度流程 (Matching → Redis Geo)</text>
+
+        <!-- Request -->
+        <rect x="40" y="870" width="110" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="95" y="892" fill="white" font-size="9" font-weight="600" text-anchor="middle">匹配请求</text>
+        <text x="95" y="906" fill="#94a3b8" font-size="7" text-anchor="middle">POST /api/match</text>
+
+        <line x1="150" y1="895" x2="188" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Redis Geo Search -->
+        <rect x="190" y="870" width="140" height="50" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="260" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">Redis Geo 搜索</text>
+        <text x="260" y="902" fill="#fb923c" font-size="7" text-anchor="middle">GEORADIUS 5km</text>
+        <text x="260" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">附近劳动者</text>
+
+        <line x1="330" y1="895" x2="368" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Multi-factor score -->
+        <rect x="370" y="870" width="140" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="440" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">多因子评分</text>
+        <text x="440" y="902" fill="#94a3b8" font-size="7" text-anchor="middle">距离 + 评分</text>
+        <text x="440" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">+ 注册天数 + 负载</text>
+
+        <line x1="510" y1="895" x2="548" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Anti-exploitation filter -->
+        <rect x="550" y="870" width="140" height="50" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="620" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">反榨取过滤</text>
+        <text x="620" y="902" fill="#94a3b8" font-size="7" text-anchor="middle">活跃订单上限</text>
+        <text x="620" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">劳动时长校验</text>
+
+        <line x1="690" y1="895" x2="728" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Sort -->
+        <rect x="730" y="870" width="100" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="780" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">排序</text>
+        <text x="780" y="902" fill="#94a3b8" font-size="7" text-anchor="middle">ASC 评分</text>
+        <text x="780" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">COUNT 20</text>
+
+        <line x1="830" y1="895" x2="868" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Result -->
+        <rect x="870" y="870" width="120" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="930" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">返回结果</text>
+        <text x="930" y="902" fill="#94a3b8" font-size="7" text-anchor="middle">MatchResult</text>
+        <text x="930" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">可解释排序</text>
+
+        <line x1="990" y1="895" x2="1028" y2="895" stroke="#fb923c" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Dispatch -->
+        <rect x="1030" y="870" width="100" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="1080" y="888" fill="white" font-size="9" font-weight="600" text-anchor="middle">派单</text>
+        <text x="1080" y="902" fill="#94a3b8" font-size="7" text-anchor="middle">更新 active_orders</text>
+        <text x="1080" y="914" fill="#94a3b8" font-size="7" text-anchor="middle">→ Redis</text>
+
+        <!-- Annotation -->
+        <text x="260" y="950" fill="#fb923c" font-size="7" text-anchor="middle">⚠️ 替代 PG worker_location 表</text>
+        <text x="440" y="950" fill="#94a3b8" font-size="7" text-anchor="middle">Mem≤1ms · 无行锁竞争</text>
+        <text x="1080" y="950" fill="#94a3b8" font-size="7" text-anchor="middle">位置历史 → PG 批量写入</text>
+
+        <!-- ===================== Flow 5: 争议三级救济 ===================== -->
+        <rect x="20" y="1050" width="1260" height="200" rx="12" fill="rgba(8, 51, 68, 0.05)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="35" y="1068" fill="#22d3ee" font-size="10" font-weight="600">⑤ 争议三级救济流程 (Dispute · 渐进升级)</text>
+
+        <!-- File -->
+        <rect x="40" y="1090" width="110" height="50" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="95" y="1112" fill="white" font-size="9" font-weight="600" text-anchor="middle">提交争议</text>
+        <text x="95" y="1126" fill="#94a3b8" font-size="7" text-anchor="middle">FILED</text>
+
+        <line x1="150" y1="1115" x2="178" y2="1115" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Level 1 -->
+        <rect x="180" y="1090" width="150" height="50" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="255" y="1108" fill="white" font-size="9" font-weight="600" text-anchor="middle">L1: 业务团队复核</text>
+        <text x="255" y="1122" fill="#94a3b8" font-size="7" text-anchor="middle">BUSINESS_REVIEW</text>
+        <text x="255" y="1134" fill="#94a3b8" font-size="7" text-anchor="middle">UNDER_REVIEW</text>
+
+        <line x1="330" y1="1115" x2="358" y2="1115" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Satisfied? -->
+        <polygon points="410,1115 370,1095 330,1115 370,1135" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="370" y="1112" fill="white" font-size="7" font-weight="600" text-anchor="middle">满意?</text>
+
+        <!-- Yes → resolved -->
+        <text x="415" y="1105" fill="#34d399" font-size="7">是</text>
+        <line x1="410" y1="1110" x2="438" y2="1100" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="440" y="1080" width="100" height="40" rx="20" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="2"/>
+        <text x="490" y="1105" fill="white" font-size="8" font-weight="600" text-anchor="middle">RESOLVED</text>
+
+        <!-- No → Level 2 -->
+        <text x="375" y="1155" fill="#fbbf24" font-size="7">否</text>
+        <line x1="370" y1="1135" x2="370" y2="1170" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <rect x="290" y="1170" width="160" height="50" rx="6" fill="rgba(120, 53, 15, 0.2)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="370" y="1188" fill="white" font-size="9" font-weight="600" text-anchor="middle">L2: 申诉委员会</text>
+        <text x="370" y="1202" fill="#94a3b8" font-size="7" text-anchor="middle">APPEAL_COMMITTEE</text>
+        <text x="370" y="1214" fill="#94a3b8" font-size="7" text-anchor="middle">多方代表审议</text>
+
+        <line x1="290" y1="1195" x2="258" y2="1195" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <!-- Satisfied 2? -->
+        <polygon points="210,1195 250,1175 290,1195 250,1215" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="250" y="1192" fill="white" font-size="7" font-weight="600" text-anchor="middle">满意?</text>
+
+        <text x="205" y="1185" fill="#34d399" font-size="7">是</text>
+        <line x1="210" y1="1190" x2="182" y2="1180" stroke="#34d399" stroke-width="1.5" marker-end="url(#fa)"/>
+        <rect x="80" y="1160" width="100" height="40" rx="20" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="2"/>
+        <text x="130" y="1185" fill="white" font-size="8" font-weight="600" text-anchor="middle">RESOLVED</text>
+
+        <!-- No → Level 3 -->
+        <text x="255" y="1235" fill="#fb7185" font-size="7">否</text>
+        <line x1="250" y1="1215" x2="250" y2="1248" stroke="#fb7185" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <rect x="170" y="1250" width="160" height="40" rx="6" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="250" y="1268" fill="white" font-size="9" font-weight="600" text-anchor="middle">L3: 外部调解/仲裁</text>
+        <text x="250" y="1282" fill="#94a3b8" font-size="7" text-anchor="middle">EXTERNAL_ARBITRATION</text>
+
+        <line x1="330" y1="1270" x2="358" y2="1270" stroke="#fb7185" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <rect x="360" y="1250" width="100" height="40" rx="20" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="2"/>
+        <text x="410" y="1275" fill="white" font-size="8" font-weight="600" text-anchor="middle">终裁</text>
+
+        <!-- Annotation -->
+        <rect x="500" y="1090" width="500" height="50" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="750" y="1108" fill="#22d3ee" font-size="7" text-anchor="middle">db_operations.dispute_records</text>
+        <text x="750" y="1122" fill="#94a3b8" font-size="7" text-anchor="middle">DisputeLevel: BUSINESS_REVIEW → APPEAL_COMMITTEE → EXTERNAL_ARBITRATION</text>
+        <text x="750" y="1134" fill="#94a3b8" font-size="7" text-anchor="middle">status: FILED → UNDER_REVIEW → RESOLVED / APPEALED</text>
+
+        <!-- Early warning annotation -->
+        <rect x="1020" y="1090" width="250" height="50" rx="6" fill="rgba(15, 23, 42, 0.6)" stroke="#1e293b" stroke-width="1"/>
+        <text x="1145" y="1108" fill="#fb7185" font-size="7" text-anchor="middle">⚡ 预警联动: 争议激增 → 触发 EarlyWarning</text>
+        <text x="1145" y="1122" fill="#94a3b8" font-size="7" text-anchor="middle">AlertLevel: GREEN→YELLOW→ORANGE→RED</text>
+        <text x="1145" y="1134" fill="#94a3b8" font-size="7" text-anchor="middle">RED 触发自动措施 (暂停算法/冻结账户)</text>
+
+        <!-- Legend -->
+        <text x="1050" y="1350" fill="white" font-size="9" font-weight="600">图例</text>
+        <rect x="1050" y="1362" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1"/>
+        <text x="1072" y="1370" fill="#94a3b8" font-size="7">Identity</text>
+        <rect x="1050" y="1378" width="16" height="10" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+        <text x="1072" y="1386" fill="#94a3b8" font-size="7">Governance</text>
+        <rect x="1050" y="1394" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="1072" y="1402" fill="#94a3b8" font-size="7">Payment</text>
+        <rect x="1140" y="1362" width="16" height="10" rx="2" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1"/>
+        <text x="1162" y="1370" fill="#94a3b8" font-size="7">Matching</text>
+        <rect x="1140" y="1378" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="1162" y="1386" fill="#94a3b8" font-size="7">Operations</text>
+        <rect x="1140" y="1394" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1"/>
+        <text x="1162" y="1402" fill="#94a3b8" font-size="7">Mutual</text>
+      </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-header"><div class="card-dot emerald"></div><h3>① 成员生命周期</h3></div>
+        <ul>
+          <li>• 注册 → 验证 → 角色分配 → ACTIVE</li>
+          <li>• 触发全域参与 (治理/支付/互助)</li>
+          <li>• SUSPENDED (违规) → WITHDRAWN (退出)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot amber"></div><h3>② 提案投票</h3></div>
+        <ul>
+          <li>• 强制审议: 定价/匹配/解雇/开除</li>
+          <li>• AI 多角色交叉审议 → 四院投票</li>
+          <li>• PASSED → Outbox 事件 → 跨域执行</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot violet"></div><h3>③ 支付结算</h3></div>
+        <ul>
+          <li>• 事件溯源: CHARGE → SETTLE → FEE</li>
+          <li>• 反榨取校验贯穿始终</li>
+          <li>• Outbox 保证跨域最终一致</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot orange"></div><h3>④ 匹配调度</h3></div>
+        <ul>
+          <li>• Redis Geo 替代 PG 位置查询</li>
+          <li>• 多因子评分 + 反榨取过滤</li>
+          <li>• 可解释排序，算法透明</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot cyan"></div><h3>⑤ 争议三级救济</h3></div>
+        <ul>
+          <li>• L1 业务复核 → L2 申诉委员会 → L3 仲裁</li>
+          <li>• 每级不满意可上诉升级</li>
+          <li>• 争议激增联动预警系统</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot rose"></div><h3>跨域通信</h3></div>
+        <ul>
+          <li>• 当前: 同进程方法调用</li>
+          <li>• 未来: Outbox + MQ 异步</li>
+          <li>• ACL Facade 防腐层已规划</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">公地引擎 · Business Process Flows · 5 Core Workflows · v1.0</p>
+  </div>
+</body>
+</html>

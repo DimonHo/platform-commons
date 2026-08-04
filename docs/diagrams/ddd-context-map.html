@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公地引擎 · 领域设计图</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; min-height: 100vh; padding: 2rem; color: white; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot { width: 12px; height: 12px; background: #22d3ee; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container { background: rgba(15, 23, 42, 0.5); border-radius: 1rem; border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 1200px; display: block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .card { background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem; border: 1px solid #1e293b; padding: 1.25rem; }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; } .card-dot.emerald { background: #34d399; } .card-dot.violet { background: #a78bfa; } .card-dot.amber { background: #fbbf24; } .card-dot.rose { background: #fb7185; } .card-dot.orange { background: #fb923c; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>公地引擎 · 领域设计图 (DDD Context Map)</h1>
+      </div>
+      <p class="subtitle">7 个限界上下文 · 宪章 21 章 124 条 · 各域自治 + 共享内核</p>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1300 880">
+        <defs>
+          <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+          <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%"" fill="url(#grid2)" />
+
+        <!-- ============ Shared Kernel ============ -->
+        <rect x="440" y="400" width="420" height="110" rx="12" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
+        <text x="650" y="420" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">共享内核 (Shared Kernel) — platform-common</text>
+        <rect x="460" y="435" width="90" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="505" y="458" fill="white" font-size="9" font-weight="600" text-anchor="middle">R&lt;T&gt; 统一响应</text>
+        <text x="505" y="474" fill="#94a3b8" font-size="7" text-anchor="middle">ResultCode</text>
+        <text x="505" y="486" fill="#94a3b8" font-size="7" text-anchor="middle">GlobalAdvice</text>
+        <rect x="560" y="435" width="90" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="605" y="458" fill="white" font-size="9" font-weight="600" text-anchor="middle">枚举 & 异常</text>
+        <text x="605" y="474" fill="#94a3b8" font-size="7" text-anchor="middle">MemberStatus</text>
+        <text x="605" y="486" fill="#94a3b8" font-size="7" text-anchor="middle">BusinessException</text>
+        <rect x="660" y="435" width="90" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="705" y="458" fill="white" font-size="9" font-weight="600" text-anchor="middle">工具 & 链路</text>
+        <text x="705" y="474" fill="#94a3b8" font-size="7" text-anchor="middle">SnowflakeUtils</text>
+        <text x="705" y="486" fill="#94a3b8" font-size="7" text-anchor="middle">TraceContext</text>
+        <rect x="760" y="435" width="90" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="805" y="458" fill="white" font-size="9" font-weight="600" text-anchor="middle">基础设施</text>
+        <text x="805" y="474" fill="#94a3b8" font-size="7" text-anchor="middle">ApiLogFilter</text>
+        <text x="805" y="486" fill="#94a3b8" font-size="7" text-anchor="middle">TraceIdFilter</text>
+
+        <!-- ============ BC1: Identity ============ -->
+        <rect x="30" y="30" width="250" height="200" rx="12" fill="rgba(6, 78, 59, 0.1)" stroke="#34d399" stroke-width="2"/>
+        <text x="155" y="50" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">身份域 (Identity)</text>
+        <text x="155" y="64" fill="#34d399" font-size="8" text-anchor="middle">宪章第3章 11-15条 · platform-identity</text>
+        <rect x="50" y="80" width="100" height="50" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="100" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">MemberController</text>
+        <text x="100" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">POST /api/members</text>
+        <text x="100" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">GET /api/members</text>
+        <rect x="160" y="80" width="100" height="50" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="210" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">MemberService</text>
+        <text x="210" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">注册 / 查询</text>
+        <text x="210" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">状态流转</text>
+        <rect x="50" y="145" width="210" height="70" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="155" y="163" fill="#a78bfa" font-size="8" font-weight="600" text-anchor="middle">MemberEntity (member表)</text>
+        <text x="155" y="178" fill="#94a3b8" font-size="7" text-anchor="middle">MemberRole: WORKER / CONSUMER</text>
+        <text x="155" y="190" fill="#94a3b8" font-size="7" text-anchor="middle">  / MERCHANT / PUBLIC</text>
+        <text x="155" y="204" fill="#94a3b8" font-size="7" text-anchor="middle">MemberStatus: ACTIVE→SUSPENDED→WITHDRAWN</text>
+        <line x1="150" y1="130" x2="150" y2="144" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- ============ BC2: Governance ============ -->
+        <rect x="310" y="30" width="350" height="200" rx="12" fill="rgba(120, 53, 15, 0.1)" stroke="#fbbf24" stroke-width="2"/>
+        <text x="485" y="50" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">治理域 (Governance)</text>
+        <text x="485" y="64" fill="#fbbf24" font-size="8" text-anchor="middle">宪章第4-5章 16-26条 · platform-governance</text>
+        <rect x="330" y="80" width="145" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="402" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">GovernanceController</text>
+        <text x="402" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">提案 CRUD / 投票</text>
+        <text x="402" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">结果统计</text>
+        <rect x="490" y="80" width="145" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="562" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">GovernanceService</text>
+        <text x="562" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">提案创建→开放→投票</text>
+        <text x="562" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">→计票→通过/否决</text>
+        <rect x="330" y="145" width="305" height="70" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="482" y="163" fill="#a78bfa" font-size="8" font-weight="600" text-anchor="middle">ProposalEntity + VoteEntity</text>
+        <text x="482" y="178" fill="#94a3b8" font-size="7" text-anchor="middle">四院: WORKER / CONSUMER / MERCHANT / PUBLIC</text>
+        <text x="482" y="192" fill="#94a3b8" font-size="7" text-anchor="middle">ProposalStatus: DRAFT→OPEN→PASSED/REJECTED</text>
+        <text x="482" y="206" fill="#94a3b8" font-size="7" text-anchor="middle">VoteChoice: YES / NO / ABSTAIN · 一人一票</text>
+        <line x1="475" y1="130" x2="475" y2="144" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- ============ BC3: Payment ============ -->
+        <rect x="690" y="30" width="280" height="200" rx="12" fill="rgba(76, 29, 149, 0.1)" stroke="#a78bfa" stroke-width="2"/>
+        <text x="830" y="50" fill="#a78bfa" font-size="11" font-weight="700" text-anchor="middle">支付域 (Payment)</text>
+        <text x="830" y="64" fill="#a78bfa" font-size="8" text-anchor="middle">宪章第9章 43-49条 · platform-payment</text>
+        <rect x="710" y="80" width="115" height="50" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="767" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">PaymentController</text>
+        <text x="767" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">结算 / 分账</text>
+        <text x="767" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">服务费抽取</text>
+        <rect x="840" y="80" width="115" height="50" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="897" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">PaymentService</text>
+        <text x="897" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">事件溯源模式</text>
+        <text x="897" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">复式记账</text>
+        <rect x="710" y="145" width="245" height="70" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="832" y="163" fill="#a78bfa" font-size="8" font-weight="600" text-anchor="middle">LedgerEventEntity (事件源)</text>
+        <text x="832" y="178" fill="#94a3b8" font-size="7" text-anchor="middle">CHARGE / SETTLE / REFUND / FEE</text>
+        <text x="832" y="192" fill="#94a3b8" font-size="7" text-anchor="middle">SettlementRule: 服务费比例 + 返还</text>
+        <text x="832" y="206" fill="#94a3b8" font-size="7" text-anchor="middle">SettlementResult: 分账明细</text>
+        <line x1="827" y1="130" x2="827" y2="144" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- ============ BC4: Matching ============ -->
+        <rect x="1000" y="30" width="270" height="200" rx="12" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="2"/>
+        <text x="1135" y="50" fill="#fb923c" font-size="11" font-weight="700" text-anchor="middle">匹配域 (Matching)</text>
+        <text x="1135" y="64" fill="#fb923c" font-size="8" text-anchor="middle">宪章第8章 42条 · platform-matching</text>
+        <rect x="1020" y="80" width="105" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="1072" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">MatchingCtrl</text>
+        <text x="1072" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">劳动者匹配</text>
+        <text x="1072" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">反榨取校验</text>
+        <rect x="1140" y="80" width="105" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1192" y="100" fill="white" font-size="9" font-weight="600" text-anchor="middle">MatchingEngine</text>
+        <text x="1192" y="116" fill="#94a3b8" font-size="7" text-anchor="middle">多因子评分</text>
+        <text x="1192" y="126" fill="#94a3b8" font-size="7" text-anchor="middle">注册天数+评分</text>
+        <rect x="1020" y="145" width="235" height="70" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1137" y="163" fill="#fb923c" font-size="8" font-weight="600" text-anchor="middle">WorkerLocationEntity</text>
+        <text x="1137" y="178" fill="#94a3b8" font-size="7" text-anchor="middle">AntiExploitationConfig: 劳动时长限制</text>
+        <text x="1137" y="192" fill="#94a3b8" font-size="7" text-anchor="middle">MatchResult: 排序结果</text>
+        <text x="1137" y="206" fill="#fb7185" font-size="7" font-weight="600" text-anchor="middle">⚠️ 热数据 → Redis Geo</text>
+        <line x1="1122" y1="130" x2="1122" y2="144" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- ============ BC5: Mutual ============ -->
+        <rect x="30" y="560" width="250" height="180" rx="12" fill="rgba(136, 19, 55, 0.1)" stroke="#fb7185" stroke-width="2"/>
+        <text x="155" y="580" fill="#fb7185" font-size="11" font-weight="700" text-anchor="middle">互助域 (Mutual)</text>
+        <text x="155" y="594" fill="#fb7185" font-size="8" text-anchor="middle">宪章第14章 81-92条 · platform-mutual</text>
+        <rect x="50" y="610" width="100" height="50" rx="6" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="100" y="630" fill="white" font-size="9" font-weight="600" text-anchor="middle">MutualCtrl</text>
+        <text x="100" y="646" fill="#94a3b8" font-size="7" text-anchor="middle">理赔申请</text>
+        <text x="100" y="656" fill="#94a3b8" font-size="7" text-anchor="middle">资格检查</text>
+        <rect x="160" y="610" width="100" height="50" rx="6" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="210" y="630" fill="white" font-size="9" font-weight="600" text-anchor="middle">MutualService</text>
+        <text x="210" y="646" fill="#94a3b8" font-size="7" text-anchor="middle">反欺诈校验</text>
+        <text x="210" y="656" fill="#94a3b8" font-size="7" text-anchor="middle">资格认定</text>
+        <rect x="50" y="675" width="210" height="50" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="155" y="693" fill="#fb7185" font-size="8" font-weight="600" text-anchor="middle">MutualClaimEntity</text>
+        <text x="155" y="708" fill="#94a3b8" font-size="7" text-anchor="middle">PENDING→INVESTIGATING→APPROVED/REJECTED</text>
+
+        <!-- ============ BC6: Finance ============ -->
+        <rect x="310" y="560" width="250" height="180" rx="12" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="2"/>
+        <text x="435" y="580" fill="#fb923c" font-size="11" font-weight="700" text-anchor="middle">财务域 (Finance)</text>
+        <text x="435" y="594" fill="#fb923c" font-size="8" text-anchor="middle">宪章第10-11章 50-59条 · platform-finance</text>
+        <rect x="330" y="610" width="100" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="380" y="630" fill="white" font-size="9" font-weight="600" text-anchor="middle">FinanceCtrl</text>
+        <text x="380" y="646" fill="#94a3b8" font-size="7" text-anchor="middle">融资审查</text>
+        <text x="380" y="656" fill="#94a3b8" font-size="7" text-anchor="middle">披露查询</text>
+        <rect x="440" y="610" width="100" height="50" rx="6" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="490" y="630" fill="white" font-size="9" font-weight="600" text-anchor="middle">FinanceService</text>
+        <text x="490" y="646" fill="#94a3b8" font-size="7" text-anchor="middle">还款上限</text>
+        <text x="490" y="656" fill="#94a3b8" font-size="7" text-anchor="middle">合规校验</text>
+        <rect x="330" y="675" width="210" height="50" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="435" y="693" fill="#fb923c" font-size="8" font-weight="600" text-anchor="middle">FinancingRecordEntity</text>
+        <text x="435" y="708" fill="#94a3b8" font-size="7" text-anchor="middle">repayment_cap · no_governance 条款</text>
+
+        <!-- ============ BC7: Operations (Dispute + AI + EarlyWarning + TechGov) ============ -->
+        <rect x="590" y="560" width="430" height="280" rx="12" fill="rgba(8, 51, 68, 0.1)" stroke="#22d3ee" stroke-width="2"/>
+        <text x="805" y="580" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">运营监督域 (Operations)</text>
+        <text x="805" y="594" fill="#22d3ee" font-size="8" text-anchor="middle">宪章第12-16章 · 多模块聚合</text>
+
+        <!-- Dispute sub-BC -->
+        <rect x="610" y="610" width="190" height="100" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="705" y="628" fill="white" font-size="9" font-weight="600" text-anchor="middle">争议救济 (Dispute)</text>
+        <text x="705" y="643" fill="#94a3b8" font-size="7" text-anchor="middle">DisputeController / DisputeService</text>
+        <text x="705" y="660" fill="#94a3b8" font-size="7" text-anchor="middle">三级救济: 业务复核→申诉委员会</text>
+        <text x="705" y="673" fill="#94a3b8" font-size="7" text-anchor="middle">  →外部调解/仲裁</text>
+        <text x="705" y="690" fill="#94a3b8" font-size="7" text-anchor="middle">FILED→UNDER_REVIEW→RESOLVED</text>
+        <text x="705" y="702" fill="#94a3b8" font-size="7" text-anchor="middle">  →APPEALED</text>
+
+        <!-- AI Supervision sub-BC -->
+        <rect x="810" y="610" width="200" height="100" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="910" y="628" fill="white" font-size="9" font-weight="600" text-anchor="middle">AI 监督 (AI-Supervision)</text>
+        <text x="910" y="643" fill="#94a3b8" font-size="7" text-anchor="middle">AiSupervisionCtrl / Service</text>
+        <text x="910" y="660" fill="#94a3b8" font-size="7" text-anchor="middle">多角色分析: 经济学/法律/劳动</text>
+        <text x="910" y="673" fill="#94a3b8" font-size="7" text-anchor="middle">反俘获测试 · 强制审议</text>
+        <text x="910" y="690" fill="#94a3b8" font-size="7" text-anchor="middle">PENDING→IN_PROGRESS→COMPLETED</text>
+        <text x="910" y="702" fill="#94a3b8" font-size="7" text-anchor="middle">  →CONTROVERSIAL</text>
+
+        <!-- Early Warning sub-BC -->
+        <rect x="610" y="720" width="190" height="100" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="705" y="738" fill="white" font-size="9" font-weight="600" text-anchor="middle">预警 (Early-Warning)</text>
+        <text x="705" y="753" fill="#94a3b8" font-size="7" text-anchor="middle">EarlyWarningCtrl / Service</text>
+        <text x="705" y="770" fill="#94a3b8" font-size="7" text-anchor="middle">四色: GREEN→YELLOW→ORANGE→RED</text>
+        <text x="705" y="783" fill="#94a3b8" font-size="7" text-anchor="middle">五类异化: 组织/财务/技术/接管</text>
+        <text x="705" y="800" fill="#94a3b8" font-size="7" text-anchor="middle">触发红线→自动措施</text>
+
+        <!-- Tech Governance sub-BC -->
+        <rect x="810" y="720" width="200" height="100" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="910" y="738" fill="white" font-size="9" font-weight="600" text-anchor="middle">技术治理 (Tech-Governance)</text>
+        <text x="910" y="753" fill="#94a3b8" font-size="7" text-anchor="middle">TechGovernanceCtrl / Service</text>
+        <text x="910" y="770" fill="#94a3b8" font-size="7" text-anchor="middle">可复现构建 · 开源核验</text>
+        <text x="910" y="783" fill="#94a3b8" font-size="7" text-anchor="middle">算法说明 · 关键权限审计</text>
+        <text x="910" y="800" fill="#94a3b8" font-size="7" text-anchor="middle">VERIFIED / MISMATCH / UNVERIFIABLE</text>
+
+        <!-- ============ Anti-Corruption Layer (ACL) ============ -->
+        <rect x="1040" y="560" width="230" height="280" rx="12" fill="rgba(136, 19, 55, 0.08)" stroke="#fb7185" stroke-width="1" stroke-dasharray="5,5"/>
+        <text x="1155" y="580" fill="#fb7185" font-size="10" font-weight="600" text-anchor="middle">防腐层 (ACL) 设计预案</text>
+        <text x="1155" y="598" fill="#fb7185" font-size="8" text-anchor="middle">微服务拆分时引入</text>
+        <rect x="1060" y="615" width="190" height="40" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1155" y="632" fill="white" font-size="8" font-weight="600" text-anchor="middle">MemberFacade</text>
+        <text x="1155" y="647" fill="#94a3b8" font-size="7" text-anchor="middle"> memberId → MemberSummary</text>
+        <rect x="1060" y="665" width="190" height="40" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1155" y="682" fill="white" font-size="8" font-weight="600" text-anchor="middle">PaymentFacade</text>
+        <text x="1155" y="697" fill="#94a3b8" font-size="7" text-anchor="middle">外部支付网关适配</text>
+        <rect x="1060" y="715" width="190" height="40" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1155" y="732" fill="white" font-size="8" font-weight="600" text-anchor="middle">GovernanceFacade</text>
+        <text x="1155" y="747" fill="#94a3b8" font-size="7" text-anchor="middle">提案→投票 RPC/事件适配</text>
+        <rect x="1060" y="765" width="190" height="40" rx="6" fill="rgba(136, 19, 55, 0.2)" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1155" y="782" fill="white" font-size="8" font-weight="600" text-anchor="middle">OutboxEvent</text>
+        <text x="1155" y="797" fill="#94a3b8" font-size="7" text-anchor="middle">跨域事件发布</text>
+
+        <!-- ============ CONTEXT RELATIONSHIPS (Dashed = upstream/downstream) ============ -->
+        <!-- Identity → Governance (member proposes/votes) -->
+        <line x1="280" y1="130" x2="308" y2="130" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="294" y="124" fill="#94a3b8" font-size="7">U/D</text>
+
+        <!-- Identity → Mutual -->
+        <path d="M 155 230 L 155 400 Q 155 420 180 420 L 200 420 Q 220 420 220 450 L 220 558" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="230" y="414" fill="#94a3b8" font-size="7">memberId</text>
+
+        <!-- Identity → Operations (Dispute filed_by) -->
+        <path d="M 100 230 L 100 400 Q 100 420 300 420 L 500 420 Q 520 420 520 500 L 520 558" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="350" y="414" fill="#94a3b8" font-size="7">filed_by</text>
+
+        <!-- Identity → Matching (worker_id) -->
+        <path d="M 250 130 L 280 130 Q 300 130 300 110 L 980 110 Q 1000 110 1000 130 L 998 130" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="620" y="104" fill="#94a3b8" font-size="7">worker_id →</text>
+
+        <!-- Governance → AI Supervision (mandatory review) -->
+        <path d="M 600 170 L 620 170 Q 640 170 640 300 L 800 300 Q 820 300 820 400 L 820 558" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="830" y="395" fill="#94a3b8" font-size="7">强制审议</text>
+
+        <!-- Payment → Mutual (settlement triggers claim) -->
+        <path d="M 830 230 L 830 350 Q 830 370 500 370 L 200 370 Q 180 370 180 400 L 180 558" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <text x="500" y="364" fill="#94a3b8" font-size="7">结算→互助</text>
+
+        <!-- All BCs → Shared Kernel (arrows from BC to SK) -->
+        <line x1="155" y1="230" x2="155" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="485" y1="230" x2="485" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="830" y1="230" x2="650" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="1135" y1="230" x2="800" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="155" y1="560" x2="500" y2="515" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="435" y1="560" x2="550" y2="515" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+        <line x1="805" y1="560" x2="700" y2="515" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2" marker-end="url(#arr)"/>
+
+        <!-- Legend -->
+        <text x="1050" y="860" fill="white" font-size="9" font-weight="600">关系类型</text>
+        <line x1="1050" y1="868" x2="1066" y2="868" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="1072" y="871" fill="#94a3b8" font-size="7">逻辑外键 (U/D)</text>
+        <line x1="1180" y1="868" x2="1196" y2="868" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2"/>
+        <text x="1202" y="871" fill="#94a3b8" font-size="7">依赖共享内核</text>
+      </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-header"><div class="card-dot emerald"></div><h3>限界上下文映射</h3></div>
+        <ul>
+          <li>• 身份域：成员生命周期 (亿级实体)</li>
+          <li>• 治理域：提案 + 四院投票 (百亿级)</li>
+          <li>• 支付域：事件溯源账本 (千亿级)</li>
+          <li>• 匹配域：实时位置 → Redis</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot amber"></div><h3>共享内核</h3></div>
+        <ul>
+          <li>• R&lt;T&gt; 统一响应 + ResultCode</li>
+          <li>• 全局枚举 (MemberStatus 等)</li>
+          <li>• SnowflakeUtils / TraceContext</li>
+          <li>• ApiLogFilter / TraceIdFilter</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot rose"></div><h3>拆分预案</h3></div>
+        <ul>
+          <li>• 当前：模块化单体 (同进程)</li>
+          <li>• ACL 防腐层已规划</li>
+          <li>• Outbox 事件模式预留</li>
+          <li>• Facade 接口契约已明确</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">公地引擎 · DDD Context Map · 7 Bounded Contexts · v1.0</p>
+  </div>
+</body>
+</html>
