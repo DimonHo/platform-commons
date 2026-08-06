@@ -55,7 +55,7 @@ public class DispatchServiceImpl implements DispatchService {
 
         Instant now = Instant.now();
         DispatchBroadcastEntity entity = new DispatchBroadcastEntity();
-        entity.setBroadcastNo(SnowflakeUtils.nextId("BCAST"));
+        entity.setBroadcastNo(SnowflakeUtils.nextId("BCST"));
         entity.setOrderId(orderId);
         entity.setOrderType(orderType);
         entity.setBroadcastType(broadcastType);
