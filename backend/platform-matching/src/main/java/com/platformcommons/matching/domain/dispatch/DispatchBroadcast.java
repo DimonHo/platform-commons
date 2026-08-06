@@ -1,5 +1,7 @@
 package com.platformcommons.matching.domain.dispatch;
 
+import com.platformcommons.matching.domain.workorder.WorkOrderType;
+
 import java.time.Instant;
 
 /**

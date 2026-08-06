@@ -2,6 +2,7 @@ package com.platformcommons.identity.domain.member;
 
 import com.platformcommons.common.enums.MemberStatus;
 
+import com.platformcommons.identity.domain.role.MemberRole;
 import java.time.LocalDateTime;
 import java.util.Set;
 

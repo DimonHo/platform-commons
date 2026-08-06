@@ -1,5 +1,7 @@
 package com.platformcommons.payment.domain.withdrawal;
 
+import com.platformcommons.payment.domain.gateway.ChannelCode;
+
 import java.time.Instant;
 
 /**
