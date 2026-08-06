@@ -174,14 +174,11 @@ public class DispatchServiceImpl implements DispatchService {
             DispatchGrabRecordEntity r = records.get(i);
             if (i < target) {
                 r.setStatus(GrabStatus.WIN);
-                // 首位胜出者绑定工单
+                // 首位胜出者绑定工单；指派失败（如 work_order 乐观锁冲突）必须上抛，
+                // 使整个 grabOrder 事务回滚，避免 grabbed_count 与 WIN 判定不一致
                 if (!firstWinnerAssigned && broadcast != null) {
-                    try {
-                        workOrderService.assignWorker(broadcast.getOrderId(), r.getWorkerId());
-                        firstWinnerAssigned = true;
-                    } catch (Exception e) {
-                        log.warn("Assign worker failed for orderId={}: {}", broadcast.getOrderId(), e.getMessage());
-                    }
+                    workOrderService.assignWorker(broadcast.getOrderId(), r.getWorkerId());
+                    firstWinnerAssigned = true;
                 }
             } else {
                 r.setStatus(GrabStatus.LOSE);

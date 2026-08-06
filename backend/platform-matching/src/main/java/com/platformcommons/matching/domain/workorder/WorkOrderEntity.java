@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -98,4 +99,9 @@ public class WorkOrderEntity {
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    /** 乐观锁版本号（V3 迁移已建列，由 JPA 托管，并发抢单时防止丢失更新）。 */
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
 }
