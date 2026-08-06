@@ -1,7 +1,7 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.TransactionDirection;
-import com.platformcommons.payment.domain.WalletBusinessType;
+import com.platformcommons.payment.domain.wallet.TransactionDirection;
+import com.platformcommons.payment.domain.wallet.WalletBusinessType;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,7 +1,7 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.PaymentOrderDirection;
-import com.platformcommons.payment.domain.PaymentOrderStatus;
+import com.platformcommons.payment.domain.paymentorder.PaymentOrderDirection;
+import com.platformcommons.payment.domain.paymentorder.PaymentOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

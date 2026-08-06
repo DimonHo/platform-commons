@@ -1,7 +1,7 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.ChannelCode;
-import com.platformcommons.payment.domain.PaymentOrderDirection;
+import com.platformcommons.payment.domain.gateway.ChannelCode;
+import com.platformcommons.payment.domain.paymentorder.PaymentOrderDirection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

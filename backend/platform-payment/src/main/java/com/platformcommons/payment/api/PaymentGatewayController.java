@@ -2,9 +2,9 @@ package com.platformcommons.payment.api;
 
 import com.platformcommons.payment.api.dto.PayRequest;
 import com.platformcommons.payment.api.dto.PaymentOrderResponse;
-import com.platformcommons.payment.domain.PaymentChannelRoute;
-import com.platformcommons.payment.domain.PaymentOrder;
-import com.platformcommons.payment.service.PaymentGatewayService;
+import com.platformcommons.payment.domain.gateway.PaymentChannelRoute;
+import com.platformcommons.payment.domain.paymentorder.PaymentOrder;
+import com.platformcommons.payment.application.PaymentGatewayService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

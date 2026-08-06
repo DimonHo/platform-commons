@@ -2,8 +2,8 @@ package com.platformcommons.payment.api;
 
 import com.platformcommons.payment.api.dto.BankCardResponse;
 import com.platformcommons.payment.api.dto.BindCardRequest;
-import com.platformcommons.payment.domain.BankCard;
-import com.platformcommons.payment.service.BankCardService;
+import com.platformcommons.payment.domain.bankcard.BankCard;
+import com.platformcommons.payment.application.BankCardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

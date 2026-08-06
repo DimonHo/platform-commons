@@ -1,6 +1,6 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.WalletStatus;
+import com.platformcommons.payment.domain.wallet.WalletStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

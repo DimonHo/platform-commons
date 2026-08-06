@@ -2,8 +2,8 @@ package com.platformcommons.payment.api;
 
 import com.platformcommons.payment.api.dto.WithdrawalRequestDto;
 import com.platformcommons.payment.api.dto.WithdrawalResponse;
-import com.platformcommons.payment.domain.WithdrawalRequest;
-import com.platformcommons.payment.service.WithdrawalService;
+import com.platformcommons.payment.domain.withdrawal.WithdrawalRequest;
+import com.platformcommons.payment.application.WithdrawalService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.WithdrawalStatus;
+import com.platformcommons.payment.domain.withdrawal.WithdrawalStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

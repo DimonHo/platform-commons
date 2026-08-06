@@ -1,6 +1,6 @@
 package com.platformcommons.payment.api.dto;
 
-import com.platformcommons.payment.domain.CardStatus;
+import com.platformcommons.payment.domain.bankcard.CardStatus;
 
 import java.time.Instant;
 
