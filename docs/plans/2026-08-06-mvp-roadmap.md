@@ -34,7 +34,8 @@
 
 | 阶段 | 内容 | 交付物 | 依赖 |
 |---|---|---|---|
-| **P0** | 基线收口：identity 提交 + 全模块编译绿 | git 干净、build 全绿 | — |
+| **R0** | DDD-B 分包重构（已完成：`306c480` `8b3e520` `e5f3461`） | identity/matching/payment 聚合分包 | — |
+| **P0** | 基线收口：JDK25 编译全绿 | build 全绿 | R0 |
 | **P1** | 注册链路（identity） | 注册/角色/资料 curl 可验 | P0 |
 | **P2** | 下单+接单链路（matching） | 内存态 → JPA 落库，状态机可走 | P1 |
 | **P3** | 完成+结算链路（payment） | 结算落库 + 钱包入账 + 金额守恒 | P2 |
@@ -47,16 +48,15 @@
 ## 2. P0：基线收口
 
 **功能点：**
-1. 提交 identity 模块全部 untracked 文件（51 文件，含 Controller/DTO/domain/Entity/Service）
-2. 全模块 `build` 编译绿（排除 7 空壳模块的空白问题）
+1. JDK 25 安装（清华 Adoptium 镜像，`/opt/data/jdk25`）——此前仅有 JDK 21，toolchain 强制 25
+2. 全模块 `build` 编译绿（验证 R0 重构后 import/package 一致）
 
-**改动文件：** 无代码改动，仅 git 操作
+**改动文件：** 无代码改动
 
 **验收目标：**
 ```bash
+export JAVA_HOME=/opt/data/jdk25
 cd /opt/data/workspace/platform-commons
-git add backend/platform-identity backend/platform-payment backend/platform-matching
-git commit -m "feat: identity/matching/payment MVP 链路代码收口"
 ./gradlew build -x test   # 期望：BUILD SUCCESSFUL，0 error
 ```
 
@@ -74,9 +74,10 @@ git commit -m "feat: identity/matching/payment MVP 链路代码收口"
 | 4 | 身份认证 | `POST /api/v1/verifications` | 提交 + 审核状态流转 |
 | 5 | 地址簿 | `POST /api/v1/addresses` | 冗余字段，CRUD 即可 |
 
-**改动文件：** 均为已存在文件，补测试：
+**改动文件：** 均为已存在文件（DDD-B 后新路径），补测试：
 - `backend/platform-identity/src/test/java/.../MemberServiceTest.java`（新建）
-- 已有 `MemberServiceImpl/ProfileServiceImpl` 如缺 `@Transactional` 补上（多表写必须同事务）
+- 已有 `application/impl/MemberServiceImpl.java` 等如缺 `@Transactional` 补上（多表写必须同事务）
+- **必修**：`domain/member/MemberEntity.java` 删 `roles` 字段（V2 已 `DROP COLUMN roles`，启动 JPA 校验会失败）；同步清理 `MemberServiceImpl` 的 `serializeRoles/deserializeRoles/hasWorker` 与 `MemberRegisterRequest.roles`（角色职责已迁至 `member_role` 表，走 `ProfileController` 的角色端点）
 
 **验收目标：**
 ```bash
@@ -102,16 +103,16 @@ psql -c "SELECT id,name,roles FROM member; SELECT member_id FROM worker_profile;
 | 3 | 抢单 | `POST /api/v1/dispatch/grabs` | dispatch_grab_record + work_order→ACCEPTED + worker_id 回填 |
 | 4 | 状态流转 | `POST /api/v1/work-orders/{id}/transitions` | order_transition 全量落库（审计） |
 
-**核心改造：内存态 → JPA**
-- `MatchingEngineServiceImpl`：删 ConcurrentHashMap 匹配池，改为 `WorkerLocationRepository` 查询 + 策略（NearestFirst/FairRoundRobin）纯函数化
-- `DispatchServiceImpl`：broadcast/grab 已注入 Repository 的确认落库；**抢单并发用 `@Version` 乐观锁**（work_order 加 `version` 列，V3 迁移脚本）
-- `WorkOrderServiceImpl`：状态迁移校验（非法迁移抛 BusinessException）+ 每次迁移写 order_transition
+**核心改造：内存态 → JPA**（DDD-B 后新路径）
+- `application/impl/MatchingEngineServiceImpl.java`：删 ConcurrentHashMap `workerStore`，`match()`/`listWorkers()` 改读 `domain/location/WorkerLocationRepository`（`findAll` + 反榨取过滤 `findByActiveOrdersLessThan`）；`registerWorker` 已落库保留
+- `application/impl/DispatchServiceImpl.java`：抢单并发用 `@Version` 乐观锁（`domain/workorder/WorkOrderEntity` 加 `version` 列，V3 迁移脚本已就绪；`grabbedCount` 读改写需乐观重试）
+- `application/impl/WorkOrderServiceImpl.java`：状态迁移校验已完备（TRANSITION_RULES），仅需补测试
 
 **改动文件：**
-- 修改：`matching/service/impl/MatchingEngineServiceImpl.java`、`DispatchServiceImpl.java`、`WorkOrderServiceImpl.java`
-- 修改：`matching/repository/entity/WorkOrderEntity.java`（+version）
-- 新建：`backend/platform-bootstrap/src/main/resources/db/migration/V3__add_work_order_version.sql`
-- 新建：`matching/src/test/java/.../WorkOrderFlowTest.java`（状态机 + 乐观锁并发用例）
+- 修改：`application/impl/MatchingEngineServiceImpl.java`、`application/impl/DispatchServiceImpl.java`
+- 修改：`domain/workorder/WorkOrderEntity.java`（+`version` 字段）
+- 已建：`backend/platform-bootstrap/src/main/resources/db/migration/V3__add_payment_transaction_and_version.sql`（含 work_order.version）
+- 新建：`platform-matching/src/test/java/.../WorkOrderFlowTest.java`（状态机 + 乐观锁并发用例）
 
 **验收目标：**
 ```bash
@@ -138,14 +139,15 @@ psql -c "SELECT count(*) FROM order_transition;"               # 期望：≥3�
 | 4 | 钱包入账 | `POST /api/v1/wallets/{id}/transactions` | wallet 余额变更 + wallet_transaction 流水 |
 | 5 | 对账 | 金额守恒断言 | 流水合计 = 订单金额 |
 
-**核心改造：内存台账 → JPA**
-- `PaymentServiceImpl`：删 ConcurrentHashMap 结算台账 → `PaymentOrderRepository` 落库；幂等键 `order_no`（唯一约束兜底）
-- 结算事务顺序：查 work_order(SETTLED 前置校验) → 建 payment_order → 扣需求方 wallet → 加 worker wallet → 同事务提交，任一失败整体回滚
-- `LedgerEventEntity.java` 当前有未提交修改（git M 状态）——先审后合，确保与 V1 payment_ledger_event 列对齐
+**核心改造：内存台账 → JPA**（DDD-B 后新路径）
+- `application/impl/PaymentServiceImpl.java`：删 ConcurrentHashMap `transactionStore` → 新建 `domain/transaction/TransactionEntity` + `TransactionRepository` 落库（V3 表 `payment_transaction` 已就绪）；幂等键 `order_id` 唯一约束兜底
+- 结算事务顺序：查 work_order(SETTLED 前置校验) → 建 payment_transaction → 扣需求方 wallet → 加 worker wallet → 同事务提交，任一失败整体回滚
+- `domain/transaction/LedgerEventEntity.java`（原 payment 模块 M 文件，已随 R3 合并）——V2 已 ALTER 补列，映射正常
 
 **改动文件：**
-- 修改：`payment/service/impl/PaymentServiceImpl.java`（JPA 化 + 事务 + 幂等）
-- 新建：`payment/src/test/java/.../SettlementFlowTest.java`（结算 + 金额守恒）
+- 修改：`application/impl/PaymentServiceImpl.java`（JPA 化 + 事务 + 幂等）
+- 新建：`domain/transaction/TransactionEntity.java`、`domain/transaction/TransactionRepository.java`
+- 新建：`platform-payment/src/test/java/.../SettlementFlowTest.java`（结算 + 金额守恒）
 
 **验收目标：**
 ```bash
