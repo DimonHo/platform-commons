@@ -1,3 +1,7 @@
+plugins {
+    id "org.springframework.boot" version "4.1.0"
+}
+
 group = "com.platformcommons"
 version = "0.1.0-SNAPSHOT"
 dependencies {
