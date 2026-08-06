@@ -78,7 +78,7 @@ class SettlementFlowTest {
         ArgumentCaptor<TransactionEntity> chargeCaptor = ArgumentCaptor.forClass(TransactionEntity.class);
         verify(transactionRepository).save(chargeCaptor.capture());
         TransactionEntity charged = chargeCaptor.getValue();
-        when(transactionRepository.findById(charged.getId())).thenReturn(Optional.of(charged));
+        when(transactionRepository.findByIdForUpdate(charged.getId())).thenReturn(Optional.of(charged));
 
         SettlementResult result = paymentService.settle(charged.getId());
 
@@ -117,7 +117,7 @@ class SettlementFlowTest {
     @Test
     void settle_alreadySettled_throwsStatusNotAllowed() {
         TransactionEntity settled = entity("ORDER-S2", TransactionStatus.SETTLED);
-        when(transactionRepository.findById(settled.getId())).thenReturn(Optional.of(settled));
+        when(transactionRepository.findByIdForUpdate(settled.getId())).thenReturn(Optional.of(settled));
 
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> paymentService.settle(settled.getId()));
@@ -131,6 +131,23 @@ class SettlementFlowTest {
     }
 
     @Test
+    void settleAndRefund_loadWithPessimisticLock() {
+        TransactionEntity pending = entity("ORDER-LOCK", TransactionStatus.PENDING);
+        when(transactionRepository.findByIdForUpdate(pending.getId())).thenReturn(Optional.of(pending));
+        when(transactionRepository.save(any(TransactionEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        paymentService.settle(pending.getId());
+        assertEquals(TransactionStatus.SETTLED, pending.getStatus(), "结算后状态应为 SETTLED");
+
+        paymentService.refund(pending.getId());
+        assertEquals(TransactionStatus.REFUNDED, pending.getStatus(), "退款后状态应为 REFUNDED");
+
+        // 结算/退款加载必须走悲观锁查询（PG 行锁），不得用无锁 findById，防止并发双重结算
+        verify(transactionRepository, times(2)).findByIdForUpdate(pending.getId());
+        verify(transactionRepository, never()).findById(pending.getId());
+    }
+
+    @Test
     void refund_afterSettle_marksRefundedAndRejectsTwice() {
         String orderId = "ORDER-R1";
         when(transactionRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
@@ -141,7 +158,7 @@ class SettlementFlowTest {
         ArgumentCaptor<TransactionEntity> captor = ArgumentCaptor.forClass(TransactionEntity.class);
         verify(transactionRepository).save(captor.capture());
         TransactionEntity charged = captor.getValue();
-        when(transactionRepository.findById(charged.getId())).thenReturn(Optional.of(charged));
+        when(transactionRepository.findByIdForUpdate(charged.getId())).thenReturn(Optional.of(charged));
 
         paymentService.settle(charged.getId());
         assertEquals(TransactionStatus.SETTLED, charged.getStatus(), "结算后状态应为 SETTLED");

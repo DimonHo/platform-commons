@@ -145,7 +145,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private TransactionEntity requireTransaction(UUID transactionId) {
-        return transactionRepository.findById(transactionId)
+        // 悲观锁（PG 行锁）加载：结算/退款为读-改-写链路，串行化并发请求，防止双重结算
+        return transactionRepository.findByIdForUpdate(transactionId)
                 .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND, "交易不存在: " + transactionId));
     }
 
