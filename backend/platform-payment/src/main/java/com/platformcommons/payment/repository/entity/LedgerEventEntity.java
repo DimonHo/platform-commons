@@ -46,6 +46,18 @@ public class LedgerEventEntity {
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
 
+    /** V2 新增：会员 ID（可空）。 */
+    @Column(name = "member_id")
+    private Long memberId;
+
+    /** V2 新增：支付渠道编码（可空）。 */
+    @Column(name = "channel_code", length = 32)
+    private String channelCode;
+
+    /** V2 新增：订单号（可空）。 */
+    @Column(name = "order_no", length = 64)
+    private String orderNo;
+
     public LedgerEventEntity(UUID eventId, UUID transactionId, String eventType,
                              BigDecimal amount, Instant occurredAt) {
         this.eventId = eventId;

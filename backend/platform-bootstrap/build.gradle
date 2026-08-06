@@ -11,6 +11,8 @@ dependencies {
     implementation(project(":backend:platform-tech-governance"))
     implementation(project(":backend:platform-finance"))
     implementation(project(":backend:platform-dispute"))
+    implementation(project(":backend:platform-early-warning"))
+    implementation(project(":backend:platform-notification"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

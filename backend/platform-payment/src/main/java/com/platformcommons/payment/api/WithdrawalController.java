@@ -1,0 +1,70 @@
+package com.platformcommons.payment.api;
+
+import com.platformcommons.payment.api.dto.WithdrawalRequestDto;
+import com.platformcommons.payment.api.dto.WithdrawalResponse;
+import com.platformcommons.payment.domain.WithdrawalRequest;
+import com.platformcommons.payment.service.WithdrawalService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * 提现管理 REST 接口。
+ */
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/withdrawals")
+@Tag(name = "提现管理")
+public class WithdrawalController {
+
+    private final WithdrawalService withdrawalService;
+
+    @PostMapping
+    public WithdrawalResponse requestWithdrawal(@Valid @RequestBody WithdrawalRequestDto request) {
+        WithdrawalRequest wr = withdrawalService.requestWithdrawal(request.memberId(), request.bankCardId(), request.amount());
+        return toResponse(wr);
+    }
+
+    @PutMapping("/{id}/approve")
+    public WithdrawalResponse approve(@PathVariable Long id, @RequestParam Long reviewerId) {
+        WithdrawalRequest wr = withdrawalService.approveWithdrawal(id, reviewerId);
+        return toResponse(wr);
+    }
+
+    @PutMapping("/{id}/reject")
+    public WithdrawalResponse reject(@PathVariable Long id, @RequestParam Long reviewerId, @RequestParam String reason) {
+        WithdrawalRequest wr = withdrawalService.rejectWithdrawal(id, reviewerId, reason);
+        return toResponse(wr);
+    }
+
+    @PutMapping("/{id}/complete")
+    public WithdrawalResponse complete(@PathVariable Long id, @RequestParam String channelTransferNo) {
+        WithdrawalRequest wr = withdrawalService.completeWithdrawal(id, channelTransferNo);
+        return toResponse(wr);
+    }
+
+    @GetMapping("/member/{memberId}")
+    public List<WithdrawalResponse> listMemberWithdrawals(@PathVariable Long memberId) {
+        return withdrawalService.listMemberWithdrawals(memberId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private WithdrawalResponse toResponse(WithdrawalRequest wr) {
+        return new WithdrawalResponse(wr.id(), wr.requestNo(), wr.memberId(), wr.walletId(),
+                wr.bankCardId(), wr.amount(), wr.fee(), wr.status(), wr.riskScore(),
+                wr.rejectReason(), wr.appliedAt(), wr.reviewedAt(), wr.reviewerId(), wr.completedAt());
+    }
+}

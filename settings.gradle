@@ -23,4 +23,6 @@ include(
     ":backend:platform-federation",
     ":backend:platform-emergency",
     ":backend:platform-booth",
+    // 消息通知
+    ":backend:platform-notification",
 )
