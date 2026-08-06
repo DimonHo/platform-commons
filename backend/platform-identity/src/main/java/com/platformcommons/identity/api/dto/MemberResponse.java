@@ -1,6 +1,6 @@
 package com.platformcommons.identity.api.dto;
 
-import com.platformcommons.identity.domain.MemberRole;
+import com.platformcommons.identity.domain.role.MemberRole;
 
 import java.time.LocalDateTime;
 import java.util.Set;

@@ -1,7 +1,7 @@
 package com.platformcommons.identity.api.dto;
 
-import com.platformcommons.identity.domain.VehicleType;
-import com.platformcommons.identity.domain.WorkerOnlineStatus;
+import com.platformcommons.identity.domain.profile.VehicleType;
+import com.platformcommons.identity.domain.profile.WorkerOnlineStatus;
 
 /**
  * 劳动者档案响应 DTO。

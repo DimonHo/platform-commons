@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.platformcommons.identity.api.dto.MemberRegisterRequest;
 import com.platformcommons.identity.api.dto.MemberResponse;
-import com.platformcommons.identity.service.MemberService;
+import com.platformcommons.identity.application.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

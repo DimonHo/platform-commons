@@ -2,8 +2,8 @@ package com.platformcommons.identity.api;
 
 import com.platformcommons.identity.api.dto.IdentityVerificationResponse;
 import com.platformcommons.identity.api.dto.SubmitVerificationRequest;
-import com.platformcommons.identity.domain.IdentityVerification;
-import com.platformcommons.identity.service.IdentityVerificationService;
+import com.platformcommons.identity.domain.verification.IdentityVerification;
+import com.platformcommons.identity.application.IdentityVerificationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

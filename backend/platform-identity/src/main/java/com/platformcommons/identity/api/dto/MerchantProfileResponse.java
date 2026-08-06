@@ -1,6 +1,6 @@
 package com.platformcommons.identity.api.dto;
 
-import com.platformcommons.identity.domain.ShopStatus;
+import com.platformcommons.identity.domain.profile.ShopStatus;
 
 /**
  * 商家档案响应 DTO。

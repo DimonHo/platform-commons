@@ -2,8 +2,8 @@ package com.platformcommons.identity.api;
 
 import com.platformcommons.identity.api.dto.AddressResponse;
 import com.platformcommons.identity.api.dto.CreateAddressRequest;
-import com.platformcommons.identity.domain.Address;
-import com.platformcommons.identity.service.AddressService;
+import com.platformcommons.identity.domain.address.Address;
+import com.platformcommons.identity.application.AddressService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
