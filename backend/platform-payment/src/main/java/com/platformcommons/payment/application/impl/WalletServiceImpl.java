@@ -54,8 +54,14 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletTransaction recharge(Long memberId, BigDecimal amount, String remark) {
+        // 充值即入账：业务类型固定为 RECHARGE，无关联业务
+        return income(memberId, amount, WalletBusinessType.RECHARGE, null, null, remark);
+    }
+
+    @Override
+    public WalletTransaction income(Long memberId, BigDecimal amount, WalletBusinessType businessType, String refType, String refId, String remark) {
         if (amount == null || amount.signum() <= 0) {
-            throw new BusinessException(ResultCode.PARAM_INVALID, "充值金额必须为正数");
+            throw new BusinessException(ResultCode.PARAM_INVALID, "入账金额必须为正数");
         }
         WalletEntity wallet = requireWalletByMember(memberId);
         ensureOperable(wallet);
@@ -67,10 +73,11 @@ public class WalletServiceImpl implements WalletService {
 
         WalletTransactionEntity tx = newTransaction(
                 wallet, memberId, TransactionDirection.IN, amount, newBalance,
-                WalletBusinessType.RECHARGE, null, null, remark
+                businessType, refType, refId, remark
         );
         walletTransactionRepository.save(tx);
-        log.info("Wallet recharged: memberId={}, amount={}, balanceAfter={}", memberId, amount, newBalance);
+        log.info("Wallet income: memberId={}, amount={}, balanceAfter={}, businessType={}",
+                memberId, amount, newBalance, businessType);
         return toDomain(tx);
     }
 

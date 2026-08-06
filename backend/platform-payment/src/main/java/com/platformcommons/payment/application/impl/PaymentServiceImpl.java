@@ -1,91 +1,95 @@
 package com.platformcommons.payment.application.impl;
 
+import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.exception.BusinessException;
+import com.platformcommons.payment.application.PaymentService;
+import com.platformcommons.payment.application.WalletService;
 import com.platformcommons.payment.domain.transaction.LedgerEvent;
+import com.platformcommons.payment.domain.transaction.LedgerEventEntity;
+import com.platformcommons.payment.domain.transaction.LedgerEventRepository;
 import com.platformcommons.payment.domain.transaction.SettlementResult;
 import com.platformcommons.payment.domain.transaction.SettlementRule;
 import com.platformcommons.payment.domain.transaction.Transaction;
+import com.platformcommons.payment.domain.transaction.TransactionEntity;
+import com.platformcommons.payment.domain.transaction.TransactionRepository;
 import com.platformcommons.payment.domain.transaction.TransactionStatus;
-import com.platformcommons.payment.domain.transaction.LedgerEventRepository;
-import com.platformcommons.payment.domain.transaction.LedgerEventEntity;
-import com.platformcommons.payment.application.PaymentService;
+import com.platformcommons.payment.domain.wallet.WalletBusinessType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 支付与分账服务实现。
  *
- * <p>阿里规范：{@code @Override} 不省略；包装类比较使用 {@code equals()}；
- * 线程安全集合使用 {@link ConcurrentHashMap}。
+ * <p>阿里规范：{@code @Override} 不省略；包装类比较使用 {@code equals()}。</p>
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
-
 
     /** 百分比精度：4 位小数。 */
     private static final int SCALE = 4;
 
+    private final TransactionRepository transactionRepository;
     private final LedgerEventRepository ledgerEventRepository;
-
-    /** 交易内存存储（演示用，生产环境应替换为 JPA 持久化）。 */
-    private final Map<UUID, Transaction> transactionStore = new ConcurrentHashMap<>();
-
+    private final WalletService walletService;
 
     @Override
     public Transaction charge(String orderId, String workerId, String requesterId, BigDecimal grossAmount) {
         Objects.requireNonNull(orderId, "orderId must not be null");
         Objects.requireNonNull(grossAmount, "grossAmount must not be null");
         if (grossAmount.signum() <= 0) {
-            throw new BusinessException("grossAmount must be positive: " + grossAmount);
+            throw new BusinessException(ResultCode.PARAM_INVALID, "订单金额必须为正数: " + grossAmount);
         }
 
-        UUID txId = UUID.randomUUID();
+        // 幂等检查：order_id 唯一约束兜底
+        transactionRepository.findByOrderId(orderId).ifPresent(existing -> {
+            throw new BusinessException(ResultCode.DATA_DUPLICATED, "订单已创建交易: " + orderId);
+        });
+
         Instant now = Instant.now();
-        Transaction tx = new Transaction(
-                txId, orderId, workerId, requesterId,
-                grossAmount,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                TransactionStatus.PENDING,
-                SettlementRule.DEFAULT.version(),
-                now,
-                null
-        );
-        transactionStore.put(txId, tx);
+        TransactionEntity entity = new TransactionEntity();
+        entity.setId(UUID.randomUUID());
+        entity.setOrderId(orderId);
+        entity.setWorkerId(workerId);
+        entity.setRequesterId(requesterId);
+        entity.setGrossAmount(grossAmount);
+        entity.setPlatformFee(BigDecimal.ZERO);
+        entity.setWorkerShare(BigDecimal.ZERO);
+        entity.setStatus(TransactionStatus.PENDING);
+        entity.setRuleVersion(SettlementRule.DEFAULT.version());
+        entity.setCreatedAt(now);
+        transactionRepository.save(entity);
 
         // 记录收款事件
-        persistEvent(new LedgerEvent.ChargeCreated(UUID.randomUUID(), txId, grossAmount, now));
-        log.info("Transaction charged: txId={}, orderId={}, grossAmount={}", txId, orderId, grossAmount);
+        persistEvent(new LedgerEvent.ChargeCreated(UUID.randomUUID(), entity.getId(), grossAmount, now));
+        log.info("Transaction charged: txId={}, orderId={}, grossAmount={}", entity.getId(), orderId, grossAmount);
 
-        return tx;
+        return toDomain(entity);
     }
 
     @Override
     public SettlementResult settle(UUID transactionId) {
-        Transaction tx = requireTransaction(transactionId);
-        if (!TransactionStatus.CHARGED.equals(tx.status()) && !TransactionStatus.PENDING.equals(tx.status())) {
-            throw new BusinessException("transaction is not in a settleable state: " + tx.status());
+        TransactionEntity entity = requireTransaction(transactionId);
+        if (!TransactionStatus.CHARGED.equals(entity.getStatus()) && !TransactionStatus.PENDING.equals(entity.getStatus())) {
+            throw new BusinessException(ResultCode.STATUS_NOT_ALLOWED, "交易状态不允许结算: " + entity.getStatus());
         }
 
         SettlementRule rule = SettlementRule.DEFAULT;
-        BigDecimal platformFee = tx.grossAmount().multiply(rule.platformFeeRate()).setScale(SCALE, RoundingMode.HALF_UP);
-        BigDecimal surplus = tx.grossAmount().subtract(platformFee);
-
-        // 劳动者返还不低于反榨取底线（surplus * minWorkerShareRate）
-        BigDecimal workerShare = surplus.multiply(rule.minWorkerShareRate()).setScale(SCALE, RoundingMode.HALF_UP);
-        BigDecimal workerRatio = workerShare.divide(tx.grossAmount(), SCALE, RoundingMode.HALF_UP);
+        BigDecimal platformFee = entity.getGrossAmount().multiply(rule.platformFeeRate()).setScale(SCALE, RoundingMode.HALF_UP);
+        // 可分配结余（gross - platformFee）全额返还劳动者，保证金额守恒：gross = platformFee + workerShare
+        BigDecimal workerShare = entity.getGrossAmount().subtract(platformFee);
+        BigDecimal workerRatio = workerShare.divide(entity.getGrossAmount(), SCALE, RoundingMode.HALF_UP);
 
         boolean compliant = workerRatio.compareTo(rule.minWorkerShareRate()) >= 0;
         if (!compliant) {
@@ -93,55 +97,64 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         Instant now = Instant.now();
-        Transaction settled = new Transaction(
-                tx.id(), tx.orderId(), tx.workerId(), tx.requesterId(),
-                tx.grossAmount(), platformFee, workerShare,
-                TransactionStatus.SETTLED, rule.version(), tx.createdAt(), now
-        );
-        transactionStore.put(transactionId, settled);
+        entity.setPlatformFee(platformFee);
+        entity.setWorkerShare(workerShare);
+        entity.setStatus(TransactionStatus.SETTLED);
+        entity.setSettledAt(now);
+        transactionRepository.save(entity);
+
+        // 钱包入账：扣需求方订单总额，劳动者入账劳动所得（同一事务，任一失败整体回滚）
+        Long requesterId = Long.parseLong(entity.getRequesterId());
+        Long workerId = Long.parseLong(entity.getWorkerId());
+        walletService.deduct(requesterId, entity.getGrossAmount(), WalletBusinessType.SETTLE,
+                "PaymentTransaction", entity.getOrderId(), "订单结算扣款");
+        walletService.income(workerId, workerShare, WalletBusinessType.SETTLE,
+                "PaymentTransaction", entity.getOrderId(), "劳动所得入账");
 
         persistEvent(new LedgerEvent.SettlementCompleted(UUID.randomUUID(), transactionId, workerShare, now));
         log.info("Transaction settled: txId={}, workerShare={}, ratio={}, compliant={}",
                 transactionId, workerShare, workerRatio, compliant);
 
         return new SettlementResult(
-                transactionId, tx.grossAmount(), platformFee, surplus,
+                transactionId, entity.getGrossAmount(), platformFee, workerShare,
                 workerShare, workerRatio, rule.version(), compliant
         );
     }
 
     @Override
     public Transaction refund(UUID transactionId) {
-        Transaction tx = requireTransaction(transactionId);
-        if (TransactionStatus.REFUNDED.equals(tx.status())) {
-            throw new BusinessException("transaction already refunded: " + transactionId);
+        TransactionEntity entity = requireTransaction(transactionId);
+        if (TransactionStatus.REFUNDED.equals(entity.getStatus())) {
+            throw new BusinessException(ResultCode.STATUS_NOT_ALLOWED, "交易已退款: " + transactionId);
         }
 
         Instant now = Instant.now();
-        Transaction refunded = new Transaction(
-                tx.id(), tx.orderId(), tx.workerId(), tx.requesterId(),
-                tx.grossAmount(), tx.platformFee(), tx.workerShare(),
-                TransactionStatus.REFUNDED, tx.settlementRuleVersion(), tx.createdAt(), now
-        );
-        transactionStore.put(transactionId, refunded);
+        entity.setStatus(TransactionStatus.REFUNDED);
+        entity.setSettledAt(now);
+        transactionRepository.save(entity);
 
-        persistEvent(new LedgerEvent.RefundIssued(UUID.randomUUID(), transactionId, tx.grossAmount(), now));
-        log.info("Transaction refunded: txId={}, amount={}", transactionId, tx.grossAmount());
+        persistEvent(new LedgerEvent.RefundIssued(UUID.randomUUID(), transactionId, entity.getGrossAmount(), now));
+        log.info("Transaction refunded: txId={}, amount={}", transactionId, entity.getGrossAmount());
 
-        return refunded;
+        return toDomain(entity);
     }
 
     @Override
     public Optional<Transaction> findById(UUID transactionId) {
-        return Optional.ofNullable(transactionStore.get(transactionId));
+        return transactionRepository.findById(transactionId).map(this::toDomain);
     }
 
-    private Transaction requireTransaction(UUID transactionId) {
-        Transaction tx = transactionStore.get(transactionId);
-        if (tx == null) {
-            throw new BusinessException("transaction not found: " + transactionId);
-        }
-        return tx;
+    private TransactionEntity requireTransaction(UUID transactionId) {
+        return transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND, "交易不存在: " + transactionId));
+    }
+
+    private Transaction toDomain(TransactionEntity e) {
+        return new Transaction(
+                e.getId(), e.getOrderId(), e.getWorkerId(), e.getRequesterId(),
+                e.getGrossAmount(), e.getPlatformFee(), e.getWorkerShare(),
+                e.getStatus(), e.getRuleVersion(), e.getCreatedAt(), e.getSettledAt()
+        );
     }
 
     private void persistEvent(LedgerEvent event) {

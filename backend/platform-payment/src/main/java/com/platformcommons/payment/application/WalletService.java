@@ -31,6 +31,19 @@ public interface WalletService {
     WalletTransaction recharge(Long memberId, BigDecimal amount, String remark);
 
     /**
+     * 入账（余额增加，业务类型参数化）。
+     *
+     * @param memberId     会员 ID
+     * @param amount       入账金额
+     * @param businessType 业务类型
+     * @param refType      关联业务类型
+     * @param refId        关联业务 ID
+     * @param remark       备注
+     * @return 钱包流水
+     */
+    WalletTransaction income(Long memberId, BigDecimal amount, WalletBusinessType businessType, String refType, String refId, String remark);
+
+    /**
      * 冻结金额（从余额转移到冻结金额）。
      *
      * @param memberId 会员 ID
