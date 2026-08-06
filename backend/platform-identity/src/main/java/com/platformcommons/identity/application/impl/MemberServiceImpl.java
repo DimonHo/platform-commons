@@ -5,23 +5,24 @@ import com.platformcommons.common.enums.MemberStatus;
 import com.platformcommons.common.exception.BusinessException;
 import com.platformcommons.identity.api.dto.MemberRegisterRequest;
 import com.platformcommons.identity.api.dto.MemberResponse;
-import com.platformcommons.identity.domain.member.Member;
-import com.platformcommons.identity.domain.role.MemberRole;
-import com.platformcommons.identity.domain.member.MemberRepository;
-import com.platformcommons.identity.domain.member.MemberEntity;
 import com.platformcommons.identity.application.MemberService;
+import com.platformcommons.identity.domain.member.Member;
+import com.platformcommons.identity.domain.member.MemberEntity;
+import com.platformcommons.identity.domain.member.MemberRepository;
+import com.platformcommons.identity.domain.role.MemberRole;
+import com.platformcommons.identity.domain.role.MemberRoleEntity;
+import com.platformcommons.identity.domain.role.MemberRoleRepository;
+import com.platformcommons.identity.domain.role.RoleType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
 
 /**
  * {@link MemberService} 默认实现。
@@ -34,12 +35,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-
-    /** 劳动者初始劳动份额 */
-    private static final int INITIAL_LABOR_SHARES = 0;
-
     private final MemberRepository memberRepository;
-
+    private final MemberRoleRepository memberRoleRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -53,38 +50,36 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(ResultCode.DATA_DUPLICATED, "手机号已被注册");
         }
 
-        Set<MemberRole> roles = parseRoles(request.roles());
         MemberEntity entity = new MemberEntity();
         entity.setName(request.name());
         entity.setPhone(request.phone());
-        entity.setRoles(serializeRoles(roles));
         entity.setStatus(MemberStatus.ACTIVE);
         entity.setRegisteredAt(LocalDateTime.now());
-        entity.setLaborShares(hasWorker(roles) ? INITIAL_LABOR_SHARES : null);
 
         MemberEntity saved = memberRepository.save(entity);
         log.info("注册成功：id={}, name={}", saved.getId(), saved.getName());
-        return toResponse(saved);
+        return toResponse(saved, rolesOf(saved));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Member getMemberById(Long id) {
         MemberEntity entity = requireMember(id);
-        return toDomain(entity);
+        return toDomain(entity, rolesOf(entity));
     }
 
     @Override
     @Transactional(readOnly = true)
     public MemberResponse getMemberResponseById(Long id) {
-        return toResponse(requireMember(id));
+        MemberEntity entity = requireMember(id);
+        return toResponse(entity, rolesOf(entity));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MemberResponse> listMembers() {
         return memberRepository.findAll().stream()
-                .map(MemberServiceImpl::toResponse)
+                .map(entity -> toResponse(entity, rolesOf(entity)))
                 .toList();
     }
 
@@ -97,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
         entity.setStatus(target);
         MemberEntity saved = memberRepository.save(entity);
         log.info("状态变更完成：id={}, status={}", id, target);
-        return toResponse(saved);
+        return toResponse(saved, rolesOf(saved));
     }
 
     // ===== 内部工具 =====
@@ -107,41 +102,26 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND, "成员不存在: " + id));
     }
 
-    private static boolean hasWorker(Set<MemberRole> roles) {
-        return roles.contains(MemberRole.WORKER);
-    }
-
-    private static Set<MemberRole> parseRoles(List<String> roleNames) {
-        if (roleNames == null || roleNames.isEmpty()) {
-            throw new BusinessException(ResultCode.PARAM_INVALID, "角色不能为空");
-        }
-        return roleNames.stream()
-                .map(MemberServiceImpl::parseRole)
+    /**
+     * 查询成员在 member_role 表中的全部角色，转换为领域角色集合。
+     */
+    private Set<MemberRole> rolesOf(MemberEntity entity) {
+        return memberRoleRepository.findByMemberId(entity.getId()).stream()
+                .map(MemberRoleEntity::getRoleType)
+                .map(MemberServiceImpl::toMemberRole)
+                .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
     }
 
-    private static MemberRole parseRole(String name) {
-        try {
-            return MemberRole.valueOf(name.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new BusinessException(ResultCode.PARAM_INVALID, "非法角色: " + name);
-        }
-    }
-
-    private static String serializeRoles(Set<MemberRole> roles) {
-        return roles.stream()
-                .map(Enum::name)
-                .collect(Collectors.joining(","));
-    }
-
-    private static Set<MemberRole> deserializeRoles(String raw) {
-        if (!StringUtils.hasText(raw)) {
-            return Set.of();
-        }
-        return Arrays.stream(raw.split(","))
-                .map(String::trim)
-                .map(MemberRole::valueOf)
-                .collect(Collectors.toSet());
+    /**
+     * RoleType → MemberRole 映射；无对应领域枚举值的角色忽略。
+     */
+    private static Optional<MemberRole> toMemberRole(RoleType roleType) {
+        return switch (roleType) {
+            case WORKER -> Optional.of(MemberRole.WORKER);
+            case MERCHANT -> Optional.of(MemberRole.MERCHANT);
+            default -> Optional.empty();
+        };
     }
 
     private static MemberStatus parseStatus(String status) {
@@ -152,24 +132,24 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private static Member toDomain(MemberEntity entity) {
+    private static Member toDomain(MemberEntity entity, Set<MemberRole> roles) {
         return new Member(
                 entity.getId(),
                 entity.getName(),
                 entity.getPhone(),
-                deserializeRoles(entity.getRoles()),
+                roles,
                 entity.getRegisteredAt(),
                 entity.getStatus(),
                 entity.getLaborShares()
         );
     }
 
-    private static MemberResponse toResponse(MemberEntity entity) {
+    private static MemberResponse toResponse(MemberEntity entity, Set<MemberRole> roles) {
         return new MemberResponse(
                 entity.getId(),
                 entity.getName(),
                 maskPhone(entity.getPhone()),
-                deserializeRoles(entity.getRoles()),
+                roles,
                 entity.getRegisteredAt(),
                 entity.getStatus().name(),
                 entity.getLaborShares()

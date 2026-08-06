@@ -38,10 +38,6 @@ public class MemberEntity {
     @Column(nullable = false, unique = true, length = 20)
     private String phone;
 
-    /** 角色集合，以逗号分隔存储，如 {@code WORKER,CONSUMER} */
-    @Column(nullable = false, length = 64)
-    private String roles;
-
     @Column(nullable = false, length = 16)
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
