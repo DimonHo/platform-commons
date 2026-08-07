@@ -52,7 +52,7 @@ public class NotificationController {
                 request.refId(),
                 parseChannels(request.channels())
         );
-        return toResponse(n);
+        return RecordUtils.copy(n, NotificationResponse.class);
     }
 
     /**
@@ -70,7 +70,7 @@ public class NotificationController {
                 request.placeholders() != null ? request.placeholders() : Map.of(),
                 parseChannels(request.channels())
         );
-        return toResponse(n);
+        return RecordUtils.copy(n, NotificationResponse.class);
     }
 
     /**
@@ -81,7 +81,7 @@ public class NotificationController {
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "20") int size) {
         return notificationService.listByRecipient(memberId, page, size).stream()
-                .map(NotificationController::toResponse)
+                .map(x -> RecordUtils.copy(x, NotificationResponse.class))
                 .toList();
     }
 
@@ -91,7 +91,7 @@ public class NotificationController {
     @GetMapping("/api/notifications/member/{memberId}/unread")
     public List<NotificationResponse> listUnread(@PathVariable Long memberId) {
         return notificationService.listUnread(memberId).stream()
-                .map(NotificationController::toResponse)
+                .map(x -> RecordUtils.copy(x, NotificationResponse.class))
                 .toList();
     }
 
@@ -110,7 +110,7 @@ public class NotificationController {
     @PutMapping("/api/notifications/{notificationId}/read")
     public NotificationResponse markAsRead(@PathVariable Long notificationId) {
         Notification n = notificationService.markAsRead(notificationId);
-        return toResponse(n);
+        return RecordUtils.copy(n, NotificationResponse.class);
     }
 
     /**
@@ -129,7 +129,7 @@ public class NotificationController {
     public List<NotificationResponse> listByCategory(@PathVariable String category) {
         NotificationCategory cat = NotificationCategory.valueOf(category.toUpperCase());
         return notificationService.listByCategory(cat).stream()
-                .map(NotificationController::toResponse)
+                .map(x -> RecordUtils.copy(x, NotificationResponse.class))
                 .toList();
     }
 
@@ -151,7 +151,4 @@ public class NotificationController {
                 .toList();
     }
 
-    private static NotificationResponse toResponse(Notification n) {
-        return RecordUtils.copy(n, NotificationResponse.class);
-    }
 }

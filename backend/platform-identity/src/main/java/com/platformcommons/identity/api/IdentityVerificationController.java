@@ -42,7 +42,7 @@ public class IdentityVerificationController {
                 request.idCardNo(),
                 request.verificationChannel()
         );
-        return toResponse(verification);
+        return RecordUtils.copy(verification, IdentityVerificationResponse.class);
     }
 
     /**
@@ -53,7 +53,7 @@ public class IdentityVerificationController {
                                                             @RequestParam Long reviewerId) {
         log.info("审核通过：verificationId={}, reviewerId={}", verificationId, reviewerId);
         IdentityVerification verification = verificationService.approveVerification(verificationId, reviewerId);
-        return toResponse(verification);
+        return RecordUtils.copy(verification, IdentityVerificationResponse.class);
     }
 
     /**
@@ -67,7 +67,7 @@ public class IdentityVerificationController {
         IdentityVerification verification = verificationService.rejectVerification(
                 verificationId, reviewerId, reason == null ? "" : reason
         );
-        return toResponse(verification);
+        return RecordUtils.copy(verification, IdentityVerificationResponse.class);
     }
 
     /**
@@ -76,11 +76,8 @@ public class IdentityVerificationController {
     @GetMapping("/api/members/{memberId}/identity-verification")
     public IdentityVerificationResponse getVerification(@PathVariable Long memberId) {
         return verificationService.getVerification(memberId)
-                .map(IdentityVerificationController::toResponse)
+                .map(v -> RecordUtils.copy(v, IdentityVerificationResponse.class))
                 .orElse(null);
     }
 
-    private static IdentityVerificationResponse toResponse(IdentityVerification v) {
-        return RecordUtils.copy(v, IdentityVerificationResponse.class);
-    }
 }

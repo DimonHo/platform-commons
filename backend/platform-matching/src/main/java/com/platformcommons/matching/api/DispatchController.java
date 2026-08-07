@@ -50,7 +50,7 @@ public class DispatchController {
                 request.targetCount(),
                 BroadcastType.valueOf(request.broadcastType().toUpperCase())
         );
-        return toResponse(broadcast);
+        return RecordUtils.copy(broadcast, DispatchBroadcastResponse.class);
     }
 
     @Operation(summary = "劳动者抢单")
@@ -61,20 +61,20 @@ public class DispatchController {
         DispatchGrabRecord record = dispatchService.grabOrder(
                 broadcastId, request.workerId(), request.workerLat(), request.workerLng()
         );
-        return toResponse(record);
+        return RecordUtils.copy(record, DispatchGrabRecordResponse.class);
     }
 
     @Operation(summary = "按广播号查询广播")
     @GetMapping("/api/dispatch/broadcasts/{broadcastNo}")
     public DispatchBroadcastResponse getBroadcast(@PathVariable String broadcastNo) {
-        return toResponse(dispatchService.getBroadcast(broadcastNo));
+        return RecordUtils.copy(dispatchService.getBroadcast(broadcastNo), DispatchBroadcastResponse.class);
     }
 
     @Operation(summary = "列出广播中的活跃广播")
     @GetMapping("/api/dispatch/broadcasts/active")
     public List<DispatchBroadcastResponse> listActiveBroadcasts() {
         return dispatchService.listActiveBroadcasts().stream()
-                .map(DispatchController::toResponse)
+                .map(x -> RecordUtils.copy(x, DispatchBroadcastResponse.class))
                 .toList();
     }
 
@@ -82,17 +82,7 @@ public class DispatchController {
     @GetMapping("/api/dispatch/broadcasts/{broadcastId}/grabs")
     public List<DispatchGrabRecordResponse> listGrabRecords(@PathVariable Long broadcastId) {
         return dispatchService.listGrabRecords(broadcastId).stream()
-                .map(DispatchController::toResponse)
+                .map(x -> RecordUtils.copy(x, DispatchGrabRecordResponse.class))
                 .toList();
-    }
-
-    // ---- DTO 转换 ----
-
-    private static DispatchBroadcastResponse toResponse(DispatchBroadcast b) {
-        return RecordUtils.copy(b, DispatchBroadcastResponse.class);
-    }
-
-    private static DispatchGrabRecordResponse toResponse(DispatchGrabRecord r) {
-        return RecordUtils.copy(r, DispatchGrabRecordResponse.class);
     }
 }

@@ -40,7 +40,7 @@ public class PaymentGatewayController {
         // 立即使用指定渠道支付
         PaymentChannelRoute route = paymentGatewayService.payOrder(order.id(), request.channel());
         log.info("Order created and paid: orderNo={}, routeStatus={}", order.orderNo(), route.status());
-        return toResponse(order);
+        return RecordUtils.copy(order, PaymentOrderResponse.class);
     }
 
     @PostMapping("/orders/{orderId}/pay")
@@ -53,24 +53,21 @@ public class PaymentGatewayController {
         return paymentGatewayService.listMemberOrders(request.memberId()).stream()
                 .filter(o -> o.id().equals(orderId))
                 .findFirst()
-                .map(this::toResponse)
+                .map(o -> RecordUtils.copy(o, PaymentOrderResponse.class))
                 .orElseThrow(() -> new IllegalStateException("订单支付后未找到: orderId=" + orderId));
     }
 
     @GetMapping("/orders/{orderNo}")
     public PaymentOrderResponse getOrder(@PathVariable String orderNo) {
         PaymentOrder order = paymentGatewayService.getPaymentOrder(orderNo);
-        return toResponse(order);
+        return RecordUtils.copy(order, PaymentOrderResponse.class);
     }
 
     @GetMapping("/members/{memberId}/orders")
     public List<PaymentOrderResponse> listMemberOrders(@PathVariable Long memberId) {
         return paymentGatewayService.listMemberOrders(memberId).stream()
-                .map(this::toResponse)
+                .map(o -> RecordUtils.copy(o, PaymentOrderResponse.class))
                 .toList();
     }
 
-    private PaymentOrderResponse toResponse(PaymentOrder order) {
-        return RecordUtils.copy(order, PaymentOrderResponse.class);
-    }
 }

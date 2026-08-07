@@ -35,35 +35,32 @@ public class WithdrawalController {
     @PostMapping
     public WithdrawalResponse requestWithdrawal(@Valid @RequestBody WithdrawalRequestDto request) {
         WithdrawalRequest wr = withdrawalService.requestWithdrawal(request.memberId(), request.bankCardId(), request.amount());
-        return toResponse(wr);
+        return RecordUtils.copy(wr, WithdrawalResponse.class);
     }
 
     @PutMapping("/{id}/approve")
     public WithdrawalResponse approve(@PathVariable Long id, @RequestParam Long reviewerId) {
         WithdrawalRequest wr = withdrawalService.approveWithdrawal(id, reviewerId);
-        return toResponse(wr);
+        return RecordUtils.copy(wr, WithdrawalResponse.class);
     }
 
     @PutMapping("/{id}/reject")
     public WithdrawalResponse reject(@PathVariable Long id, @RequestParam Long reviewerId, @RequestParam String reason) {
         WithdrawalRequest wr = withdrawalService.rejectWithdrawal(id, reviewerId, reason);
-        return toResponse(wr);
+        return RecordUtils.copy(wr, WithdrawalResponse.class);
     }
 
     @PutMapping("/{id}/complete")
     public WithdrawalResponse complete(@PathVariable Long id, @RequestParam String channelTransferNo) {
         WithdrawalRequest wr = withdrawalService.completeWithdrawal(id, channelTransferNo);
-        return toResponse(wr);
+        return RecordUtils.copy(wr, WithdrawalResponse.class);
     }
 
     @GetMapping("/member/{memberId}")
     public List<WithdrawalResponse> listMemberWithdrawals(@PathVariable Long memberId) {
         return withdrawalService.listMemberWithdrawals(memberId).stream()
-                .map(this::toResponse)
+                .map(w -> RecordUtils.copy(w, WithdrawalResponse.class))
                 .toList();
     }
 
-    private WithdrawalResponse toResponse(WithdrawalRequest wr) {
-        return RecordUtils.copy(wr, WithdrawalResponse.class);
-    }
 }

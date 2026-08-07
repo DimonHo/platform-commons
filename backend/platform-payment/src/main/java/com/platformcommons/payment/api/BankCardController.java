@@ -35,13 +35,13 @@ public class BankCardController {
     public BankCardResponse bindCard(@Valid @RequestBody BindCardRequest request) {
         BankCard card = bankCardService.bindCard(request.memberId(), request.holderName(),
                 request.cardNo(), request.bankName(), request.cardType(), request.reservedPhone());
-        return toResponse(card);
+        return RecordUtils.copy(card, BankCardResponse.class);
     }
 
     @GetMapping("/{memberId}")
     public List<BankCardResponse> listCards(@PathVariable Long memberId) {
         return bankCardService.listCards(memberId).stream()
-                .map(this::toResponse)
+                .map(c -> RecordUtils.copy(c, BankCardResponse.class))
                 .toList();
     }
 
@@ -50,7 +50,4 @@ public class BankCardController {
         bankCardService.unbindCard(cardId);
     }
 
-    private BankCardResponse toResponse(BankCard card) {
-        return RecordUtils.copy(card, BankCardResponse.class);
-    }
 }

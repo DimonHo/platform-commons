@@ -39,7 +39,7 @@ public class AddressController {
         log.info("创建收货地址：memberId={}", memberId);
         Address address = RecordUtils.copy(request, Address.class, Map.of("memberId", memberId));
         Address saved = addressService.createAddress(memberId, address);
-        return toResponse(saved);
+        return RecordUtils.copy(saved, AddressResponse.class);
     }
 
     /**
@@ -48,7 +48,7 @@ public class AddressController {
     @GetMapping("/api/members/{memberId}/addresses")
     public List<AddressResponse> listAddresses(@PathVariable Long memberId) {
         return addressService.listAddresses(memberId).stream()
-                .map(AddressController::toResponse)
+                .map(a -> RecordUtils.copy(a, AddressResponse.class))
                 .toList();
     }
 
@@ -63,7 +63,7 @@ public class AddressController {
         Address address = RecordUtils.copy(request, Address.class,
                 Map.of("id", addressId, "memberId", memberId));
         Address updated = addressService.updateAddress(memberId, addressId, address);
-        return toResponse(updated);
+        return RecordUtils.copy(updated, AddressResponse.class);
     }
 
     /**
@@ -74,10 +74,7 @@ public class AddressController {
                                       @PathVariable Long addressId) {
         log.info("设置默认地址：memberId={}, addressId={}", memberId, addressId);
         Address address = addressService.setDefault(memberId, addressId);
-        return toResponse(address);
+        return RecordUtils.copy(address, AddressResponse.class);
     }
 
-    private static AddressResponse toResponse(Address a) {
-        return RecordUtils.copy(a, AddressResponse.class);
-    }
 }

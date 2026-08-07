@@ -7,7 +7,7 @@ import com.platformcommons.matching.api.dto.OrderTransitionResponse;
 import com.platformcommons.matching.api.dto.TransitionRequest;
 import com.platformcommons.matching.api.dto.WorkOrderResponse;
 import com.platformcommons.matching.domain.workorder.OrderPriority;
-import com.platformcommons.matching.domain.workorder.OrderTransition;
+
 import com.platformcommons.matching.domain.workorder.OperatorRole;
 import com.platformcommons.matching.domain.workorder.TransitionAction;
 import com.platformcommons.matching.domain.workorder.WorkOrder;
@@ -58,20 +58,20 @@ public class WorkOrderController {
                         ? OrderPriority.valueOf(request.priority().toUpperCase())
                         : OrderPriority.NORMAL
         );
-        return toResponse(order);
+        return RecordUtils.copy(order, WorkOrderResponse.class);
     }
 
     @Operation(summary = "按订单号查询工单")
     @GetMapping("/api/work-orders/{orderNo}")
     public WorkOrderResponse getOrder(@PathVariable String orderNo) {
-        return toResponse(workOrderService.getOrder(orderNo));
+        return RecordUtils.copy(workOrderService.getOrder(orderNo), WorkOrderResponse.class);
     }
 
     @Operation(summary = "查询需求方工单列表")
     @GetMapping("/api/work-orders/member/{memberId}")
     public List<WorkOrderResponse> listMemberOrders(@PathVariable Long memberId) {
         return workOrderService.listMemberOrders(memberId).stream()
-                .map(WorkOrderController::toResponse)
+                .map(o -> RecordUtils.copy(o, WorkOrderResponse.class))
                 .toList();
     }
 
@@ -79,7 +79,7 @@ public class WorkOrderController {
     @GetMapping("/api/work-orders/worker/{workerId}")
     public List<WorkOrderResponse> listWorkerOrders(@PathVariable Long workerId) {
         return workOrderService.listWorkerOrders(workerId).stream()
-                .map(WorkOrderController::toResponse)
+                .map(o -> RecordUtils.copy(o, WorkOrderResponse.class))
                 .toList();
     }
 
@@ -98,7 +98,7 @@ public class WorkOrderController {
                 request.remark(),
                 request.attachmentUrls()
         );
-        return toResponse(order);
+        return RecordUtils.copy(order, WorkOrderResponse.class);
     }
 
     @Operation(summary = "指派劳动者")
@@ -106,24 +106,15 @@ public class WorkOrderController {
     public WorkOrderResponse assignWorker(@PathVariable Long orderId,
                                           @Valid @RequestBody AssignWorkerRequest request) {
         log.info("Assign worker: orderId={}, workerId={}", orderId, request.workerId());
-        return toResponse(workOrderService.assignWorker(orderId, request.workerId()));
+        return RecordUtils.copy(workOrderService.assignWorker(orderId, request.workerId()), WorkOrderResponse.class);
     }
 
     @Operation(summary = "查询工单流转历史")
     @GetMapping("/api/work-orders/{orderId}/history")
     public List<OrderTransitionResponse> getOrderHistory(@PathVariable Long orderId) {
         return workOrderService.getOrderHistory(orderId).stream()
-                .map(WorkOrderController::toTransitionResponse)
+                .map(t -> RecordUtils.copy(t, OrderTransitionResponse.class))
                 .toList();
     }
 
-    // ---- DTO 转换 ----
-
-    private static WorkOrderResponse toResponse(WorkOrder o) {
-        return RecordUtils.copy(o, WorkOrderResponse.class);
-    }
-
-    private static OrderTransitionResponse toTransitionResponse(OrderTransition t) {
-        return RecordUtils.copy(t, OrderTransitionResponse.class);
-    }
 }

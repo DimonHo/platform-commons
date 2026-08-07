@@ -43,13 +43,13 @@ public class WalletController {
     @PostMapping("/recharge")
     public WalletTransactionResponse recharge(@Valid @RequestBody RechargeRequest request) {
         WalletTransaction tx = walletService.recharge(request.memberId(), request.amount(), null);
-        return toResponse(tx);
+        return RecordUtils.copy(tx, WalletTransactionResponse.class);
     }
 
     @PostMapping("/freeze")
     public WalletTransactionResponse freeze(@Valid @RequestBody FreezeRequest request) {
         WalletTransaction tx = walletService.freeze(request.memberId(), request.amount(), request.refType(), request.refId());
-        return toResponse(tx);
+        return RecordUtils.copy(tx, WalletTransactionResponse.class);
     }
 
     @GetMapping("/{memberId}/transactions")
@@ -57,11 +57,8 @@ public class WalletController {
         // 先确保钱包存在，再查询流水
         Wallet wallet = walletService.getOrCreateWallet(memberId);
         return walletService.listTransactions(wallet.id()).stream()
-                .map(this::toResponse)
+                .map(t -> RecordUtils.copy(t, WalletTransactionResponse.class))
                 .toList();
     }
 
-    private WalletTransactionResponse toResponse(WalletTransaction tx) {
-        return RecordUtils.copy(tx, WalletTransactionResponse.class);
-    }
 }

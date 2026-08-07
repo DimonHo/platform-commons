@@ -41,7 +41,7 @@ public class NotificationTemplateController {
                 request.titleTemplate(), request.contentTemplate(),
                 request.defaultChannels(), request.enabled()
         );
-        return toResponse(t);
+        return RecordUtils.copy(t, NotificationTemplateResponse.class);
     }
 
     /**
@@ -55,7 +55,7 @@ public class NotificationTemplateController {
                 id, request.name(), request.titleTemplate(),
                 request.contentTemplate(), request.defaultChannels(), request.enabled()
         );
-        return toResponse(t);
+        return RecordUtils.copy(t, NotificationTemplateResponse.class);
     }
 
     /**
@@ -63,7 +63,7 @@ public class NotificationTemplateController {
      */
     @GetMapping("/api/notification-templates/{code}")
     public NotificationTemplateResponse getByCode(@PathVariable String code) {
-        return toResponse(templateService.getByCode(code));
+        return RecordUtils.copy(templateService.getByCode(code), NotificationTemplateResponse.class);
     }
 
     /**
@@ -72,7 +72,7 @@ public class NotificationTemplateController {
     @GetMapping("/api/notification-templates")
     public List<NotificationTemplateResponse> listAll() {
         return templateService.listAll().stream()
-                .map(NotificationTemplateController::toResponse)
+                .map(t -> RecordUtils.copy(t, NotificationTemplateResponse.class))
                 .toList();
     }
 
@@ -83,10 +83,7 @@ public class NotificationTemplateController {
     public NotificationTemplateResponse toggle(@PathVariable Long id,
                                                 @RequestParam boolean enabled) {
         log.info("切换模板状态：id={}, enabled={}", id, enabled);
-        return toResponse(templateService.toggleEnabled(id, enabled));
+        return RecordUtils.copy(templateService.toggleEnabled(id, enabled), NotificationTemplateResponse.class);
     }
 
-    private static NotificationTemplateResponse toResponse(NotificationTemplate t) {
-        return RecordUtils.copy(t, NotificationTemplateResponse.class);
-    }
 }
