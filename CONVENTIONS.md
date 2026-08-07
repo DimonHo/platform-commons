@@ -204,6 +204,33 @@ public MemberResponse register(@Valid @RequestBody MemberRegisterRequest request
 
 Controller 层禁止写业务逻辑，只负责：接收参数 → 调 Service → 返回结果。
 
+### 2.4 record 映射一律用 RecordUtils.copy，禁止手写多参构造模板
+
+record → record 的字段映射（Request→Domain、Domain→Response）必须用 `com.platformcommons.common.util.RecordUtils.copy`（按组件名匹配 + `Map` overrides 覆盖个别字段），**禁止手写逐字段 `new Xxx(a.x(), a.y(), ...)` 模板**（尤其 10+ 参数的长构造）。
+
+```java
+// ❌ 禁止——手写 14 参模板
+Address address = new Address(
+        addressId, memberId,
+        request.label(), request.receiverName(), request.phone(),
+        request.province(), request.city(), request.district(),
+        request.detail(), request.latitude(), request.longitude(),
+        request.isDefault(), null, null
+);
+
+// ✅ 正确——同名组件自动复制，差异字段用 overrides 覆盖
+Address address = RecordUtils.copy(request, Address.class,
+        Map.of("id", addressId, "memberId", memberId));
+
+// ✅ 正确——响应映射一行搞定
+return RecordUtils.copy(dispute, DisputeResponse.class);
+```
+
+约束与例外：
+- 目标组件在源中缺失 → 该参数为 `null`（可空字段适用）；源中多余组件忽略。
+- **仅限 1:1 同名映射**；字段需要转换（如枚举 `name()`、类型转换）时保留手写（参考 WorkOrderController/DispatchController 的枚举→String 场景）。
+- `RecordUtils.copy` 基于规范构造器反射，构造器信息按目标 class 缓存，仅首次反射。
+
 ---
 
 ## 三、统一响应与异常

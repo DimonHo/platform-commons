@@ -1,5 +1,6 @@
 package com.platformcommons.identity.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.identity.api.dto.AddressResponse;
 import com.platformcommons.identity.api.dto.CreateAddressRequest;
 import com.platformcommons.identity.domain.address.Address;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 收货地址簿对外接口。
@@ -35,22 +37,7 @@ public class AddressController {
     public AddressResponse createAddress(@PathVariable Long memberId,
                                          @Valid @RequestBody CreateAddressRequest request) {
         log.info("创建收货地址：memberId={}", memberId);
-        Address address = new Address(
-                null,
-                memberId,
-                request.label(),
-                request.receiverName(),
-                request.phone(),
-                request.province(),
-                request.city(),
-                request.district(),
-                request.detail(),
-                request.latitude(),
-                request.longitude(),
-                request.isDefault(),
-                null,
-                null
-        );
+        Address address = RecordUtils.copy(request, Address.class, Map.of("memberId", memberId));
         Address saved = addressService.createAddress(memberId, address);
         return toResponse(saved);
     }
@@ -73,22 +60,8 @@ public class AddressController {
                                          @PathVariable Long addressId,
                                          @Valid @RequestBody CreateAddressRequest request) {
         log.info("修改收货地址：memberId={}, addressId={}", memberId, addressId);
-        Address address = new Address(
-                addressId,
-                memberId,
-                request.label(),
-                request.receiverName(),
-                request.phone(),
-                request.province(),
-                request.city(),
-                request.district(),
-                request.detail(),
-                request.latitude(),
-                request.longitude(),
-                request.isDefault(),
-                null,
-                null
-        );
+        Address address = RecordUtils.copy(request, Address.class,
+                Map.of("id", addressId, "memberId", memberId));
         Address updated = addressService.updateAddress(memberId, addressId, address);
         return toResponse(updated);
     }
@@ -105,11 +78,6 @@ public class AddressController {
     }
 
     private static AddressResponse toResponse(Address a) {
-        return new AddressResponse(
-                a.id(), a.memberId(), a.label(), a.receiverName(), a.phone(),
-                a.province(), a.city(), a.district(), a.detail(),
-                a.latitude(), a.longitude(), a.isDefault(),
-                a.createdAt(), a.updatedAt()
-        );
+        return RecordUtils.copy(a, AddressResponse.class);
     }
 }

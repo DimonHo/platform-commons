@@ -1,5 +1,6 @@
 package com.platformcommons.notification.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.notification.api.dto.NotificationResponse;
 import com.platformcommons.notification.api.dto.SendNotificationRequest;
 import com.platformcommons.notification.api.dto.SendTemplatedNotificationRequest;
@@ -151,10 +152,6 @@ public class NotificationController {
     }
 
     private static NotificationResponse toResponse(Notification n) {
-        return new NotificationResponse(
-                n.id(), n.recipientId(), n.recipientRole(), n.category(),
-                n.title(), n.content(), n.refType(), n.refId(),
-                n.channels(), n.status(), n.readAt(), n.createdAt(), n.sentAt()
-        );
+        return RecordUtils.copy(n, NotificationResponse.class);
     }
 }

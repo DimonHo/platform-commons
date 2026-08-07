@@ -1,5 +1,6 @@
 package com.platformcommons.notification.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.notification.api.dto.NotificationTemplateResponse;
 import com.platformcommons.notification.api.dto.SaveTemplateRequest;
 import com.platformcommons.notification.domain.NotificationTemplate;
@@ -86,10 +87,6 @@ public class NotificationTemplateController {
     }
 
     private static NotificationTemplateResponse toResponse(NotificationTemplate t) {
-        return new NotificationTemplateResponse(
-                t.id(), t.code(), t.name(), t.category(),
-                t.titleTemplate(), t.contentTemplate(),
-                t.defaultChannels(), t.enabled(), t.createdAt()
-        );
+        return RecordUtils.copy(t, NotificationTemplateResponse.class);
     }
 }

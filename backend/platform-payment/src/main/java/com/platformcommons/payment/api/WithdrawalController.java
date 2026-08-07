@@ -1,6 +1,7 @@
 package com.platformcommons.payment.api;
 
 import com.platformcommons.payment.api.dto.WithdrawalRequestDto;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.payment.api.dto.WithdrawalResponse;
 import com.platformcommons.payment.domain.withdrawal.WithdrawalRequest;
 import com.platformcommons.payment.application.WithdrawalService;
@@ -63,8 +64,6 @@ public class WithdrawalController {
     }
 
     private WithdrawalResponse toResponse(WithdrawalRequest wr) {
-        return new WithdrawalResponse(wr.id(), wr.requestNo(), wr.memberId(), wr.walletId(),
-                wr.bankCardId(), wr.amount(), wr.fee(), wr.status(), wr.riskScore(),
-                wr.rejectReason(), wr.appliedAt(), wr.reviewedAt(), wr.reviewerId(), wr.completedAt());
+        return RecordUtils.copy(wr, WithdrawalResponse.class);
     }
 }

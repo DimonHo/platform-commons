@@ -1,5 +1,6 @@
 package com.platformcommons.payment.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.payment.api.dto.BankCardResponse;
 import com.platformcommons.payment.api.dto.BindCardRequest;
 import com.platformcommons.payment.domain.bankcard.BankCard;
@@ -50,8 +51,6 @@ public class BankCardController {
     }
 
     private BankCardResponse toResponse(BankCard card) {
-        return new BankCardResponse(card.id(), card.memberId(), card.holderName(),
-                card.cardNoMasked(), card.bankName(), card.cardType(),
-                card.isDefault(), card.status(), card.boundAt());
+        return RecordUtils.copy(card, BankCardResponse.class);
     }
 }

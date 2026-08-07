@@ -1,6 +1,7 @@
 package com.platformcommons.payment.api;
 
 import com.platformcommons.payment.api.dto.PayRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.payment.api.dto.PaymentOrderResponse;
 import com.platformcommons.payment.domain.gateway.PaymentChannelRoute;
 import com.platformcommons.payment.domain.paymentorder.PaymentOrder;
@@ -39,7 +40,7 @@ public class PaymentGatewayController {
         // 立即使用指定渠道支付
         PaymentChannelRoute route = paymentGatewayService.payOrder(order.id(), request.channel());
         log.info("Order created and paid: orderNo={}, routeStatus={}", order.orderNo(), route.status());
-        return toResponse(order, null);
+        return toResponse(order);
     }
 
     @PostMapping("/orders/{orderId}/pay")
@@ -52,26 +53,24 @@ public class PaymentGatewayController {
         return paymentGatewayService.listMemberOrders(request.memberId()).stream()
                 .filter(o -> o.id().equals(orderId))
                 .findFirst()
-                .map(o -> toResponse(o, null))
+                .map(this::toResponse)
                 .orElseThrow(() -> new IllegalStateException("订单支付后未找到: orderId=" + orderId));
     }
 
     @GetMapping("/orders/{orderNo}")
     public PaymentOrderResponse getOrder(@PathVariable String orderNo) {
         PaymentOrder order = paymentGatewayService.getPaymentOrder(orderNo);
-        return toResponse(order, null);
+        return toResponse(order);
     }
 
     @GetMapping("/members/{memberId}/orders")
     public List<PaymentOrderResponse> listMemberOrders(@PathVariable Long memberId) {
         return paymentGatewayService.listMemberOrders(memberId).stream()
-                .map(o -> toResponse(o, null))
+                .map(this::toResponse)
                 .toList();
     }
 
-    private PaymentOrderResponse toResponse(PaymentOrder order, Object ignored) {
-        return new PaymentOrderResponse(order.id(), order.orderNo(), order.memberId(), order.direction(),
-                order.amount(), order.businessType(), order.refType(), order.refId(),
-                order.status(), order.expireAt(), order.createdAt(), order.paidAt());
+    private PaymentOrderResponse toResponse(PaymentOrder order) {
+        return RecordUtils.copy(order, PaymentOrderResponse.class);
     }
 }

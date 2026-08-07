@@ -3,6 +3,7 @@ package com.platformcommons.payment.api;
 import com.platformcommons.payment.api.dto.FreezeRequest;
 import com.platformcommons.payment.api.dto.RechargeRequest;
 import com.platformcommons.payment.api.dto.WalletResponse;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.payment.api.dto.WalletTransactionResponse;
 import com.platformcommons.payment.domain.wallet.Wallet;
 import com.platformcommons.payment.domain.wallet.WalletTransaction;
@@ -61,8 +62,6 @@ public class WalletController {
     }
 
     private WalletTransactionResponse toResponse(WalletTransaction tx) {
-        return new WalletTransactionResponse(tx.id(), tx.walletId(), tx.memberId(), tx.transactionNo(),
-                tx.direction(), tx.amount(), tx.balanceAfter(), tx.businessType(),
-                tx.refType(), tx.refId(), tx.remark(), tx.createdAt());
+        return RecordUtils.copy(tx, WalletTransactionResponse.class);
     }
 }

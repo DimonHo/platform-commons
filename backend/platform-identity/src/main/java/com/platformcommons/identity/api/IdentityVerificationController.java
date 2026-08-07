@@ -1,5 +1,6 @@
 package com.platformcommons.identity.api;
 
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.identity.api.dto.IdentityVerificationResponse;
 import com.platformcommons.identity.api.dto.SubmitVerificationRequest;
 import com.platformcommons.identity.domain.verification.IdentityVerification;
@@ -80,10 +81,6 @@ public class IdentityVerificationController {
     }
 
     private static IdentityVerificationResponse toResponse(IdentityVerification v) {
-        return new IdentityVerificationResponse(
-                v.id(), v.memberId(), v.realName(), v.idCardType(),
-                v.idCardNoMasked(), v.status(), v.verificationChannel(),
-                v.faceVerified(), v.submittedAt(), v.reviewedAt(), v.reviewerId()
-        );
+        return RecordUtils.copy(v, IdentityVerificationResponse.class);
     }
 }
