@@ -63,7 +63,7 @@ class MemberServiceTest {
 
         MemberResponse response = memberService.register(new MemberRegisterRequest("张三", "13800138000"));
 
-        assertEquals("138****8000", response.phone(), "手机号应脱敏");
+        assertEquals("13800138000", response.phone(), "DTO 存原始值，序列化时由 @Mask 自动脱敏");
         assertNull(response.laborShares(), "未设置劳动份额时 laborShares 应为 null");
         assertTrue(response.roles().isEmpty(), "无角色记录时 roles 应为空集");
         verify(memberRepository, times(1)).save(any(MemberEntity.class));

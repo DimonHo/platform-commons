@@ -3,6 +3,7 @@ package com.platformcommons.identity.application.impl;
 import com.platformcommons.common.api.ResultCode;
 import com.platformcommons.common.enums.MemberStatus;
 import com.platformcommons.common.exception.BusinessException;
+import com.platformcommons.common.mask.MaskType;
 import com.platformcommons.identity.api.dto.MemberRegisterRequest;
 import com.platformcommons.identity.api.dto.MemberResponse;
 import com.platformcommons.identity.application.MemberService;
@@ -41,12 +42,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MemberResponse register(MemberRegisterRequest request) {
-        log.info("注册成员：name={}, phone={}", request.name(), maskPhone(request.phone()));
+        log.info("注册成员：name={}, phone={}", request.name(), MaskType.PHONE.mask(request.phone()));
 
         // 手机号唯一性校验
         Optional<MemberEntity> existed = memberRepository.findByPhone(request.phone());
         if (existed.isPresent()) {
-            log.warn("手机号已注册：phone={}", maskPhone(request.phone()));
+            log.warn("手机号已注册：phone={}", MaskType.PHONE.mask(request.phone()));
             throw new BusinessException(ResultCode.DATA_DUPLICATED, "手机号已被注册");
         }
 
@@ -148,21 +149,11 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse(
                 entity.getId(),
                 entity.getName(),
-                maskPhone(entity.getPhone()),
+                entity.getPhone(),
                 roles,
                 entity.getRegisteredAt(),
                 entity.getStatus(),
                 entity.getLaborShares()
         );
-    }
-
-    /**
-     * 手机号脱敏：保留前 3 位与后 4 位。
-     */
-    private static String maskPhone(String phone) {
-        if (phone == null || phone.length() < 7) {
-            return "***";
-        }
-        return phone.substring(0, 3) + "****" + phone.substring(phone.length() - 4);
     }
 }

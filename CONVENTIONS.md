@@ -145,6 +145,32 @@ if (StringUtils.hasText(str)) { ... }
 
 > 使用 `org.springframework.util.StringUtils`，无需额外依赖。
 
+### 1.7 敏感字段脱敏用 @Mask 注解，禁止 Service 层手动拼接掩码
+
+DTO 中敏感字段（手机号/姓名/证件号/银行卡号）加 `@Mask(MaskType.XXX)`，序列化时由 Jackson 自动脱敏，**DTO 内部保留原始值**。禁止在 Service 层手动脱敏后塞进 DTO。
+
+```java
+// ❌ 禁止——Service 层手动脱敏后存入 DTO
+return new MemberResponse(..., maskPhone(entity.getPhone()), ...);
+
+// ✅ 正确——DTO 存原始值，@Mask 注解声明脱敏
+public record MemberResponse(
+        ...
+        @Mask(MaskType.PHONE) String phone,
+        ...
+) {}
+```
+
+| MaskType | 规则 | 示例 |
+|----------|------|------|
+| PHONE | 保留前 3 位与后 4 位 | 138****8000 |
+| NAME | 保留首字 | 张* |
+| ID_CARD | 保留前 4 位与后 4 位 | 1101**********1234 |
+| BANK_CARD | **** + 末 4 位 | ****2234 |
+
+- 日志脱敏用 `MaskType.PHONE.mask(x)`（不落 DTO，直接调用枚举方法）
+- 实现位于 platform-common `com.platformcommons.common.mask`：`@Mask` + `MaskSerializer`（extends `ValueSerializer`）+ `MaskAnnotationIntrospector` + `JsonMapperBuilderCustomizer` 全局注册（Spring Boot 4 / Jackson 3）
+
 ---
 
 ## 二、Controller 层
