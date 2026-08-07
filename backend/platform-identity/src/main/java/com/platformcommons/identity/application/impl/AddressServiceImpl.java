@@ -55,6 +55,39 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Address updateAddress(Long memberId, Long addressId, Address address) {
+        log.info("修改收货地址：memberId={}, addressId={}", memberId, addressId);
+        AddressEntity entity = addressRepository.findById(addressId)
+                .orElseThrow(() -> new BusinessException(ResultCode.DATA_NOT_FOUND, "地址不存在: " + addressId));
+        if (!entity.getMemberId().equals(memberId)) {
+            throw new BusinessException(ResultCode.FORBIDDEN, "地址不属于该成员");
+        }
+
+        // 全量覆盖
+        entity.setLabel(address.label());
+        entity.setReceiverName(address.receiverName());
+        entity.setPhone(address.phone());
+        entity.setProvince(address.province());
+        entity.setCity(address.city());
+        entity.setDistrict(address.district());
+        entity.setDetail(address.detail());
+        entity.setLatitude(address.latitude());
+        entity.setLongitude(address.longitude());
+        // 若改为默认，则取消原默认
+        boolean newDefault = address.isDefault() != null && address.isDefault();
+        if (newDefault) {
+            unsetPreviousDefaults(memberId);
+        }
+        entity.setIsDefault(newDefault);
+        entity.setUpdatedAt(Instant.now());
+
+        AddressEntity saved = addressRepository.save(entity);
+        log.info("收货地址修改成功：id={}, memberId={}", saved.getId(), memberId);
+        return toDomain(saved);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<Address> listAddresses(Long memberId) {
         return addressRepository.findByMemberIdOrderByIsDefaultDescCreatedAtDesc(memberId).stream()

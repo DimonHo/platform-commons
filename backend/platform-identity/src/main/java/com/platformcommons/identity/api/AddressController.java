@@ -66,6 +66,34 @@ public class AddressController {
     }
 
     /**
+     * 修改收货地址（全量覆盖）。
+     */
+    @PutMapping("/api/members/{memberId}/addresses/{addressId}")
+    public AddressResponse updateAddress(@PathVariable Long memberId,
+                                         @PathVariable Long addressId,
+                                         @Valid @RequestBody CreateAddressRequest request) {
+        log.info("修改收货地址：memberId={}, addressId={}", memberId, addressId);
+        Address address = new Address(
+                addressId,
+                memberId,
+                request.label(),
+                request.receiverName(),
+                request.phone(),
+                request.province(),
+                request.city(),
+                request.district(),
+                request.detail(),
+                request.latitude(),
+                request.longitude(),
+                request.isDefault(),
+                null,
+                null
+        );
+        Address updated = addressService.updateAddress(memberId, addressId, address);
+        return toResponse(updated);
+    }
+
+    /**
      * 设置默认地址。
      */
     @PutMapping("/api/members/{memberId}/addresses/{addressId}/default")

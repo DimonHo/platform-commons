@@ -15,6 +15,11 @@ public interface AddressService {
     Address createAddress(Long memberId, Address address);
 
     /**
+     * 修改收货地址（全量覆盖，仅限本人地址）。
+     */
+    Address updateAddress(Long memberId, Long addressId, Address address);
+
+    /**
      * 查询成员的全部地址（默认优先）。
      */
     List<Address> listAddresses(Long memberId);
