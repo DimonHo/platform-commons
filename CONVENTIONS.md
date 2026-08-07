@@ -228,7 +228,8 @@ return RecordUtils.copy(dispute, DisputeResponse.class);
 
 约束与例外：
 - 目标组件在源中缺失 → 该参数为 `null`（可空字段适用）；源中多余组件忽略。
-- **仅限 1:1 同名映射**；字段需要转换（如枚举 `name()`、类型转换）时保留手写（参考 WorkOrderController/DispatchController 的枚举→String 场景）。
+- **仅限 1:1 同名映射**；字段需要计算/类型转换（如手机号脱敏、票数统计）时保留手写。
+- **枚举字段禁止转 String**：响应 DTO 直接声明枚举类型（`WorkOrderStatus`、`MemberStatus`、`ProposalStatus` 等），Jackson 默认序列化为 `name()`——与手写 `.name()` 结果一致，但类型安全、天然空安全（`null` 自动输出 `null`，无需三元）。参考 `WorkOrderResponse.orderType/status/priority`、`MemberResponse.status`。
 - `RecordUtils.copy` 基于规范构造器反射，构造器信息按目标 class 缓存，仅首次反射。
 
 ---

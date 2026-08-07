@@ -1,6 +1,7 @@
 package com.platformcommons.matching.api;
 
 import com.platformcommons.matching.api.dto.CreateBroadcastRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.matching.api.dto.DispatchBroadcastResponse;
 import com.platformcommons.matching.api.dto.DispatchGrabRecordResponse;
 import com.platformcommons.matching.api.dto.GrabOrderRequest;
@@ -88,23 +89,10 @@ public class DispatchController {
     // ---- DTO 转换 ----
 
     private static DispatchBroadcastResponse toResponse(DispatchBroadcast b) {
-        return new DispatchBroadcastResponse(
-                b.id(), b.broadcastNo(), b.orderId(),
-                b.orderType() != null ? b.orderType().name() : null,
-                b.broadcastType() != null ? b.broadcastType().name() : null,
-                b.centerLat(), b.centerLng(), b.radiusMeters(), b.targetCount(),
-                b.grabbedCount(),
-                b.status() != null ? b.status().name() : null,
-                b.expireAt(), b.createdAt()
-        );
+        return RecordUtils.copy(b, DispatchBroadcastResponse.class);
     }
 
     private static DispatchGrabRecordResponse toResponse(DispatchGrabRecord r) {
-        return new DispatchGrabRecordResponse(
-                r.id(), r.broadcastId(), r.workerId(),
-                r.workerLat(), r.workerLng(), r.distanceMeters(),
-                r.status() != null ? r.status().name() : null,
-                r.grabbedAt()
-        );
+        return RecordUtils.copy(r, DispatchGrabRecordResponse.class);
     }
 }

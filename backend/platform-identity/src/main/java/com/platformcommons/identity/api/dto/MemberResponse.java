@@ -1,5 +1,6 @@
 package com.platformcommons.identity.api.dto;
 
+import com.platformcommons.common.enums.MemberStatus;
 import com.platformcommons.identity.domain.role.MemberRole;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public record MemberResponse(
         String phone,
         Set<MemberRole> roles,
         LocalDateTime registeredAt,
-        String status,
+        MemberStatus status,
         Integer laborShares
 ) {
 }

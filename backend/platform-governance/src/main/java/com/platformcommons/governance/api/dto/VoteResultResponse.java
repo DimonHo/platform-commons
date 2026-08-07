@@ -1,5 +1,7 @@
 package com.platformcommons.governance.api.dto;
 
+import com.platformcommons.governance.domain.ProposalStatus;
+
 /**
  * 投票结果统计响应 DTO。
  *
@@ -14,7 +16,7 @@ package com.platformcommons.governance.api.dto;
 public record VoteResultResponse(
         Long proposalId,
         String title,
-        String status,
+        ProposalStatus status,
         long yesCount,
         long noCount,
         long abstainCount,

@@ -151,7 +151,7 @@ public class MemberServiceImpl implements MemberService {
                 maskPhone(entity.getPhone()),
                 roles,
                 entity.getRegisteredAt(),
-                entity.getStatus().name(),
+                entity.getStatus(),
                 entity.getLaborShares()
         );
     }

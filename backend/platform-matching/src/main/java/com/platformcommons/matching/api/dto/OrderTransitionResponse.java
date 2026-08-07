@@ -1,5 +1,8 @@
 package com.platformcommons.matching.api.dto;
 
+import com.platformcommons.matching.domain.workorder.OperatorRole;
+import com.platformcommons.matching.domain.workorder.TransitionAction;
+import com.platformcommons.matching.domain.workorder.WorkOrderStatus;
 import java.time.Instant;
 
 /**
@@ -8,11 +11,11 @@ import java.time.Instant;
 public record OrderTransitionResponse(
         Long id,
         Long orderId,
-        String fromStatus,
-        String toStatus,
-        String action,
+        WorkOrderStatus fromStatus,
+        WorkOrderStatus toStatus,
+        TransitionAction action,
         Long operatorId,
-        String operatorRole,
+        OperatorRole operatorRole,
         String remark,
         String attachmentUrls,
         Instant createdAt

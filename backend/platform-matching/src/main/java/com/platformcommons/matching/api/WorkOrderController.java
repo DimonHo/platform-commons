@@ -2,6 +2,7 @@ package com.platformcommons.matching.api;
 
 import com.platformcommons.matching.api.dto.AssignWorkerRequest;
 import com.platformcommons.matching.api.dto.CreateOrderRequest;
+import com.platformcommons.common.util.RecordUtils;
 import com.platformcommons.matching.api.dto.OrderTransitionResponse;
 import com.platformcommons.matching.api.dto.TransitionRequest;
 import com.platformcommons.matching.api.dto.WorkOrderResponse;
@@ -119,29 +120,10 @@ public class WorkOrderController {
     // ---- DTO 转换 ----
 
     private static WorkOrderResponse toResponse(WorkOrder o) {
-        return new WorkOrderResponse(
-                o.id(), o.orderNo(),
-                o.orderType() != null ? o.orderType().name() : null,
-                o.title(), o.description(),
-                o.memberId(), o.workerId(), o.chamber(), o.amount(),
-                o.status() != null ? o.status().name() : null,
-                o.priority() != null ? o.priority().name() : null,
-                o.locationLat(), o.locationLng(),
-                o.scheduledAt(), o.acceptedAt(), o.startedAt(), o.submittedAt(),
-                o.completedAt(), o.cancelledAt(), o.cancelReason(),
-                o.createdAt(), o.updatedAt()
-        );
+        return RecordUtils.copy(o, WorkOrderResponse.class);
     }
 
     private static OrderTransitionResponse toTransitionResponse(OrderTransition t) {
-        return new OrderTransitionResponse(
-                t.id(), t.orderId(),
-                t.fromStatus() != null ? t.fromStatus().name() : null,
-                t.toStatus() != null ? t.toStatus().name() : null,
-                t.action() != null ? t.action().name() : null,
-                t.operatorId(),
-                t.operatorRole() != null ? t.operatorRole().name() : null,
-                t.remark(), t.attachmentUrls(), t.createdAt()
-        );
+        return RecordUtils.copy(t, OrderTransitionResponse.class);
     }
 }

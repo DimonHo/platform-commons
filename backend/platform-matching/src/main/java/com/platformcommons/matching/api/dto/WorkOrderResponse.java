@@ -1,5 +1,8 @@
 package com.platformcommons.matching.api.dto;
 
+import com.platformcommons.matching.domain.workorder.OrderPriority;
+import com.platformcommons.matching.domain.workorder.WorkOrderStatus;
+import com.platformcommons.matching.domain.workorder.WorkOrderType;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -9,15 +12,15 @@ import java.time.Instant;
 public record WorkOrderResponse(
         Long id,
         String orderNo,
-        String orderType,
+        WorkOrderType orderType,
         String title,
         String description,
         Long memberId,
         Long workerId,
         String chamber,
         BigDecimal amount,
-        String status,
-        String priority,
+        WorkOrderStatus status,
+        OrderPriority priority,
         Double locationLat,
         Double locationLng,
         Instant scheduledAt,

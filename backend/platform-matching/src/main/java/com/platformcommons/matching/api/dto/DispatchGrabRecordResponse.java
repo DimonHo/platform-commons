@@ -1,5 +1,6 @@
 package com.platformcommons.matching.api.dto;
 
+import com.platformcommons.matching.domain.dispatch.GrabStatus;
 import java.time.Instant;
 
 /**
@@ -12,7 +13,7 @@ public record DispatchGrabRecordResponse(
         Double workerLat,
         Double workerLng,
         Integer distanceMeters,
-        String status,
+        GrabStatus status,
         Instant grabbedAt
 ) {
 }

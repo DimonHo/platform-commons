@@ -134,7 +134,7 @@ public class GovernanceServiceImpl implements GovernanceService {
         return new VoteResultResponse(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getStatus().name(),
+                entity.getStatus(),
                 yes,
                 no,
                 abstain,
